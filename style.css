@@ -8,12 +8,11 @@
 }
 
 body, html {
-  font-family: "Caveat Brush", cursive; /* messy hand-drawn font matching scribble BG */
+  font-family: "Caveat Brush", cursive;
   height: 100%;
   background: #fff;
   color: #111;
   line-height: 1.7;
-  text-transform: uppercase;
 }
 
 /* =========================
@@ -39,7 +38,7 @@ body, html {
 }
 
 /* =========================
-   SCRIBBLE TEXT + ANIMATION
+   SCRIBBLE TEXT
 ========================= */
 .scribble-text h1,
 .scribble-text h2,
@@ -55,33 +54,19 @@ body, html {
     -2px -2px 0 #ccc,
     1px 2px 0 #eee,
     2px -1px 0 #aaa;
-  animation: scribble-shadow 3s infinite alternate;
   font-size: 2.5rem;
   transition: all 0.3s ease;
 }
 
-/* Hoverable elements */
-.hoverable:hover {
-  transform: scale(1.08) rotate(-1deg);
-  text-shadow:
-    2px 2px 0 #ff6f61,
-    -2px -2px 0 #6fbfff,
-    1px 2px 0 #fff;
-  cursor: pointer;
-}
-
-/* Scribble shadow animation for pen movement */
-@keyframes scribble-shadow {
-  0% { text-shadow: 2px 2px 0 #fff, -2px -2px 0 #ccc, 1px 2px 0 #eee, 2px -1px 0 #aaa; }
-  25% { text-shadow: 3px 0 0 #fff, -1px 2px 0 #ccc, 2px 1px 0 #eee, 0 -1px 0 #aaa; }
-  50% { text-shadow: 2px -2px 0 #fff, -2px 2px 0 #ccc, 2px -1px 0 #eee, 1px 1px 0 #aaa; }
-  75% { text-shadow: 0 1px 0 #fff, 1px -2px 0 #ccc, -1px 1px 0 #eee, 2px 0 0 #aaa; }
-  100% { text-shadow: 2px 2px 0 #fff, -2px -2px 0 #ccc, 1px 2px 0 #eee, 2px -1px 0 #aaa; }
-}
-
 /* =========================
-   HERO TEXT
+   HERO SECTION ALWAYS ANIMATED
 ========================= */
+.always-animate h1,
+.always-animate p {
+  animation: scribble-shadow 3s infinite alternate;
+  text-transform: uppercase;
+}
+
 .hero-text h1 {
   font-size: 6rem;
   margin-bottom: 1rem;
@@ -92,11 +77,36 @@ body, html {
 }
 
 /* =========================
-   HEADINGS
+   OTHER HEADINGS
 ========================= */
 h2 {
   font-size: 4rem;
   margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+/* =========================
+   HOVER ANIMATION ONLY
+========================= */
+.hoverable:hover {
+  animation: scribble-shadow 3s infinite alternate;
+  transform: scale(1.08) rotate(-1deg);
+  text-shadow:
+    2px 2px 0 #ff6f61,
+    -2px -2px 0 #6fbfff,
+    1px 2px 0 #fff;
+  cursor: pointer;
+}
+
+/* =========================
+   SCRIBBLE SHADOW ANIMATION
+========================= */
+@keyframes scribble-shadow {
+  0% { text-shadow: 2px 2px 0 #fff, -2px -2px 0 #ccc, 1px 2px 0 #eee, 2px -1px 0 #aaa; }
+  25% { text-shadow: 3px 0 0 #fff, -1px 2px 0 #ccc, 2px 1px 0 #eee, 0 -1px 0 #aaa; }
+  50% { text-shadow: 2px -2px 0 #fff, -2px 2px 0 #ccc, 2px -1px 0 #eee, 1px 1px 0 #aaa; }
+  75% { text-shadow: 0 1px 0 #fff, 1px -2px 0 #ccc, -1px 1px 0 #eee, 2px 0 0 #aaa; }
+  100% { text-shadow: 2px 2px 0 #fff, -2px -2px 0 #ccc, 1px 2px 0 #eee, 2px -1px 0 #aaa; }
 }
 
 /* =========================
