@@ -8,12 +8,12 @@
 }
 
 body, html {
-  font-family: "Rock Salt", cursive; /* bold scribble style font */
+  font-family: "Caveat Brush", cursive; /* messy hand-drawn font matching scribble BG */
   height: 100%;
   background: #fff;
   color: #111;
   line-height: 1.7;
-  text-transform: uppercase; /* all caps */
+  text-transform: uppercase;
 }
 
 /* =========================
@@ -39,38 +39,51 @@ body, html {
 }
 
 /* =========================
-   SCRIBBLE TEXT EFFECT
+   SCRIBBLE TEXT + ANIMATION
 ========================= */
 .scribble-text h1,
 .scribble-text h2,
-.scribble-text p {
+.scribble-text h3,
+.scribble-text p,
+.scribble-text footer {
   position: relative;
   display: inline-block;
   font-weight: bold;
   color: #111;
   text-shadow:
-    1px 1px 0 #fff,
-    -1px -1px 0 #ccc,
-    2px 1px 0 #eee,
-    1px -2px 0 #aaa;
+    2px 2px 0 #fff,
+    -2px -2px 0 #ccc,
+    1px 2px 0 #eee,
+    2px -1px 0 #aaa;
   animation: scribble-shadow 3s infinite alternate;
-  font-size: 2rem; /* default for body text, bigger headings below */
+  font-size: 2.5rem;
+  transition: all 0.3s ease;
 }
 
-/* Scribble shadow animation for ink movement */
+/* Hoverable elements */
+.hoverable:hover {
+  transform: scale(1.08) rotate(-1deg);
+  text-shadow:
+    2px 2px 0 #ff6f61,
+    -2px -2px 0 #6fbfff,
+    1px 2px 0 #fff;
+  cursor: pointer;
+}
+
+/* Scribble shadow animation for pen movement */
 @keyframes scribble-shadow {
-  0% { text-shadow: 1px 1px 0 #fff, -1px -1px 0 #ccc, 2px 1px 0 #eee, 1px -2px 0 #aaa; }
-  25% { text-shadow: 2px 0 0 #fff, -1px 1px 0 #ccc, 1px 2px 0 #eee, 0 -1px 0 #aaa; }
-  50% { text-shadow: 1px -1px 0 #fff, -2px 2px 0 #ccc, 2px -1px 0 #eee, 1px 1px 0 #aaa; }
+  0% { text-shadow: 2px 2px 0 #fff, -2px -2px 0 #ccc, 1px 2px 0 #eee, 2px -1px 0 #aaa; }
+  25% { text-shadow: 3px 0 0 #fff, -1px 2px 0 #ccc, 2px 1px 0 #eee, 0 -1px 0 #aaa; }
+  50% { text-shadow: 2px -2px 0 #fff, -2px 2px 0 #ccc, 2px -1px 0 #eee, 1px 1px 0 #aaa; }
   75% { text-shadow: 0 1px 0 #fff, 1px -2px 0 #ccc, -1px 1px 0 #eee, 2px 0 0 #aaa; }
-  100% { text-shadow: 1px 1px 0 #fff, -1px -1px 0 #ccc, 2px 1px 0 #eee, 1px -2px 0 #aaa; }
+  100% { text-shadow: 2px 2px 0 #fff, -2px -2px 0 #ccc, 1px 2px 0 #eee, 2px -1px 0 #aaa; }
 }
 
 /* =========================
    HERO TEXT
 ========================= */
 .hero-text h1 {
-  font-size: 6rem; /* huge for readability */
+  font-size: 6rem;
   margin-bottom: 1rem;
 }
 
@@ -82,7 +95,7 @@ body, html {
    HEADINGS
 ========================= */
 h2 {
-  font-size: 4rem; /* larger headings */
+  font-size: 4rem;
   margin-bottom: 1.5rem;
 }
 
