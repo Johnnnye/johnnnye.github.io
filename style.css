@@ -8,19 +8,19 @@
 }
 
 body, html {
-  font-family: "Indie Flower", cursive;
+  font-family: "Rock Salt", cursive; /* bold scribble style font */
   height: 100%;
   background: #fff;
-  color: #222;
+  color: #111;
   line-height: 1.7;
-  text-transform: uppercase; /* All caps */
+  text-transform: uppercase; /* all caps */
 }
 
 /* =========================
    FULL-PAGE BACKGROUND
 ========================= */
 .full-bg {
-  background-image: url('images/hero-bg.jpg'); /* scribble BW image */
+  background-image: url('images/hero-bg.jpg'); /* full-page scribble BW image */
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -35,6 +35,7 @@ body, html {
 .centered {
   text-align: center;
   margin: 3rem auto;
+  max-width: 1000px;
 }
 
 /* =========================
@@ -42,7 +43,6 @@ body, html {
 ========================= */
 .scribble-text h1,
 .scribble-text h2,
-.scribble-text h3,
 .scribble-text p {
   position: relative;
   display: inline-block;
@@ -54,9 +54,10 @@ body, html {
     2px 1px 0 #eee,
     1px -2px 0 #aaa;
   animation: scribble-shadow 3s infinite alternate;
+  font-size: 2rem; /* default for body text, bigger headings below */
 }
 
-/* Scribble shadow movement animation */
+/* Scribble shadow animation for ink movement */
 @keyframes scribble-shadow {
   0% { text-shadow: 1px 1px 0 #fff, -1px -1px 0 #ccc, 2px 1px 0 #eee, 1px -2px 0 #aaa; }
   25% { text-shadow: 2px 0 0 #fff, -1px 1px 0 #ccc, 1px 2px 0 #eee, 0 -1px 0 #aaa; }
@@ -69,69 +70,20 @@ body, html {
    HERO TEXT
 ========================= */
 .hero-text h1 {
-  font-family: "Permanent Marker", cursive;
-  font-size: 5rem; /* larger for readability */
-  margin-bottom: 0.5rem;
+  font-size: 6rem; /* huge for readability */
+  margin-bottom: 1rem;
 }
 
 .hero-text p {
-  font-size: 2rem; /* larger body text */
-  font-style: italic;
+  font-size: 3rem;
 }
 
 /* =========================
    HEADINGS
 ========================= */
 h2 {
-  font-family: "Permanent Marker", cursive;
-  font-size: 3rem; /* bigger headings */
+  font-size: 4rem; /* larger headings */
   margin-bottom: 1.5rem;
-}
-
-/* =========================
-   PROJECT GRID
-========================= */
-.projects {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-/* =========================
-   PROJECT CARDS
-========================= */
-.project-card {
-  display: block;
-  text-decoration: none;
-  color: #111;
-  cursor: pointer;
-  transition: transform 0.25s ease, filter 0.25s ease;
-}
-
-.project-card:hover {
-  transform: translateY(-10px);
-  filter: brightness(1.1);
-}
-
-.project-thumb {
-  width: 100%;
-  border-radius: 12px;
-  margin-bottom: 1rem;
-  object-fit: cover;
-  height: 200px; /* slightly taller for visibility */
-}
-
-.project-card h3 {
-  font-family: "Permanent Marker", cursive;
-  font-size: 2rem; /* bigger project titles */
-  margin-bottom: 0.5rem;
-}
-
-.project-card p {
-  font-family: "Indie Flower", cursive;
-  font-size: 1.4rem; /* bigger for readability */
-  font-style: normal;
 }
 
 /* =========================
@@ -151,5 +103,5 @@ a:hover {
 ========================= */
 footer {
   margin-top: 3rem;
-  font-size: 1.2rem;
+  font-size: 2rem;
 }
