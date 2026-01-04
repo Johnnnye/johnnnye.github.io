@@ -8,7 +8,7 @@
 }
 
 body, html {
-  font-family: "Fredericka the Great", cursive;
+  font-family: "Permanent Marker", cursive;
   height: 100%;
   background: #fff;
   color: #111;
@@ -19,7 +19,7 @@ body, html {
    FULL-PAGE BACKGROUND
 ========================= */
 .full-bg {
-  background-image: url('images/hero-bg.jpg'); /* full-page scribble BW image */
+  background-image: url('images/hero-bg.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -43,13 +43,13 @@ body, html {
 .hero-text h1,
 .hero-text p {
   text-transform: uppercase;
-  font-size: 6rem; /* h1 */
+  font-size: 6rem;
   margin-bottom: 1rem;
   animation: scribble-shadow 3s infinite alternate;
 }
 
 .hero-text p {
-  font-size: 3rem; /* subtitle */
+  font-size: 3rem;
 }
 
 /* =========================
@@ -62,11 +62,17 @@ h2 {
 }
 
 /* =========================
-   BODY TEXT / HOVER ANIMATION
+   BODY TEXT NORMAL
+========================= */
+p {
+  font-size: 2rem;
+  text-transform: lowercase;
+}
+
+/* =========================
+   HOVERABLE LINKS ONLY
 ========================= */
 .hoverable {
-  text-transform: lowercase;
-  font-size: 2rem;
   display: inline-block;
   transition: all 0.3s ease;
 }
