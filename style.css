@@ -1,8 +1,6 @@
-.project-card {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-}
+/* =========================
+   GLOBAL STYLES
+========================= */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -16,7 +14,9 @@ body {
   line-height: 1.7;
 }
 
-/* HERO */
+/* =========================
+   HERO
+========================= */
 .hero {
   padding: 6rem 1.5rem 5rem;
   text-align: center;
@@ -34,7 +34,9 @@ body {
   color: #9aa0b3;
 }
 
-/* LAYOUT */
+/* =========================
+   LAYOUT
+========================= */
 main {
   max-width: 1000px;
   margin: 0 auto;
@@ -51,6 +53,9 @@ section {
   margin: 0 auto 5rem;
 }
 
+/* =========================
+   HEADINGS
+========================= */
 h2 {
   font-size: 1.7rem;
   margin-bottom: 2rem;
@@ -69,15 +74,23 @@ h2::after {
   transform: translateX(-50%);
 }
 
-/* PROJECT GRID */
+/* =========================
+   PROJECT GRID
+========================= */
 .projects {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 2rem;
 }
 
-/* PROJECT CARDS */
+/* =========================
+   PROJECT CARDS
+========================= */
 .project-card {
+  display: block; /* makes the card a clickable link */
+  text-decoration: none; /* remove underline */
+  color: inherit; /* keep text color */
+  cursor: pointer; /* 🟢 optional pointer */
   padding: 2.2rem;
   border-radius: 18px;
   border: 1px solid rgba(255,255,255,0.12);
@@ -86,19 +99,21 @@ h2::after {
   transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
 }
 
-.project-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-  border-color: rgba(255,255,255,0.35);
-}
-
 .project-card h3 {
   margin-bottom: 0.6rem;
   font-size: 1.3rem;
   font-weight: 600;
 }
 
-/* LINKS */
+.project-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  border-color: rgba(255,255,255,0.35);
+}
+
+/* =========================
+   LINKS
+========================= */
 a {
   color: #ff6a2b;
   text-decoration: none;
@@ -108,7 +123,9 @@ a:hover {
   text-decoration: underline;
 }
 
-/* FOOTER */
+/* =========================
+   FOOTER
+========================= */
 footer {
   text-align: center;
   padding: 3rem 1.5rem;
