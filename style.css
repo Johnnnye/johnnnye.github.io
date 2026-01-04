@@ -1,75 +1,155 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>John Emslie – Sound Designer & Composer</title>
+/* =========================
+   GLOBAL STYLES
+========================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+body, html {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  height: 100%;
+  background: #f9f9f9;
+  color: #1a1a1a;
+  line-height: 1.7;
+}
 
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css" />
-</head>
+/* =========================
+   FULL-PAGE BACKGROUND
+========================= */
+.full-bg {
+  background-image: url('images/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  width: 100%;
+  min-height: 100%;
+  padding: 3rem 1.5rem;
+}
 
-<body>
+/* =========================
+   OVERLAY FOR TEXT SECTIONS
+========================= */
+.text-overlay {
+  background: rgba(255,255,255,0.85);
+  margin: 3rem auto;
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 1000px;
+}
 
-<main class="full-bg">
+.hero-text {
+  text-align: center;
+  margin: 0 auto 4rem;
+  background: rgba(255,255,255,0.7);
+  padding: 2rem;
+  border-radius: 16px;
+}
 
-  <section class="centered hero-text">
-    <h1>John Emslie</h1>
-    <p>Sound Designer & Composer</p>
-  </section>
+.hero-text h1 {
+  font-family: "Orbitron", sans-serif;
+  font-size: 3.6rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
 
-  <section class="centered text-overlay">
-    <h2>About</h2>
-    <p>
-      Sound designer and composer working across interactive and linear media,
-      with a focus on texture, space, and emotional clarity.
-    </p>
-  </section>
+.hero-text p {
+  font-size: 1.4rem;
+  font-style: italic;
+  color: #333;
+}
 
-  <section class="text-overlay">
-    <h2>Audio Projects</h2>
-    <div class="projects">
-      <a href="thoughts-out.html" class="project-card">
-        <img src="images/thoughts-out-thumb.jpg" alt="Thoughts Out!" class="project-thumb">
-        <h3>Thoughts Out!</h3>
-        <p>Game or interactive audio design, music, and implementation.</p>
-      </a>
+/* =========================
+   HEADINGS
+========================= */
+h2 {
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.7rem;
+  margin-bottom: 2rem;
+  position: relative;
+  display: inline-block;
+}
 
-      <a href="piru.html" class="project-card">
-        <img src="images/piru-thumb.jpg" alt="Piru" class="project-thumb">
-        <h3>Piru</h3>
-        <p>Sound design and composition for interactive media.</p>
-      </a>
-    </div>
-  </section>
+h2::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  width: 50%;
+  height: 3px;
+  background: linear-gradient(90deg, #ff6a2b, #ff2b7a);
+  transform: translateX(-50%);
+}
 
-  <section class="text-overlay">
-    <h2>Video Projects</h2>
-    <div class="projects">
-      <a href="video-project.html" class="project-card">
-        <img src="images/video-project-thumb.jpg" alt="Video Project" class="project-thumb">
-        <h3>Video Project</h3>
-        <p>Sound-to-picture, trailers, and cinematic audio.</p>
-      </a>
-    </div>
-  </section>
+/* =========================
+   PROJECT GRID
+========================= */
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+}
 
-  <section class="centered text-overlay">
-    <h2>Contact</h2>
-    <p>
-      Email: <a href="mailto:your@email.com">your@email.com</a><br>
-      GitHub: <a href="https://github.com/johnnnye">github.com/johnnnye</a>
-    </p>
-  </section>
+/* =========================
+   PROJECT CARDS
+========================= */
+.project-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 1.5rem;
+  border-radius: 18px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
+}
 
-  <footer class="text-overlay">
-    © John Emslie
-  </footer>
+.project-thumb {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  object-fit: cover;
+  height: 160px;
+}
 
-</main>
+.project-card h3 {
+  margin-bottom: 0.6rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  font-family: "Orbitron", sans-serif;
+}
 
-</body>
-</html>
+.project-card p {
+  font-style: italic;
+  color: #555;
+}
+
+.project-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  border-color: rgba(0,0,0,0.25);
+}
+
+/* =========================
+   LINKS
+========================= */
+a {
+  color: #ff6a2b;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   FOOTER
+========================= */
+footer {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: #444;
+}
