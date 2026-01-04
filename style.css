@@ -32,7 +32,7 @@ body, html {
    OVERLAY FOR TEXT SECTIONS
 ========================= */
 .text-overlay {
-  background: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.45); /* more transparent */
   margin: 3rem auto;
   padding: 2rem;
   border-radius: 16px;
@@ -42,13 +42,13 @@ body, html {
 .hero-text {
   text-align: center;
   margin: 0 auto 4rem;
-  background: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.4); /* more transparent */
   padding: 2rem;
   border-radius: 16px;
 }
 
 .hero-text h1 {
-  font-family: "Orbitron", sans-serif;
+  font-family: "Permanent Marker", cursive;
   font-size: 3.6rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
@@ -64,7 +64,7 @@ body, html {
    HEADINGS
 ========================= */
 h2 {
-  font-family: "Orbitron", sans-serif;
+  font-family: "Permanent Marker", cursive;
   font-size: 1.7rem;
   margin-bottom: 2rem;
   position: relative;
@@ -80,6 +80,13 @@ h2::after {
   height: 3px;
   background: linear-gradient(90deg, #ff6a2b, #ff2b7a);
   transform: translateX(-50%);
+}
+
+.project-card h3 {
+  font-family: "Permanent Marker", cursive;
+  margin-bottom: 0.6rem;
+  font-size: 1.3rem;
+  font-weight: 700;
 }
 
 /* =========================
@@ -113,13 +120,6 @@ h2::after {
   margin-bottom: 1rem;
   object-fit: cover;
   height: 160px;
-}
-
-.project-card h3 {
-  margin-bottom: 0.6rem;
-  font-size: 1.3rem;
-  font-weight: 700;
-  font-family: "Orbitron", sans-serif;
 }
 
 .project-card p {
