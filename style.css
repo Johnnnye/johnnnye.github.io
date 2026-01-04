@@ -8,7 +8,7 @@
 }
 
 body, html {
-  font-family: "Caveat Brush", cursive;
+  font-family: "Fredericka the Great", cursive;
   height: 100%;
   background: #fff;
   color: #111;
@@ -38,46 +38,22 @@ body, html {
 }
 
 /* =========================
-   SCRIBBLE TEXT
+   HERO TEXT ALWAYS ANIMATED
 ========================= */
-.scribble-text h1,
-.scribble-text h2,
-.scribble-text h3,
-.scribble-text p,
-.scribble-text footer {
-  position: relative;
-  display: inline-block;
-  font-weight: bold;
-  color: #111;
-  text-shadow:
-    2px 2px 0 #fff,
-    -2px -2px 0 #ccc,
-    1px 2px 0 #eee,
-    2px -1px 0 #aaa;
-  font-size: 2.5rem;
-  transition: all 0.3s ease;
-}
-
-/* =========================
-   HERO SECTION ALWAYS ANIMATED
-========================= */
-.always-animate h1,
-.always-animate p {
-  animation: scribble-shadow 3s infinite alternate;
+.hero-text h1,
+.hero-text p {
   text-transform: uppercase;
-}
-
-.hero-text h1 {
-  font-size: 6rem;
+  font-size: 6rem; /* h1 */
   margin-bottom: 1rem;
+  animation: scribble-shadow 3s infinite alternate;
 }
 
 .hero-text p {
-  font-size: 3rem;
+  font-size: 3rem; /* subtitle */
 }
 
 /* =========================
-   OTHER HEADINGS
+   HEADINGS
 ========================= */
 h2 {
   font-size: 4rem;
@@ -86,8 +62,15 @@ h2 {
 }
 
 /* =========================
-   HOVER ANIMATION ONLY
+   BODY TEXT / HOVER ANIMATION
 ========================= */
+.hoverable {
+  text-transform: lowercase;
+  font-size: 2rem;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
 .hoverable:hover {
   animation: scribble-shadow 3s infinite alternate;
   transform: scale(1.08) rotate(-1deg);
@@ -125,6 +108,6 @@ a:hover {
    FOOTER
 ========================= */
 footer {
-  margin-top: 3rem;
   font-size: 2rem;
+  margin-top: 3rem;
 }
