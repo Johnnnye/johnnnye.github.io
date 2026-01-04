@@ -13,13 +13,14 @@ body, html {
   background: #fff;
   color: #222;
   line-height: 1.7;
+  text-transform: uppercase; /* All caps */
 }
 
 /* =========================
    FULL-PAGE BACKGROUND
 ========================= */
 .full-bg {
-  background-image: url('images/hero-bg.jpg'); /* your scribble BW image */
+  background-image: url('images/hero-bg.jpg'); /* scribble BW image */
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -55,6 +56,7 @@ body, html {
   animation: scribble-shadow 3s infinite alternate;
 }
 
+/* Scribble shadow movement animation */
 @keyframes scribble-shadow {
   0% { text-shadow: 1px 1px 0 #fff, -1px -1px 0 #ccc, 2px 1px 0 #eee, 1px -2px 0 #aaa; }
   25% { text-shadow: 2px 0 0 #fff, -1px 1px 0 #ccc, 1px 2px 0 #eee, 0 -1px 0 #aaa; }
@@ -68,12 +70,12 @@ body, html {
 ========================= */
 .hero-text h1 {
   font-family: "Permanent Marker", cursive;
-  font-size: 3.6rem;
+  font-size: 5rem; /* larger for readability */
   margin-bottom: 0.5rem;
 }
 
 .hero-text p {
-  font-size: 1.4rem;
+  font-size: 2rem; /* larger body text */
   font-style: italic;
 }
 
@@ -82,7 +84,7 @@ body, html {
 ========================= */
 h2 {
   font-family: "Permanent Marker", cursive;
-  font-size: 2rem;
+  font-size: 3rem; /* bigger headings */
   margin-bottom: 1.5rem;
 }
 
@@ -91,7 +93,7 @@ h2 {
 ========================= */
 .projects {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   margin-bottom: 2rem;
 }
@@ -117,7 +119,19 @@ h2 {
   border-radius: 12px;
   margin-bottom: 1rem;
   object-fit: cover;
-  height: 160px;
+  height: 200px; /* slightly taller for visibility */
+}
+
+.project-card h3 {
+  font-family: "Permanent Marker", cursive;
+  font-size: 2rem; /* bigger project titles */
+  margin-bottom: 0.5rem;
+}
+
+.project-card p {
+  font-family: "Indie Flower", cursive;
+  font-size: 1.4rem; /* bigger for readability */
+  font-style: normal;
 }
 
 /* =========================
@@ -137,5 +151,5 @@ a:hover {
 ========================= */
 footer {
   margin-top: 3rem;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
 }
