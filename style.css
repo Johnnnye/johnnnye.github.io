@@ -8,7 +8,7 @@
 }
 
 body, html {
-  font-family: "Permanent Marker", cursive;
+  font-family: "Rock Salt", cursive;
   height: 100%;
   background: #fff;
   color: #111;
@@ -45,7 +45,13 @@ body, html {
   text-transform: uppercase;
   font-size: 6rem;
   margin-bottom: 1rem;
-  animation: scribble-shadow 3s infinite alternate;
+  animation: scribble-pen 2s infinite alternate;
+  color: #111;
+  text-shadow:
+    2px 2px 0 #fff,
+    -2px -2px 0 #ccc,
+    1px 2px 0 #eee,
+    2px -1px 0 #aaa;
 }
 
 .hero-text p {
@@ -59,18 +65,29 @@ h2 {
   font-size: 4rem;
   margin-bottom: 1.5rem;
   text-transform: uppercase;
+  color: #111;
+  text-shadow:
+    2px 2px 0 #fff,
+    -2px -2px 0 #ccc,
+    1px 2px 0 #eee,
+    2px -1px 0 #aaa;
 }
 
 /* =========================
-   BODY TEXT NORMAL
+   BODY TEXT
 ========================= */
 p {
   font-size: 2rem;
   text-transform: lowercase;
+  color: #111;
+  text-shadow:
+    1px 1px 0 #fff,
+    -1px -1px 0 #ccc,
+    1px -1px 0 #eee;
 }
 
 /* =========================
-   HOVERABLE LINKS ONLY
+   HOVERABLE LINKS ANIMATION
 ========================= */
 .hoverable {
   display: inline-block;
@@ -78,7 +95,7 @@ p {
 }
 
 .hoverable:hover {
-  animation: scribble-shadow 3s infinite alternate;
+  animation: scribble-pen 2s infinite alternate;
   transform: scale(1.08) rotate(-1deg);
   text-shadow:
     2px 2px 0 #ff6f61,
@@ -88,13 +105,19 @@ p {
 }
 
 /* =========================
-   SCRIBBLE SHADOW ANIMATION
+   SCRIBBLE PEN ANIMATION
 ========================= */
-@keyframes scribble-shadow {
-  0% { text-shadow: 2px 2px 0 #fff, -2px -2px 0 #ccc, 1px 2px 0 #eee, 2px -1px 0 #aaa; }
-  25% { text-shadow: 3px 0 0 #fff, -1px 2px 0 #ccc, 2px 1px 0 #eee, 0 -1px 0 #aaa; }
-  50% { text-shadow: 2px -2px 0 #fff, -2px 2px 0 #ccc, 2px -1px 0 #eee, 1px 1px 0 #aaa; }
-  75% { text-shadow: 0 1px 0 #fff, 1px -2px 0 #ccc, -1px 1px 0 #eee, 2px 0 0 #aaa; }
+@keyframes scribble-pen {
+  0%   { text-shadow: 2px 2px 0 #fff, -2px -2px 0 #ccc, 1px 2px 0 #eee, 2px -1px 0 #aaa; }
+  10%  { text-shadow: 3px 1px 0 #fff, -1px -2px 0 #ccc, 2px 1px 0 #eee, 1px -2px 0 #aaa; }
+  20%  { text-shadow: 1px 3px 0 #fff, -2px -1px 0 #ccc, 1px 2px 0 #eee, 2px -1px 0 #aaa; }
+  30%  { text-shadow: 2px 1px 0 #fff, -1px -1px 0 #ccc, 1px 1px 0 #eee, 1px -2px 0 #aaa; }
+  40%  { text-shadow: 3px 2px 0 #fff, -2px -1px 0 #ccc, 2px 1px 0 #eee, 1px -1px 0 #aaa; }
+  50%  { text-shadow: 2px 2px 0 #fff, -2px -2px 0 #ccc, 1px 2px 0 #eee, 2px -1px 0 #aaa; }
+  60%  { text-shadow: 1px 3px 0 #fff, -1px -2px 0 #ccc, 1px 1px 0 #eee, 2px -2px 0 #aaa; }
+  70%  { text-shadow: 2px 1px 0 #fff, -2px -1px 0 #ccc, 2px 2px 0 #eee, 1px -1px 0 #aaa; }
+  80%  { text-shadow: 3px 2px 0 #fff, -1px -2px 0 #ccc, 1px 1px 0 #eee, 2px -1px 0 #aaa; }
+  90%  { text-shadow: 2px 2px 0 #fff, -2px -1px 0 #ccc, 1px 2px 0 #eee, 2px -1px 0 #aaa; }
   100% { text-shadow: 2px 2px 0 #fff, -2px -2px 0 #ccc, 1px 2px 0 #eee, 2px -1px 0 #aaa; }
 }
 
