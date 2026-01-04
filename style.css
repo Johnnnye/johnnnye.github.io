@@ -8,7 +8,8 @@
 /* ===== BASE ===== */
 html, body {
   height: 100%;
-  font-family: "Rubik Marker Hatch", cursive;
+  font-family: "Kalam", cursive;
+  font-weight: 700;
   color: #111;
 }
 
@@ -29,7 +30,7 @@ section {
 /* ===== HERO ===== */
 .hero h1 {
   font-size: 5.5rem;
-  letter-spacing: 0.12rem;
+  letter-spacing: 0.1rem;
   animation: heroScribble 2.5s infinite alternate;
 }
 
