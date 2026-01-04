@@ -8,7 +8,7 @@
 }
 
 body {
-  font-family: "Syne", system-ui, sans-serif;
+  font-family: "Space Grotesk", system-ui, sans-serif;
   background: #0f1115;
   color: #eaeaf0;
   line-height: 1.7;
@@ -87,9 +87,9 @@ h2::after {
    PROJECT CARDS
 ========================= */
 .project-card {
-  display: block; /* makes the card a clickable link */
-  text-decoration: none; /* remove underline */
-  color: inherit; /* keep text color */
+  display: block; /* clickable link */
+  text-decoration: none;
+  color: inherit;
   cursor: pointer; /* 🟢 optional pointer */
   padding: 2.2rem;
   border-radius: 18px;
