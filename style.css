@@ -8,8 +8,7 @@
 /* ===== BASE ===== */
 html, body {
   height: 100%;
-  font-family: "Kalam", cursive;
-  font-weight: 700;
+  font-family: "Rubik Dirt", system-ui, sans-serif;
   color: #111;
 }
 
@@ -27,22 +26,22 @@ section {
   text-align: center;
 }
 
-/* ===== HERO ===== */
+/* ===== HERO (ALWAYS ANIMATED) ===== */
 .hero h1 {
   font-size: 5.5rem;
-  letter-spacing: 0.1rem;
-  animation: heroScribble 2.5s infinite alternate;
+  letter-spacing: 0.25rem;
+  animation: heroShard 2.5s infinite alternate;
 }
 
 .hero-sub {
-  font-size: 2.5rem;
+  font-size: 2.4rem;
   margin-top: 1rem;
-  animation: heroScribble 2.5s infinite alternate;
+  animation: heroShard 2.5s infinite alternate;
 }
 
 /* ===== HEADINGS ===== */
 h2 {
-  font-size: 3.5rem;
+  font-size: 3.4rem;
   margin-bottom: 1.5rem;
   text-transform: uppercase;
 }
@@ -53,7 +52,7 @@ p {
   margin-bottom: 1rem;
 }
 
-/* ===== UNIVERSAL OUTLINE (READABILITY) ===== */
+/* ===== READABILITY OUTLINE ===== */
 h1, h2, p, a {
   text-shadow:
     2px 2px 0 #fff,
@@ -67,17 +66,16 @@ a {
   color: #111;
   text-decoration: none;
   display: inline-block;
-  transition: transform 0.2s ease;
 }
 
 a:hover {
-  animation: scribbleHover 0.8s infinite alternate;
-  transform: scale(1.07) rotate(-1deg);
+  animation: linkShard 0.6s infinite alternate;
+  transform: scale(1.08) rotate(-1deg);
   cursor: pointer;
 }
 
-/* ===== HERO USES SAME COLORS AS LINK HOVER ===== */
-@keyframes heroScribble {
+/* ===== HERO SHARD MOTION ===== */
+@keyframes heroShard {
   0% {
     text-shadow:
       2px 2px 0 #ff6f61,
@@ -86,14 +84,14 @@ a:hover {
   }
   100% {
     text-shadow:
-      3px 0 0 #ff6f61,
-     -3px -1px 0 #6fbfff,
+      5px 1px 0 #ff6f61,
+     -4px -2px 0 #6fbfff,
       2px 2px 0 #fff;
   }
 }
 
-/* ===== LINK HOVER SCRIBBLE ===== */
-@keyframes scribbleHover {
+/* ===== LINK SHARD FLICKER ===== */
+@keyframes linkShard {
   0% {
     text-shadow:
       2px 2px 0 #ff6f61,
@@ -102,8 +100,8 @@ a:hover {
   }
   100% {
     text-shadow:
-      3px 0 0 #ff6f61,
-     -3px -1px 0 #6fbfff,
+      4px 0 0 #ff6f61,
+     -4px -1px 0 #6fbfff,
       2px 2px 0 #fff;
   }
 }
