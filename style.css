@@ -8,18 +8,19 @@
 }
 
 body, html {
-  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-family: "Indie Flower", cursive; /* playful, hand-drawn */
   height: 100%;
-  background: #f9f9f9;
-  color: #1a1a1a;
+  background: #fff;
+  color: #222; /* works on black-and-white background */
   line-height: 1.7;
+  text-shadow: 1px 1px 2px rgba(255,255,255,0.7); /* subtle outline for readability */
 }
 
 /* =========================
    FULL-PAGE BACKGROUND
 ========================= */
 .full-bg {
-  background-image: url('images/hero-bg.jpg');
+  background-image: url('images/hero-bg.jpg'); /* your scribble BW image */
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -29,35 +30,30 @@ body, html {
 }
 
 /* =========================
-   OVERLAY FOR TEXT SECTIONS
+   CENTERING CONTENT
 ========================= */
-.text-overlay {
-  background: rgba(255,255,255,0.45); /* more transparent */
-  margin: 3rem auto;
-  padding: 2rem;
-  border-radius: 16px;
-  max-width: 1000px;
-}
-
-.hero-text {
+.centered {
   text-align: center;
-  margin: 0 auto 4rem;
-  background: rgba(255,255,255,0.4); /* more transparent */
-  padding: 2rem;
-  border-radius: 16px;
+  margin: 3rem auto;
 }
 
+/* =========================
+   HERO TEXT
+========================= */
 .hero-text h1 {
-  font-family: "Permanent Marker", cursive;
+  font-family: "Permanent Marker", cursive; /* bolder scribble font */
   font-size: 3.6rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
+  color: #111; /* dark gray */
+  text-shadow: 2px 2px 4px rgba(255,255,255,0.8); /* subtle outline for contrast */
 }
 
 .hero-text p {
   font-size: 1.4rem;
   font-style: italic;
-  color: #333;
+  color: #222;
+  text-shadow: 1px 1px 3px rgba(255,255,255,0.7);
 }
 
 /* =========================
@@ -65,28 +61,10 @@ body, html {
 ========================= */
 h2 {
   font-family: "Permanent Marker", cursive;
-  font-size: 1.7rem;
-  margin-bottom: 2rem;
-  position: relative;
-  display: inline-block;
-}
-
-h2::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -8px;
-  width: 50%;
-  height: 3px;
-  background: linear-gradient(90deg, #ff6a2b, #ff2b7a);
-  transform: translateX(-50%);
-}
-
-.project-card h3 {
-  font-family: "Permanent Marker", cursive;
-  margin-bottom: 0.6rem;
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #111;
+  text-shadow: 1px 1px 3px rgba(255,255,255,0.7);
 }
 
 /* =========================
@@ -96,6 +74,7 @@ h2::after {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 /* =========================
@@ -104,14 +83,14 @@ h2::after {
 .project-card {
   display: block;
   text-decoration: none;
-  color: inherit;
+  color: #111;
   cursor: pointer;
-  padding: 1.5rem;
-  border-radius: 18px;
-  border: 1px solid rgba(0,0,0,0.12);
-  background: #ffffff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-10px);
+  filter: brightness(1.1);
 }
 
 .project-thumb {
@@ -122,34 +101,36 @@ h2::after {
   height: 160px;
 }
 
-.project-card p {
-  font-style: italic;
-  color: #555;
+.project-card h3 {
+  font-family: "Permanent Marker", cursive;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
 }
 
-.project-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-  border-color: rgba(0,0,0,0.25);
+.project-card p {
+  font-family: "Indie Flower", cursive;
+  font-size: 1rem;
+  font-style: normal;
 }
 
 /* =========================
    LINKS
 ========================= */
 a {
-  color: #ff6a2b;
-  text-decoration: none;
+  color: #111;
+  text-decoration: underline;
 }
 
 a:hover {
-  text-decoration: underline;
+  color: #555;
 }
 
 /* =========================
    FOOTER
 ========================= */
 footer {
-  text-align: center;
-  padding: 3rem 1.5rem;
-  color: #444;
+  margin-top: 3rem;
+  font-size: 0.9rem;
+  color: #222;
+  text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
 }
