@@ -5,14 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>John Emslie – Sound Designer & Composer</title>
 
-  <!-- Calm, human sans-serif -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<main class="container">
+<main class="container" id="app">
 
   <!-- HERO -->
   <section class="hero">
@@ -22,32 +20,24 @@
 
   <!-- CATEGORY FIELD -->
   <section class="categories">
-    <!-- Picture -->
-    <div class="node" style="top:32%; left:30%;">
-      <span class="dot"></span>
-      <span class="label">Picture</span>
+    <div class="node" data-tone="220" style="top:32%; left:30%;">
+      <span class="dot"></span><span class="label">Picture</span>
     </div>
 
-    <!-- Music -->
-    <div class="node" style="top:50%; left:62%;">
-      <span class="dot"></span>
-      <span class="label">Music</span>
+    <div class="node" data-tone="174" style="top:50%; left:62%;">
+      <span class="dot"></span><span class="label">Music</span>
     </div>
 
-    <!-- Redesigns -->
-    <div class="node" style="top:68%; left:40%;">
-      <span class="dot"></span>
-      <span class="label">Redesigns</span>
+    <div class="node" data-tone="196" style="top:68%; left:40%;">
+      <span class="dot"></span><span class="label">Redesigns</span>
     </div>
 
-    <!-- Games -->
-    <div class="node" style="top:78%; left:58%;">
-      <span class="dot"></span>
-      <span class="label">Games</span>
+    <div class="node" data-tone="146" style="top:78%; left:58%;">
+      <span class="dot"></span><span class="label">Games</span>
     </div>
   </section>
 
-  <!-- CONTACT (QUIET) -->
+  <!-- CONTACT -->
   <footer class="contact">
     <span>Contact</span><br>
     <a href="mailto:john@youremail.com">john@youremail.com</a>
@@ -61,7 +51,6 @@
         My focus is on interaction, restraint, and emotional clarity
         across games, picture, and experimental work.
       </p>
-
       <button class="close" id="about-close">Close</button>
     </div>
   </div>
@@ -69,17 +58,105 @@
 </main>
 
 <script>
-  const trigger = document.getElementById("about-trigger");
-  const overlay = document.getElementById("about-overlay");
-  const closeBtn = document.getElementById("about-close");
+/* =========================
+   AUDIO ENGINE (CALM)
+========================= */
 
-  trigger.addEventListener("click", () => {
-    overlay.classList.remove("hidden");
+let audioCtx;
+let masterGain;
+let currentOsc = null;
+let currentGain = null;
+let audioStarted = false;
+
+function initAudio() {
+  if (audioStarted) return;
+
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.0;
+  masterGain.connect(audioCtx.destination);
+  audioStarted = true;
+
+  // gentle fade-in of system
+  masterGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 1.5);
+}
+
+function fadeToTone(freq) {
+  if (!audioStarted) return;
+
+  // fade out existing tone
+  if (currentGain) {
+    currentGain.gain.linearRampToValueAtTime(0.0, audioCtx.currentTime + 1);
+  }
+
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  const filter = audioCtx.createBiquadFilter();
+
+  osc.type = "sine";
+  osc.frequency.value = freq;
+
+  filter.type = "lowpass";
+  filter.frequency.value = 800;
+
+  gain.gain.value = 0.0;
+
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(masterGain);
+
+  osc.start();
+
+  gain.gain.linearRampToValueAtTime(0.25, audioCtx.currentTime + 1.2);
+
+  currentOsc = osc;
+  currentGain = gain;
+}
+
+function fadeOutTone() {
+  if (currentGain) {
+    currentGain.gain.linearRampToValueAtTime(0.0, audioCtx.currentTime + 1.5);
+    currentOsc.stop(audioCtx.currentTime + 2);
+    currentGain = null;
+    currentOsc = null;
+  }
+}
+
+/* =========================
+   INTERACTION HOOKS
+========================= */
+
+const app = document.getElementById("app");
+const nodes = document.querySelectorAll(".node");
+
+app.addEventListener("click", initAudio, { once: true });
+
+nodes.forEach(node => {
+  node.addEventListener("mouseenter", () => {
+    const freq = parseFloat(node.dataset.tone);
+    fadeToTone(freq);
   });
 
-  closeBtn.addEventListener("click", () => {
-    overlay.classList.add("hidden");
+  node.addEventListener("mouseleave", () => {
+    fadeOutTone();
   });
+});
+
+/* =========================
+   ABOUT OVERLAY
+========================= */
+
+const trigger = document.getElementById("about-trigger");
+const overlay = document.getElementById("about-overlay");
+const closeBtn = document.getElementById("about-close");
+
+trigger.addEventListener("click", () => {
+  overlay.classList.remove("hidden");
+});
+
+closeBtn.addEventListener("click", () => {
+  overlay.classList.add("hidden");
+});
 </script>
 
 </body>
