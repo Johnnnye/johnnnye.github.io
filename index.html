@@ -59,16 +59,16 @@
 
 <script>
 /* =========================
-   HARMONIC FIELD ENGINE
+   HARMONIC FIELD + TICKS
 ========================= */
 
 let ctx, master;
-let nodes = [];
-let wooshGain;
+let nodeVoices = [];
 let audioStarted = false;
 
 let lastX = 0;
-let lastTime = 0;
+let lastTime = performance.now();
+let tickCooldown = 0;
 
 function initAudio() {
   if (audioStarted) return;
@@ -79,7 +79,7 @@ function initAudio() {
   master.gain.value = 0.25;
   master.connect(ctx.destination);
 
-  /* ---- create node voices ---- */
+  /* ---- harmonic field ---- */
   document.querySelectorAll(".node").forEach(el => {
     const freq = parseFloat(el.dataset.note);
 
@@ -106,39 +106,41 @@ function initAudio() {
     osc.start();
     focusOsc.start();
 
-    nodes.push({ el, gain, focusGain, freq });
+    nodeVoices.push({ el, gain, focusGain });
   });
-
-  /* ---- woosh layer ---- */
-  const buffer = ctx.createBuffer(1, ctx.sampleRate * 1.5, ctx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < data.length; i++) {
-    data[i] = Math.random() * 2 - 1;
-  }
-
-  const noise = ctx.createBufferSource();
-  noise.buffer = buffer;
-  noise.loop = true;
-
-  const bandpass = ctx.createBiquadFilter();
-  bandpass.type = "bandpass";
-  bandpass.frequency.value = 1200;
-  bandpass.Q.value = 0.7;
-
-  wooshGain = ctx.createGain();
-  wooshGain.gain.value = 0;
-
-  noise.connect(bandpass);
-  bandpass.connect(wooshGain);
-  wooshGain.connect(master);
-
-  noise.start();
 
   audioStarted = true;
 }
 
 /* =========================
-   POSITION-BASED MIXING
+   HIGH-PITCHED MICRO TICKS
+========================= */
+
+function triggerTick(intensity) {
+  if (!audioStarted) return;
+
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = "sine";
+  osc.frequency.value = 4000 + Math.random() * 3000;
+
+  gain.gain.value = 0;
+
+  osc.connect(gain);
+  gain.connect(master);
+
+  const now = ctx.currentTime;
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.02 * intensity, now + 0.002);
+  gain.gain.linearRampToValueAtTime(0, now + 0.015);
+
+  osc.start(now);
+  osc.stop(now + 0.02);
+}
+
+/* =========================
+   MOUSE INTERACTION
 ========================= */
 
 document.addEventListener("mousemove", e => {
@@ -152,17 +154,11 @@ document.addEventListener("mousemove", e => {
   lastX = e.clientX;
   lastTime = now;
 
-  /* woosh reacts FAST */
-  wooshGain.gain.setTargetAtTime(
-    Math.min(velocity * 0.08, 0.06),
-    ctx.currentTime,
-    0.05
-  );
-
-  nodes.forEach(n => {
-    const rect = n.el.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
+  // harmonic blending
+  nodeVoices.forEach(n => {
+    const r = n.el.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
 
     const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
     const influence = Math.max(0, 1 - dist / 350);
@@ -170,38 +166,35 @@ document.addEventListener("mousemove", e => {
     n.gain.gain.setTargetAtTime(
       influence * 0.08,
       ctx.currentTime,
-      0.3
+      0.25
     );
   });
+
+  // ticks (velocity-based, throttled)
+  tickCooldown -= dt;
+  if (velocity > 0.4 && tickCooldown <= 0) {
+    triggerTick(Math.min(velocity, 1));
+    tickCooldown = 40; // ms between ticks
+  }
 });
 
 /* =========================
    NODE FOCUS LAYER
 ========================= */
 
-nodes = [];
-
 document.getElementById("app").addEventListener("click", initAudio, { once: true });
 
 document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("mouseenter", () => {
-    const node = nodes.find(n => n.el === el);
-    if (!node) return;
-
-    node.focusGain.gain.linearRampToValueAtTime(
-      0.06,
-      ctx.currentTime + 0.6
-    );
+    const n = nodeVoices.find(v => v.el === el);
+    if (!n) return;
+    n.focusGain.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 0.5);
   });
 
   el.addEventListener("mouseleave", () => {
-    const node = nodes.find(n => n.el === el);
-    if (!node) return;
-
-    node.focusGain.gain.linearRampToValueAtTime(
-      0,
-      ctx.currentTime + 1.5
-    );
+    const n = nodeVoices.find(v => v.el === el);
+    if (!n) return;
+    n.focusGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5);
   });
 });
 
