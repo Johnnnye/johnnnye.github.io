@@ -69,18 +69,8 @@ let contactOsc, contactGain;
 
 const titleEl = document.getElementById("about-trigger");
 
-/* tuning */
-const BREATH_LAG = 0.1;     // 10% phase lag
-const INHALE_PORTION = 0.65;
-const MAX_BREATH_GAIN = 0.075;
-
-function ensureAudio() {
-  if (!ctx) initAudio();
-  if (ctx.state === "suspended") ctx.resume();
-}
-
 function initAudio() {
-  if (audioStarted) return;
+  if (ctx) return;
 
   ctx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -147,7 +137,7 @@ function initAudio() {
 }
 
 /* =========================
-   BREATH — LAGGED + ASYMMETRIC
+   BREATH — SIMPLE & REAL
 ========================= */
 
 function initBreath() {
@@ -161,11 +151,11 @@ function initBreath() {
 
   breathFilter = ctx.createBiquadFilter();
   breathFilter.type = "bandpass";
-  breathFilter.frequency.value = 700;
-  breathFilter.Q.value = 0.5;
+  breathFilter.frequency.value = 650;
+  breathFilter.Q.value = 0.6;
 
   breathGain = ctx.createGain();
-  breathGain.gain.value = 0;
+  breathGain.gain.value = 0; // start silent
 
   breathNoise.connect(breathFilter);
   breathFilter.connect(breathGain);
@@ -177,30 +167,25 @@ function initBreath() {
   breathDuration = parseFloat(styles.animationDuration || "8") * 1000;
 
   breathStartTime = performance.now();
+
+  // fade in automatically after load
+  setTimeout(() => {
+    breathGain.gain.setTargetAtTime(0.07, ctx.currentTime, 2.5);
+  }, 300);
+
   requestAnimationFrame(breathLoop);
 }
 
 function breathLoop(now) {
   if (!audioStarted) return;
 
-  let phase =
-    ((now - breathStartTime) / breathDuration - BREATH_LAG) % 1;
-  if (phase < 0) phase += 1;
+  const phase =
+    ((now - breathStartTime) % breathDuration) / breathDuration;
 
-  let amp = 0;
-
-  if (phase < INHALE_PORTION) {
-    // inhale: slow, rounded
-    const p = phase / INHALE_PORTION;
-    amp = Math.pow(Math.sin(p * Math.PI * 0.5), 1.2);
-  } else {
-    // exhale: faster, softer
-    const p = (phase - INHALE_PORTION) / (1 - INHALE_PORTION);
-    amp = Math.pow(Math.cos(p * Math.PI * 0.5), 2.2);
-  }
+  const amp = Math.sin(phase * Math.PI);
 
   breathGain.gain.setTargetAtTime(
-    amp * MAX_BREATH_GAIN,
+    amp * 0.07,
     ctx.currentTime,
     0.15
   );
@@ -232,7 +217,8 @@ function initContactTone() {
 ========================= */
 
 function softClick() {
-  ensureAudio();
+  if (!ctx) return;
+  if (ctx.state === "suspended") ctx.resume();
 
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
@@ -257,27 +243,29 @@ function softClick() {
    INTERACTION
 ========================= */
 
-document.getElementById("app").addEventListener("click", ensureAudio, { once: true });
+// initialise audio immediately (silent-safe)
+initAudio();
+
+// safety resume on first interaction
+document.body.addEventListener("click", () => {
+  if (ctx && ctx.state === "suspended") ctx.resume();
+}, { once: true });
 
 document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("mouseenter", () => {
     const v = voices.find(x => x.el === el);
     if (v) v.focusGain.gain.setTargetAtTime(0.045, ctx.currentTime, 1.2);
   });
-
   el.addEventListener("mouseleave", () => {
     const v = voices.find(x => x.el === el);
     if (v) v.focusGain.gain.setTargetAtTime(0, ctx.currentTime, 2.5);
   });
-
   el.addEventListener("click", softClick);
 });
 
 /* CONTACT */
 const email = document.getElementById("contact-email");
-
 email.addEventListener("mouseenter", () => {
-  ensureAudio();
   contactGain.gain.setTargetAtTime(0.035, ctx.currentTime, 1.5);
 });
 email.addEventListener("mouseleave", () => {
@@ -288,7 +276,6 @@ email.addEventListener("click", softClick);
 /* ABOUT */
 const overlay = document.getElementById("about-overlay");
 document.getElementById("about-trigger").addEventListener("click", () => {
-  ensureAudio();
   overlay.classList.remove("hidden");
   softClick();
 });
