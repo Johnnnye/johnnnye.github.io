@@ -12,13 +12,11 @@
 
 <main class="container" id="app">
 
-  <!-- HERO -->
   <section class="hero">
     <h1 id="about-trigger">John Emslie</h1>
     <p class="role">Sound Designer & Composer</p>
   </section>
 
-  <!-- CATEGORY FIELD -->
   <section class="categories">
     <div class="node" data-note="146.83" data-pan="-0.4" style="top:32%; left:30%;">
       <span class="dot"></span><span class="label">Picture</span>
@@ -34,13 +32,11 @@
     </div>
   </section>
 
-  <!-- CONTACT -->
   <footer class="contact">
     <span>Contact</span><br>
     <a href="mailto:john@youremail.com">john@youremail.com</a>
   </footer>
 
-  <!-- ABOUT OVERLAY -->
   <div class="overlay hidden" id="about-overlay">
     <div class="overlay-content">
       <p>
@@ -62,6 +58,10 @@
 let ctx, master, reverb;
 let voices = [];
 let audioStarted = false;
+
+let lastX = 0;
+let lastTime = performance.now();
+let scratchCooldown = 0;
 
 function ensureAudio() {
   if (!ctx) initAudio();
@@ -133,58 +133,99 @@ function initAudio() {
 }
 
 /* =========================
-   TOCK / THUD CLICK
+   BLENDED CLICK (75% OLD / 25% THUD)
 ========================= */
 
 function softClick() {
   ensureAudio();
-
   const now = ctx.currentTime;
 
-  /* LOW THUD BODY */
+  /* OLD CLICK CORE */
   const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
   osc.type = "sine";
-  osc.frequency.value = 90;
+  osc.frequency.value = 140;
 
-  const bodyGain = ctx.createGain();
-  bodyGain.gain.setValueAtTime(0, now);
-  bodyGain.gain.linearRampToValueAtTime(0.12, now + 0.01);
-  bodyGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.06, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
 
-  osc.connect(bodyGain);
-  bodyGain.connect(master);
-  bodyGain.connect(reverb);
+  osc.connect(gain);
+  gain.connect(master);
+  gain.connect(reverb);
 
   osc.start(now);
-  osc.stop(now + 0.4);
+  osc.stop(now + 0.7);
 
-  /* VERY SHORT ATTACK NOISE */
+  /* 25% LOW THUD */
+  const thudOsc = ctx.createOscillator();
+  const thudGain = ctx.createGain();
+
+  thudOsc.type = "sine";
+  thudOsc.frequency.value = 85;
+
+  thudGain.gain.setValueAtTime(0, now);
+  thudGain.gain.linearRampToValueAtTime(0.02, now + 0.015);
+  thudGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+
+  thudOsc.connect(thudGain);
+  thudGain.connect(master);
+  thudGain.connect(reverb);
+
+  thudOsc.start(now);
+  thudOsc.stop(now + 0.4);
+}
+
+/* =========================
+   SCRATCHY MOUSE MOVEMENT
+========================= */
+
+function triggerScratch(intensity) {
   const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.02, ctx.sampleRate);
   const data = buffer.getChannelData(0);
   for (let i = 0; i < data.length; i++) {
-    data[i] = Math.random() * 2 - 1;
+    data[i] = (Math.random() * 2 - 1);
   }
 
   const noise = ctx.createBufferSource();
   noise.buffer = buffer;
 
-  const noiseFilter = ctx.createBiquadFilter();
-  noiseFilter.type = "highpass";
-  noiseFilter.frequency.value = 1200;
+  const band = ctx.createBiquadFilter();
+  band.type = "bandpass";
+  band.frequency.value = 900 + Math.random() * 600;
+  band.Q.value = 1.2;
 
-  const noiseGain = ctx.createGain();
-  noiseGain.gain.value = 0.015;
+  const gain = ctx.createGain();
+  gain.gain.value = 0.015 * intensity;
 
-  noise.connect(noiseFilter);
-  noiseFilter.connect(noiseGain);
-  noiseGain.connect(master);
+  noise.connect(band);
+  band.connect(gain);
+  gain.connect(master);
 
-  noise.start(now);
-  noise.stop(now + 0.03);
+  noise.start();
+  noise.stop(ctx.currentTime + 0.025);
 }
 
+document.addEventListener("mousemove", e => {
+  if (!audioStarted) return;
+
+  const now = performance.now();
+  const dx = e.clientX - lastX;
+  const dt = now - lastTime || 16;
+
+  const velocity = Math.abs(dx / dt);
+  lastX = e.clientX;
+  lastTime = now;
+
+  scratchCooldown -= dt;
+  if (velocity > 0.35 && scratchCooldown <= 0) {
+    triggerScratch(Math.min(velocity, 1));
+    scratchCooldown = 50;
+  }
+});
+
 /* =========================
-   INTERACTION
+   NODE FOCUS
 ========================= */
 
 document.getElementById("app").addEventListener("click", ensureAudio, { once: true });
