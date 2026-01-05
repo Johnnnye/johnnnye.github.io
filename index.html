@@ -12,13 +12,11 @@
 
 <main class="container" id="app">
 
-  <!-- HERO -->
   <section class="hero">
     <h1 id="about-trigger">John Emslie</h1>
     <p class="role">Sound Designer & Composer</p>
   </section>
 
-  <!-- CATEGORY FIELD -->
   <section class="categories">
     <div class="node" data-note="146.83" data-pan="-0.4" style="top:32%; left:30%;">
       <span class="dot"></span><span class="label">Picture</span>
@@ -34,13 +32,11 @@
     </div>
   </section>
 
-  <!-- CONTACT -->
   <footer class="contact">
     <span>Contact</span><br>
     <a href="mailto:john@youremail.com" id="contact-email">john@youremail.com</a>
   </footer>
 
-  <!-- ABOUT OVERLAY -->
   <div class="overlay hidden" id="about-overlay">
     <div class="overlay-content">
       <p>
@@ -66,12 +62,17 @@ let audioStarted = false;
 /* breathing */
 let breathNoise, breathGain, breathFilter;
 let breathStartTime = null;
-let breathDuration = 8000; // fallback, will be read from CSS
+let breathDuration = 8000;
 
 /* contact fifth */
 let contactOsc, contactGain;
 
 const titleEl = document.getElementById("about-trigger");
+
+/* tuning */
+const BREATH_LAG = 0.1;     // 10% phase lag
+const INHALE_PORTION = 0.65;
+const MAX_BREATH_GAIN = 0.075;
 
 function ensureAudio() {
   if (!ctx) initAudio();
@@ -146,11 +147,10 @@ function initAudio() {
 }
 
 /* =========================
-   BREATHING — SYNCED TO CSS
+   BREATH — LAGGED + ASYMMETRIC
 ========================= */
 
 function initBreath() {
-  // noise source
   const buffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
   const data = buffer.getChannelData(0);
   for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
@@ -173,10 +173,8 @@ function initBreath() {
 
   breathNoise.start();
 
-  // read CSS animation duration
   const styles = getComputedStyle(titleEl);
-  const dur = styles.animationDuration || "8s";
-  breathDuration = parseFloat(dur) * 1000;
+  breathDuration = parseFloat(styles.animationDuration || "8") * 1000;
 
   breathStartTime = performance.now();
   requestAnimationFrame(breathLoop);
@@ -185,14 +183,26 @@ function initBreath() {
 function breathLoop(now) {
   if (!audioStarted) return;
 
-  const phase = ((now - breathStartTime) % breathDuration) / breathDuration;
-  const curve = Math.sin(phase * Math.PI); // inhale → exhale
+  let phase =
+    ((now - breathStartTime) / breathDuration - BREATH_LAG) % 1;
+  if (phase < 0) phase += 1;
 
-  // subtle but present
+  let amp = 0;
+
+  if (phase < INHALE_PORTION) {
+    // inhale: slow, rounded
+    const p = phase / INHALE_PORTION;
+    amp = Math.pow(Math.sin(p * Math.PI * 0.5), 1.2);
+  } else {
+    // exhale: faster, softer
+    const p = (phase - INHALE_PORTION) / (1 - INHALE_PORTION);
+    amp = Math.pow(Math.cos(p * Math.PI * 0.5), 2.2);
+  }
+
   breathGain.gain.setTargetAtTime(
-    curve * 0.075,
+    amp * MAX_BREATH_GAIN,
     ctx.currentTime,
-    0.1
+    0.15
   );
 
   requestAnimationFrame(breathLoop);
