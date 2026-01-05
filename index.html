@@ -59,11 +59,11 @@
 
 <script>
 /* =========================
-   HARMONIC FIELD + TICKS
+   HARMONIC FIELD (SMOOTH)
 ========================= */
 
 let ctx, master;
-let nodeVoices = [];
+let voices = [];
 let audioStarted = false;
 
 let lastX = 0;
@@ -79,68 +79,67 @@ function initAudio() {
   master.gain.value = 0.25;
   master.connect(ctx.destination);
 
-  /* ---- harmonic field ---- */
   document.querySelectorAll(".node").forEach(el => {
-    const freq = parseFloat(el.dataset.note);
+    const baseFreq = parseFloat(el.dataset.note);
 
-    const gain = ctx.createGain();
-    gain.gain.value = 0;
+    const baseGain = ctx.createGain();
+    baseGain.gain.value = 0;
 
-    const osc = ctx.createOscillator();
-    osc.type = "sine";
-    osc.frequency.value = freq;
+    const baseOsc = ctx.createOscillator();
+    baseOsc.type = "sine";
+    baseOsc.frequency.value = baseFreq;
 
     const focusGain = ctx.createGain();
     focusGain.gain.value = 0;
 
     const focusOsc = ctx.createOscillator();
     focusOsc.type = "sine";
-    focusOsc.frequency.value = freq * 2;
+    focusOsc.frequency.value = baseFreq * 2;
 
-    osc.connect(gain);
-    gain.connect(master);
+    baseOsc.connect(baseGain);
+    baseGain.connect(master);
 
     focusOsc.connect(focusGain);
     focusGain.connect(master);
 
-    osc.start();
+    baseOsc.start();
     focusOsc.start();
 
-    nodeVoices.push({ el, gain, focusGain });
+    voices.push({
+      el,
+      baseGain,
+      focusGain
+    });
   });
 
   audioStarted = true;
 }
 
 /* =========================
-   HIGH-PITCHED MICRO TICKS
+   MICRO TICKS (UNCHANGED)
 ========================= */
 
 function triggerTick(intensity) {
-  if (!audioStarted) return;
-
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
 
   osc.type = "sine";
   osc.frequency.value = 4000 + Math.random() * 3000;
 
-  gain.gain.value = 0;
-
-  osc.connect(gain);
-  gain.connect(master);
-
   const now = ctx.currentTime;
   gain.gain.setValueAtTime(0, now);
   gain.gain.linearRampToValueAtTime(0.02 * intensity, now + 0.002);
   gain.gain.linearRampToValueAtTime(0, now + 0.015);
+
+  osc.connect(gain);
+  gain.connect(master);
 
   osc.start(now);
   osc.stop(now + 0.02);
 }
 
 /* =========================
-   MOUSE INTERACTION
+   POSITION-BASED MIXING
 ========================= */
 
 document.addEventListener("mousemove", e => {
@@ -154,47 +153,63 @@ document.addEventListener("mousemove", e => {
   lastX = e.clientX;
   lastTime = now;
 
-  // harmonic blending
-  nodeVoices.forEach(n => {
-    const r = n.el.getBoundingClientRect();
+  // ticks
+  tickCooldown -= dt;
+  if (velocity > 0.4 && tickCooldown <= 0) {
+    triggerTick(Math.min(velocity, 1));
+    tickCooldown = 40;
+  }
+
+  voices.forEach(v => {
+    const r = v.el.getBoundingClientRect();
     const cx = r.left + r.width / 2;
     const cy = r.top + r.height / 2;
 
     const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
-    const influence = Math.max(0, 1 - dist / 350);
 
-    n.gain.gain.setTargetAtTime(
-      influence * 0.08,
+    /* non-linear curve = more overlap */
+    const influence = Math.pow(
+      Math.max(0, 1 - dist / 420),
+      1.6
+    );
+
+    v.baseGain.gain.setTargetAtTime(
+      influence * 0.09,
       ctx.currentTime,
-      0.25
+      0.6   // slower = audible transitions
     );
   });
-
-  // ticks (velocity-based, throttled)
-  tickCooldown -= dt;
-  if (velocity > 0.4 && tickCooldown <= 0) {
-    triggerTick(Math.min(velocity, 1));
-    tickCooldown = 40; // ms between ticks
-  }
 });
 
 /* =========================
-   NODE FOCUS LAYER
+   NODE FOCUS (SOFT ATTACK)
 ========================= */
 
 document.getElementById("app").addEventListener("click", initAudio, { once: true });
 
 document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("mouseenter", () => {
-    const n = nodeVoices.find(v => v.el === el);
-    if (!n) return;
-    n.focusGain.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 0.5);
+    const v = voices.find(x => x.el === el);
+    if (!v) return;
+
+    // focus fades in gently BEFORE base peaks
+    v.focusGain.gain.cancelScheduledValues(ctx.currentTime);
+    v.focusGain.gain.setTargetAtTime(
+      0.045,
+      ctx.currentTime,
+      1.2   // very soft attack
+    );
   });
 
   el.addEventListener("mouseleave", () => {
-    const n = nodeVoices.find(v => v.el === el);
-    if (!n) return;
-    n.focusGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5);
+    const v = voices.find(x => x.el === el);
+    if (!v) return;
+
+    v.focusGain.gain.setTargetAtTime(
+      0,
+      ctx.currentTime,
+      2.5   // slow release
+    );
   });
 });
 
