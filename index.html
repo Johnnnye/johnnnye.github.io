@@ -89,7 +89,7 @@ function initAudio() {
   reverb.buffer = ir;
 
   const revGain = ctx.createGain();
-  revGain.gain.value = 0.2;
+  revGain.gain.value = 0.18;
   reverb.connect(revGain);
   revGain.connect(master);
 
@@ -133,29 +133,54 @@ function initAudio() {
 }
 
 /* =========================
-   SOFT CLICK (AUDIBLE)
+   TOCK / THUD CLICK
 ========================= */
 
 function softClick() {
   ensureAudio();
 
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-
-  osc.type = "sine";
-  osc.frequency.value = 140;
-
   const now = ctx.currentTime;
-  gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(0.08, now + 0.03);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
 
-  osc.connect(gain);
-  gain.connect(master);   // DRY
-  gain.connect(reverb);  // WET
+  /* LOW THUD BODY */
+  const osc = ctx.createOscillator();
+  osc.type = "sine";
+  osc.frequency.value = 90;
+
+  const bodyGain = ctx.createGain();
+  bodyGain.gain.setValueAtTime(0, now);
+  bodyGain.gain.linearRampToValueAtTime(0.12, now + 0.01);
+  bodyGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+
+  osc.connect(bodyGain);
+  bodyGain.connect(master);
+  bodyGain.connect(reverb);
 
   osc.start(now);
-  osc.stop(now + 0.8);
+  osc.stop(now + 0.4);
+
+  /* VERY SHORT ATTACK NOISE */
+  const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.02, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) {
+    data[i] = Math.random() * 2 - 1;
+  }
+
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+
+  const noiseFilter = ctx.createBiquadFilter();
+  noiseFilter.type = "highpass";
+  noiseFilter.frequency.value = 1200;
+
+  const noiseGain = ctx.createGain();
+  noiseGain.gain.value = 0.015;
+
+  noise.connect(noiseFilter);
+  noiseFilter.connect(noiseGain);
+  noiseGain.connect(master);
+
+  noise.start(now);
+  noise.stop(now + 0.03);
 }
 
 /* =========================
