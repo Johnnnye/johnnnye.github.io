@@ -140,4 +140,66 @@ document.addEventListener("mousemove", e => {
     filter.frequency.setTargetAtTime(
       filter.frequency.value + drift,
       audioCtx.currentTime,
-      1
+      1.5
+    );
+  }
+});
+
+/* =========================
+   INTERACTIONS
+========================= */
+
+const app = document.getElementById("app");
+const nodes = document.querySelectorAll(".node");
+
+app.addEventListener("click", initAudio, { once: true });
+
+nodes.forEach(node => {
+  node.addEventListener("mouseenter", () => {
+    fadeToCategory(node.dataset.type);
+  });
+  node.addEventListener("mouseleave", fadeOut);
+});
+
+/* =========================
+   SOFT TRANSIENT (OVERLAY)
+========================= */
+
+function softPulse() {
+  if (!audioStarted) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = "sine";
+  osc.frequency.value = 90;
+  gain.gain.value = 0;
+
+  osc.connect(gain);
+  gain.connect(masterGain);
+
+  osc.start();
+  gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.1);
+  gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.8);
+  osc.stop(audioCtx.currentTime + 1);
+}
+
+/* =========================
+   ABOUT OVERLAY
+========================= */
+
+const trigger = document.getElementById("about-trigger");
+const overlay = document.getElementById("about-overlay");
+const closeBtn = document.getElementById("about-close");
+
+trigger.addEventListener("click", () => {
+  overlay.classList.remove("hidden");
+  softPulse();
+});
+
+closeBtn.addEventListener("click", () => {
+  overlay.classList.add("hidden");
+  softPulse();
+});
+</script>
+
+</body>
+</html>
