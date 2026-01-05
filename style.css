@@ -33,6 +33,7 @@ html, body {
   font-size: 3.2rem;
   font-weight: 400;
   animation: breathe 8s ease-in-out infinite;
+  cursor: pointer;
 }
 
 .role {
@@ -106,9 +107,46 @@ html, body {
   opacity: 0.8;
 }
 
+/* ===== OVERLAY ===== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(245, 246, 244, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease;
+}
+
+.overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.overlay-content {
+  max-width: 420px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.close {
+  margin-top: 2rem;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.close:hover {
+  opacity: 0.8;
+}
+
 /* ===== ANIMATIONS ===== */
 
-/* Hero breathing – stronger, faster */
+/* Hero breathing – noticeable but calm */
 @keyframes breathe {
   0% {
     opacity: 0.75;
