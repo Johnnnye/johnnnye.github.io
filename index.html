@@ -20,19 +20,19 @@
 
   <!-- CATEGORY FIELD -->
   <section class="categories">
-    <div class="node" data-ratio="1.25" style="top:32%; left:30%;">
+    <div class="node" data-note="110" style="top:32%; left:30%;">
       <span class="dot"></span><span class="label">Picture</span>
     </div>
 
-    <div class="node" data-ratio="1.5" style="top:50%; left:62%;">
+    <div class="node" data-note="165" style="top:50%; left:62%;">
       <span class="dot"></span><span class="label">Music</span>
     </div>
 
-    <div class="node" data-ratio="1.33" style="top:68%; left:40%;">
+    <div class="node" data-note="147" style="top:68%; left:40%;">
       <span class="dot"></span><span class="label">Redesigns</span>
     </div>
 
-    <div class="node" data-ratio="1.125" style="top:78%; left:58%;">
+    <div class="node" data-note="98" style="top:78%; left:58%;">
       <span class="dot"></span><span class="label">Games</span>
     </div>
   </section>
@@ -59,91 +59,71 @@
 
 <script>
 /* =========================
-   MUSICAL + TEXTURAL ENGINE
+   HARMONIC FIELD ENGINE
 ========================= */
 
 let ctx, master;
-let heroGain, catGain, wooshGain;
-let heroOsc1, heroOsc2, heroOsc3;
+let nodes = [];
+let wooshGain;
 let audioStarted = false;
 
-const BASE_FREQ = 110; // A2
-const FIFTH = 1.5;    // perfect fifth
-
-let lastMouseX = 0;
-let lastMoveTime = 0;
+let lastX = 0;
+let lastTime = 0;
 
 function initAudio() {
   if (audioStarted) return;
 
   ctx = new (window.AudioContext || window.webkitAudioContext)();
 
-  /* MASTER */
   master = ctx.createGain();
-  master.gain.value = 0.22;
+  master.gain.value = 0.25;
   master.connect(ctx.destination);
 
-  /* ===== HERO DRONE (RICH BUT CALM) ===== */
-  heroGain = ctx.createGain();
-  heroGain.gain.value = 0.1;
+  /* ---- create node voices ---- */
+  document.querySelectorAll(".node").forEach(el => {
+    const freq = parseFloat(el.dataset.note);
 
-  heroOsc1 = ctx.createOscillator();
-  heroOsc2 = ctx.createOscillator();
-  heroOsc3 = ctx.createOscillator();
+    const gain = ctx.createGain();
+    gain.gain.value = 0;
 
-  heroOsc1.type = "sine";
-  heroOsc2.type = "sine";
-  heroOsc3.type = "sine";
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.value = freq;
 
-  heroOsc1.frequency.value = BASE_FREQ;
-  heroOsc2.frequency.value = BASE_FREQ * 1.002;   // chorus
-  heroOsc3.frequency.value = BASE_FREQ * FIFTH;   // harmonic lift
+    const focusGain = ctx.createGain();
+    focusGain.gain.value = 0;
 
-  heroOsc1.connect(heroGain);
-  heroOsc2.connect(heroGain);
-  heroOsc3.connect(heroGain);
+    const focusOsc = ctx.createOscillator();
+    focusOsc.type = "sine";
+    focusOsc.frequency.value = freq * 2;
 
-  heroGain.connect(master);
+    osc.connect(gain);
+    gain.connect(master);
 
-  heroOsc1.start();
-  heroOsc2.start();
-  heroOsc3.start();
+    focusOsc.connect(focusGain);
+    focusGain.connect(master);
 
-  /* ===== CATEGORY LAYER ===== */
-  catGain = ctx.createGain();
-  catGain.gain.value = 0;
+    osc.start();
+    focusOsc.start();
 
-  const catOsc1 = ctx.createOscillator();
-  const catOsc2 = ctx.createOscillator();
+    nodes.push({ el, gain, focusGain, freq });
+  });
 
-  catOsc1.type = "sine";
-  catOsc2.type = "sine";
-
-  catOsc1.frequency.value = BASE_FREQ * 2;
-  catOsc2.frequency.value = BASE_FREQ * 2.002;
-
-  catOsc1.connect(catGain);
-  catOsc2.connect(catGain);
-  catGain.connect(master);
-
-  catOsc1.start();
-  catOsc2.start();
-
-  /* ===== MOUSE WOOSH (TEXTURAL) ===== */
-  const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
-  const data = noiseBuffer.getChannelData(0);
+  /* ---- woosh layer ---- */
+  const buffer = ctx.createBuffer(1, ctx.sampleRate * 1.5, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
   for (let i = 0; i < data.length; i++) {
     data[i] = Math.random() * 2 - 1;
   }
 
   const noise = ctx.createBufferSource();
-  noise.buffer = noiseBuffer;
+  noise.buffer = buffer;
   noise.loop = true;
 
   const bandpass = ctx.createBiquadFilter();
   bandpass.type = "bandpass";
-  bandpass.frequency.value = 900;
-  bandpass.Q.value = 0.6;
+  bandpass.frequency.value = 1200;
+  bandpass.Q.value = 0.7;
 
   wooshGain = ctx.createGain();
   wooshGain.gain.value = 0;
@@ -158,127 +138,87 @@ function initAudio() {
 }
 
 /* =========================
-   SLOW MORPHING
-========================= */
-
-function morphToCategory(ratio) {
-  if (!audioStarted) return;
-
-  heroGain.gain.linearRampToValueAtTime(
-    0.06,
-    ctx.currentTime + 4
-  );
-
-  catGain.gain.linearRampToValueAtTime(
-    0.09,
-    ctx.currentTime + 4
-  );
-
-  heroOsc1.frequency.linearRampToValueAtTime(
-    BASE_FREQ * ratio,
-    ctx.currentTime + 5
-  );
-  heroOsc2.frequency.linearRampToValueAtTime(
-    BASE_FREQ * ratio * 1.002,
-    ctx.currentTime + 5
-  );
-  heroOsc3.frequency.linearRampToValueAtTime(
-    BASE_FREQ * ratio * FIFTH,
-    ctx.currentTime + 5
-  );
-}
-
-function returnToHero() {
-  if (!audioStarted) return;
-
-  heroGain.gain.linearRampToValueAtTime(
-    0.1,
-    ctx.currentTime + 5
-  );
-
-  catGain.gain.linearRampToValueAtTime(
-    0,
-    ctx.currentTime + 6
-  );
-
-  heroOsc1.frequency.linearRampToValueAtTime(
-    BASE_FREQ,
-    ctx.currentTime + 6
-  );
-  heroOsc2.frequency.linearRampToValueAtTime(
-    BASE_FREQ * 1.002,
-    ctx.currentTime + 6
-  );
-  heroOsc3.frequency.linearRampToValueAtTime(
-    BASE_FREQ * FIFTH,
-    ctx.currentTime + 6
-  );
-}
-
-/* =========================
-   MOUSE WOOSH (MOVEMENT-BASED)
+   POSITION-BASED MIXING
 ========================= */
 
 document.addEventListener("mousemove", e => {
   if (!audioStarted) return;
 
-  const dx = Math.abs(e.clientX - lastMouseX);
-  lastMouseX = e.clientX;
+  const now = performance.now();
+  const dx = e.clientX - lastX;
+  const dt = now - lastTime || 16;
 
-  const intensity = Math.min(dx / 60, 1);
-  lastMoveTime = ctx.currentTime;
+  const velocity = Math.abs(dx / dt);
+  lastX = e.clientX;
+  lastTime = now;
 
-  wooshGain.gain.cancelScheduledValues(ctx.currentTime);
-  wooshGain.gain.linearRampToValueAtTime(
-    intensity * 0.04,
-    ctx.currentTime + 0.4
+  /* woosh reacts FAST */
+  wooshGain.gain.setTargetAtTime(
+    Math.min(velocity * 0.08, 0.06),
+    ctx.currentTime,
+    0.05
   );
 
-  // fade out if movement stops
-  wooshGain.gain.linearRampToValueAtTime(
-    0,
-    ctx.currentTime + 3
-  );
+  nodes.forEach(n => {
+    const rect = n.el.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+    const influence = Math.max(0, 1 - dist / 350);
+
+    n.gain.gain.setTargetAtTime(
+      influence * 0.08,
+      ctx.currentTime,
+      0.3
+    );
+  });
 });
 
 /* =========================
-   INTERACTION
+   NODE FOCUS LAYER
 ========================= */
 
-const app = document.getElementById("app");
-const nodes = document.querySelectorAll(".node");
+nodes = [];
 
-app.addEventListener("click", initAudio, { once: true });
+document.getElementById("app").addEventListener("click", initAudio, { once: true });
 
-nodes.forEach(node => {
-  node.addEventListener("mouseenter", () => {
-    morphToCategory(parseFloat(node.dataset.ratio));
+document.querySelectorAll(".node").forEach(el => {
+  el.addEventListener("mouseenter", () => {
+    const node = nodes.find(n => n.el === el);
+    if (!node) return;
+
+    node.focusGain.gain.linearRampToValueAtTime(
+      0.06,
+      ctx.currentTime + 0.6
+    );
   });
-  node.addEventListener("mouseleave", returnToHero);
+
+  el.addEventListener("mouseleave", () => {
+    const node = nodes.find(n => n.el === el);
+    if (!node) return;
+
+    node.focusGain.gain.linearRampToValueAtTime(
+      0,
+      ctx.currentTime + 1.5
+    );
+  });
 });
 
 /* =========================
-   ABOUT OVERLAY (BREATH)
+   ABOUT OVERLAY
 ========================= */
 
 const trigger = document.getElementById("about-trigger");
 const overlay = document.getElementById("about-overlay");
 const closeBtn = document.getElementById("about-close");
 
-function softPulse() {
-  if (!audioStarted) return;
-  heroGain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 1);
-  heroGain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 4);
-}
-
 trigger.addEventListener("click", () => {
   overlay.classList.remove("hidden");
-  softPulse();
 });
 
 closeBtn.addEventListener("click", () => {
   overlay.classList.add("hidden");
-  softPulse();
 });
 </script>
 
