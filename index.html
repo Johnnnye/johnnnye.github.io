@@ -176,7 +176,7 @@ function initBreath() {
     const now = ctx.currentTime;
     breathGain.gain.cancelScheduledValues(now);
     breathGain.gain.setValueAtTime(0, now);
-    breathGain.gain.linearRampToValueAtTime(0.06, now + 3);
+    breathGain.gain.linearRampToValueAtTime(0.075, now + 3); // ↑ slightly louder
     breathGain.gain.linearRampToValueAtTime(0, now + 6);
   }, BREATH_PERIOD);
 }
@@ -188,7 +188,7 @@ function initBreath() {
 function initContactTone() {
   contactOsc = ctx.createOscillator();
   contactOsc.type = "sine";
-  contactOsc.frequency.value = 146.83 * 1.5; // perfect fifth above D
+  contactOsc.frequency.value = 146.83 * 1.5;
 
   contactGain = ctx.createGain();
   contactGain.gain.value = 0;
@@ -246,7 +246,7 @@ document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("click", softClick);
 });
 
-/* CONTACT HOVER */
+/* CONTACT HOVER + CLICK */
 const email = document.getElementById("contact-email");
 
 email.addEventListener("mouseenter", () => {
@@ -256,6 +256,10 @@ email.addEventListener("mouseenter", () => {
 
 email.addEventListener("mouseleave", () => {
   contactGain.gain.setTargetAtTime(0, ctx.currentTime, 3);
+});
+
+email.addEventListener("click", () => {
+  softClick();
 });
 
 /* =========================
