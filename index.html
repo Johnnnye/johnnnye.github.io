@@ -61,7 +61,7 @@ let audioStarted = false;
 
 /* breathing */
 let breathNoise, breathGain, breathFilter;
-let breathStartTime = null;
+let breathStartTime;
 let breathDuration = 8000;
 
 /* contact fifth */
@@ -69,8 +69,13 @@ let contactOsc, contactGain;
 
 const titleEl = document.getElementById("about-trigger");
 
+function ensureAudio() {
+  if (!ctx) initAudio();
+  if (ctx.state === "suspended") ctx.resume();
+}
+
 function initAudio() {
-  if (ctx) return;
+  if (audioStarted) return;
 
   ctx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -137,7 +142,7 @@ function initAudio() {
 }
 
 /* =========================
-   BREATH — SIMPLE & REAL
+   BREATH (HOVER-ACTIVATED)
 ========================= */
 
 function initBreath() {
@@ -155,7 +160,7 @@ function initBreath() {
   breathFilter.Q.value = 0.6;
 
   breathGain = ctx.createGain();
-  breathGain.gain.value = 0; // start silent
+  breathGain.gain.value = 0;
 
   breathNoise.connect(breathFilter);
   breathFilter.connect(breathGain);
@@ -167,12 +172,6 @@ function initBreath() {
   breathDuration = parseFloat(styles.animationDuration || "8") * 1000;
 
   breathStartTime = performance.now();
-
-  // fade in automatically after load
-  setTimeout(() => {
-    breathGain.gain.setTargetAtTime(0.07, ctx.currentTime, 2.5);
-  }, 300);
-
   requestAnimationFrame(breathLoop);
 }
 
@@ -187,10 +186,19 @@ function breathLoop(now) {
   breathGain.gain.setTargetAtTime(
     amp * 0.07,
     ctx.currentTime,
-    0.15
+    0.2
   );
 
   requestAnimationFrame(breathLoop);
+}
+
+function breathIn() {
+  ensureAudio();
+  breathGain.gain.setTargetAtTime(0.07, ctx.currentTime, 2);
+}
+
+function breathOut() {
+  breathGain.gain.setTargetAtTime(0, ctx.currentTime, 3);
 }
 
 /* =========================
@@ -217,8 +225,7 @@ function initContactTone() {
 ========================= */
 
 function softClick() {
-  if (!ctx) return;
-  if (ctx.state === "suspended") ctx.resume();
+  ensureAudio();
 
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
@@ -243,29 +250,32 @@ function softClick() {
    INTERACTION
 ========================= */
 
-// initialise audio immediately (silent-safe)
-initAudio();
-
-// safety resume on first interaction
-document.body.addEventListener("click", () => {
-  if (ctx && ctx.state === "suspended") ctx.resume();
-}, { once: true });
+document.getElementById("app").addEventListener("mousemove", ensureAudio, { once: true });
 
 document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("mouseenter", () => {
+    breathIn();
     const v = voices.find(x => x.el === el);
     if (v) v.focusGain.gain.setTargetAtTime(0.045, ctx.currentTime, 1.2);
   });
+
   el.addEventListener("mouseleave", () => {
+    breathOut();
     const v = voices.find(x => x.el === el);
     if (v) v.focusGain.gain.setTargetAtTime(0, ctx.currentTime, 2.5);
   });
+
   el.addEventListener("click", softClick);
 });
+
+/* NAME */
+titleEl.addEventListener("mouseenter", breathIn);
+titleEl.addEventListener("mouseleave", breathOut);
 
 /* CONTACT */
 const email = document.getElementById("contact-email");
 email.addEventListener("mouseenter", () => {
+  ensureAudio();
   contactGain.gain.setTargetAtTime(0.035, ctx.currentTime, 1.5);
 });
 email.addEventListener("mouseleave", () => {
