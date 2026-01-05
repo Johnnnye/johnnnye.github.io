@@ -20,19 +20,20 @@
 
   <!-- CATEGORY FIELD -->
   <section class="categories">
-    <div class="node" data-note="110" style="top:32%; left:30%;">
+    <!-- D Dorian: D E F G A B C -->
+    <div class="node" data-note="146.83" data-pan="-0.4" style="top:32%; left:30%;">
       <span class="dot"></span><span class="label">Picture</span>
     </div>
 
-    <div class="node" data-note="165" style="top:50%; left:62%;">
+    <div class="node" data-note="174.61" data-pan="0.35" style="top:50%; left:62%;">
       <span class="dot"></span><span class="label">Music</span>
     </div>
 
-    <div class="node" data-note="147" style="top:68%; left:40%;">
+    <div class="node" data-note="196.00" data-pan="-0.15" style="top:68%; left:40%;">
       <span class="dot"></span><span class="label">Redesigns</span>
     </div>
 
-    <div class="node" data-note="98" style="top:78%; left:58%;">
+    <div class="node" data-note="220.00" data-pan="0.2" style="top:78%; left:58%;">
       <span class="dot"></span><span class="label">Games</span>
     </div>
   </section>
@@ -59,7 +60,7 @@
 
 <script>
 /* =========================
-   HARMONIC FIELD (SMOOTH)
+   DORIAN HARMONIC FIELD
 ========================= */
 
 let ctx, master;
@@ -70,6 +71,9 @@ let lastX = 0;
 let lastTime = performance.now();
 let tickCooldown = 0;
 
+/* VERY slow global drift */
+let driftLFO, driftGain;
+
 function initAudio() {
   if (audioStarted) return;
 
@@ -79,44 +83,58 @@ function initAudio() {
   master.gain.value = 0.25;
   master.connect(ctx.destination);
 
+  /* Global pitch drift (±6 cents) */
+  driftLFO = ctx.createOscillator();
+  driftGain = ctx.createGain();
+  driftLFO.frequency.value = 0.015; // very slow
+  driftGain.gain.value = 6; // cents
+  driftLFO.connect(driftGain);
+  driftLFO.start();
+
   document.querySelectorAll(".node").forEach(el => {
     const baseFreq = parseFloat(el.dataset.note);
+    const panVal = parseFloat(el.dataset.pan);
 
     const baseGain = ctx.createGain();
     baseGain.gain.value = 0;
 
-    const baseOsc = ctx.createOscillator();
-    baseOsc.type = "sine";
-    baseOsc.frequency.value = baseFreq;
-
     const focusGain = ctx.createGain();
     focusGain.gain.value = 0;
 
-    const focusOsc = ctx.createOscillator();
-    focusOsc.type = "sine";
-    focusOsc.frequency.value = baseFreq * 2;
+    const pan = ctx.createStereoPanner();
+    pan.pan.value = panVal;
 
-    baseOsc.connect(baseGain);
-    baseGain.connect(master);
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
 
-    focusOsc.connect(focusGain);
-    focusGain.connect(master);
+    osc1.type = "sine";
+    osc2.type = "sine";
 
-    baseOsc.start();
-    focusOsc.start();
+    osc1.frequency.value = baseFreq;
+    osc2.frequency.value = baseFreq * 2;
 
-    voices.push({
-      el,
-      baseGain,
-      focusGain
-    });
+    /* apply drift */
+    driftGain.connect(osc1.detune);
+    driftGain.connect(osc2.detune);
+
+    osc1.connect(baseGain);
+    osc2.connect(focusGain);
+
+    baseGain.connect(pan);
+    focusGain.connect(pan);
+    pan.connect(master);
+
+    osc1.start();
+    osc2.start();
+
+    voices.push({ el, baseGain, focusGain });
   });
 
   audioStarted = true;
 }
 
 /* =========================
-   MICRO TICKS (UNCHANGED)
+   MICRO TICKS (MOTION)
 ========================= */
 
 function triggerTick(intensity) {
@@ -124,7 +142,7 @@ function triggerTick(intensity) {
   const gain = ctx.createGain();
 
   osc.type = "sine";
-  osc.frequency.value = 4000 + Math.random() * 3000;
+  osc.frequency.value = 4500 + Math.random() * 2500;
 
   const now = ctx.currentTime;
   gain.gain.setValueAtTime(0, now);
@@ -139,7 +157,7 @@ function triggerTick(intensity) {
 }
 
 /* =========================
-   POSITION-BASED MIXING
+   POSITION-BASED CHORD BLEND
 ========================= */
 
 document.addEventListener("mousemove", e => {
@@ -153,7 +171,6 @@ document.addEventListener("mousemove", e => {
   lastX = e.clientX;
   lastTime = now;
 
-  // ticks
   tickCooldown -= dt;
   if (velocity > 0.4 && tickCooldown <= 0) {
     triggerTick(Math.min(velocity, 1));
@@ -167,22 +184,21 @@ document.addEventListener("mousemove", e => {
 
     const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
 
-    /* non-linear curve = more overlap */
     const influence = Math.pow(
       Math.max(0, 1 - dist / 420),
-      1.6
+      1.5
     );
 
     v.baseGain.gain.setTargetAtTime(
       influence * 0.09,
       ctx.currentTime,
-      0.6   // slower = audible transitions
+      0.6
     );
   });
 });
 
 /* =========================
-   NODE FOCUS (SOFT ATTACK)
+   NODE FOCUS (SOFT)
 ========================= */
 
 document.getElementById("app").addEventListener("click", initAudio, { once: true });
@@ -192,12 +208,10 @@ document.querySelectorAll(".node").forEach(el => {
     const v = voices.find(x => x.el === el);
     if (!v) return;
 
-    // focus fades in gently BEFORE base peaks
-    v.focusGain.gain.cancelScheduledValues(ctx.currentTime);
     v.focusGain.gain.setTargetAtTime(
       0.045,
       ctx.currentTime,
-      1.2   // very soft attack
+      1.2
     );
   });
 
@@ -208,7 +222,7 @@ document.querySelectorAll(".node").forEach(el => {
     v.focusGain.gain.setTargetAtTime(
       0,
       ctx.currentTime,
-      2.5   // slow release
+      2.5
     );
   });
 });
