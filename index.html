@@ -16,7 +16,7 @@
 
   <!-- HERO -->
   <section class="hero">
-    <h1>John Emslie</h1>
+    <h1 id="about-trigger">John Emslie</h1>
     <p class="role">Sound Designer & Composer</p>
   </section>
 
@@ -53,7 +53,34 @@
     <a href="mailto:john@youremail.com">john@youremail.com</a>
   </footer>
 
+  <!-- ABOUT OVERLAY -->
+  <div class="overlay hidden" id="about-overlay">
+    <div class="overlay-content">
+      <p>
+        I work with sound as texture, space, and motion.<br><br>
+        My focus is on interaction, restraint, and emotional clarity
+        across games, picture, and experimental work.
+      </p>
+
+      <button class="close" id="about-close">Close</button>
+    </div>
+  </div>
+
 </main>
+
+<script>
+  const trigger = document.getElementById("about-trigger");
+  const overlay = document.getElementById("about-overlay");
+  const closeBtn = document.getElementById("about-close");
+
+  trigger.addEventListener("click", () => {
+    overlay.classList.remove("hidden");
+  });
+
+  closeBtn.addEventListener("click", () => {
+    overlay.classList.add("hidden");
+  });
+</script>
 
 </body>
 </html>
