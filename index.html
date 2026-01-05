@@ -20,19 +20,15 @@
 
   <!-- CATEGORY FIELD -->
   <section class="categories">
-    <!-- D Dorian: D E F G -->
     <div class="node" data-note="146.83" data-pan="-0.4" style="top:32%; left:30%;">
       <span class="dot"></span><span class="label">Picture</span>
     </div>
-
     <div class="node" data-note="174.61" data-pan="0.35" style="top:50%; left:62%;">
       <span class="dot"></span><span class="label">Music</span>
     </div>
-
     <div class="node" data-note="196.00" data-pan="-0.15" style="top:68%; left:40%;">
       <span class="dot"></span><span class="label">Redesigns</span>
     </div>
-
     <div class="node" data-note="220.00" data-pan="0.2" style="top:78%; left:58%;">
       <span class="dot"></span><span class="label">Games</span>
     </div>
@@ -60,57 +56,44 @@
 
 <script>
 /* =========================
-   DORIAN FIELD + SPACE
+   AUDIO CORE
 ========================= */
 
 let ctx, master, reverb;
 let voices = [];
 let audioStarted = false;
 
-let lastX = 0;
-let lastTime = performance.now();
-let tickCooldown = 0;
-
-/* very slow pitch drift */
-let driftLFO, driftGain;
+function ensureAudio() {
+  if (!ctx) initAudio();
+  if (ctx.state === "suspended") ctx.resume();
+}
 
 function initAudio() {
   if (audioStarted) return;
 
   ctx = new (window.AudioContext || window.webkitAudioContext)();
 
-  /* MASTER */
   master = ctx.createGain();
   master.gain.value = 0.25;
   master.connect(ctx.destination);
 
-  /* ===== REVERB (shared space) ===== */
+  /* REVERB */
   reverb = ctx.createConvolver();
-  const ir = ctx.createBuffer(2, ctx.sampleRate * 2.5, ctx.sampleRate);
-
+  const ir = ctx.createBuffer(2, ctx.sampleRate * 2, ctx.sampleRate);
   for (let c = 0; c < ir.numberOfChannels; c++) {
-    const data = ir.getChannelData(c);
-    for (let i = 0; i < data.length; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.7));
+    const d = ir.getChannelData(c);
+    for (let i = 0; i < d.length; i++) {
+      d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.6));
     }
   }
   reverb.buffer = ir;
 
-  const reverbGain = ctx.createGain();
-  reverbGain.gain.value = 0.18;
+  const revGain = ctx.createGain();
+  revGain.gain.value = 0.2;
+  reverb.connect(revGain);
+  revGain.connect(master);
 
-  reverb.connect(reverbGain);
-  reverbGain.connect(master);
-
-  /* ===== GLOBAL DRIFT ===== */
-  driftLFO = ctx.createOscillator();
-  driftGain = ctx.createGain();
-  driftLFO.frequency.value = 0.015;
-  driftGain.gain.value = 6; // cents
-  driftLFO.connect(driftGain);
-  driftLFO.start();
-
-  /* ===== NODE VOICES ===== */
+  /* NODE VOICES */
   document.querySelectorAll(".node").forEach(el => {
     const freq = parseFloat(el.dataset.note);
     const panVal = parseFloat(el.dataset.pan);
@@ -129,19 +112,14 @@ function initAudio() {
 
     osc.type = "sine";
     focusOsc.type = "sine";
-
     osc.frequency.value = freq;
     focusOsc.frequency.value = freq * 2;
-
-    driftGain.connect(osc.detune);
-    driftGain.connect(focusOsc.detune);
 
     osc.connect(baseGain);
     focusOsc.connect(focusGain);
 
     baseGain.connect(pan);
     focusGain.connect(pan);
-
     pan.connect(master);
     pan.connect(reverb);
 
@@ -155,107 +133,46 @@ function initAudio() {
 }
 
 /* =========================
-   MICRO TICKS (UNCHANGED)
-========================= */
-
-function triggerTick(intensity) {
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-
-  osc.type = "sine";
-  osc.frequency.value = 4500 + Math.random() * 2500;
-
-  const now = ctx.currentTime;
-  gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(0.02 * intensity, now + 0.002);
-  gain.gain.linearRampToValueAtTime(0, now + 0.015);
-
-  osc.connect(gain);
-  gain.connect(master);
-
-  osc.start(now);
-  osc.stop(now + 0.02);
-}
-
-/* =========================
-   SOFT CLICK (FELT, NOT UI)
+   SOFT CLICK (AUDIBLE)
 ========================= */
 
 function softClick() {
-  if (!audioStarted) return;
+  ensureAudio();
 
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
 
   osc.type = "sine";
-  osc.frequency.value = 120;
+  osc.frequency.value = 140;
 
   const now = ctx.currentTime;
   gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(0.06, now + 0.02);
-  gain.gain.linearRampToValueAtTime(0, now + 0.6);
+  gain.gain.linearRampToValueAtTime(0.08, now + 0.03);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
 
   osc.connect(gain);
-  gain.connect(reverb);
+  gain.connect(master);   // DRY
+  gain.connect(reverb);  // WET
 
   osc.start(now);
-  osc.stop(now + 0.7);
+  osc.stop(now + 0.8);
 }
 
 /* =========================
-   POSITION-BASED BLEND
+   INTERACTION
 ========================= */
 
-document.addEventListener("mousemove", e => {
-  if (!audioStarted) return;
-
-  const now = performance.now();
-  const dx = e.clientX - lastX;
-  const dt = now - lastTime || 16;
-
-  const velocity = Math.abs(dx / dt);
-  lastX = e.clientX;
-  lastTime = now;
-
-  tickCooldown -= dt;
-  if (velocity > 0.4 && tickCooldown <= 0) {
-    triggerTick(Math.min(velocity, 1));
-    tickCooldown = 40;
-  }
-
-  voices.forEach(v => {
-    const r = v.el.getBoundingClientRect();
-    const cx = r.left + r.width / 2;
-    const cy = r.top + r.height / 2;
-
-    const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
-    const influence = Math.pow(Math.max(0, 1 - dist / 420), 1.5);
-
-    v.baseGain.gain.setTargetAtTime(
-      influence * 0.09,
-      ctx.currentTime,
-      0.6
-    );
-  });
-});
-
-/* =========================
-   NODE FOCUS
-========================= */
-
-document.getElementById("app").addEventListener("click", initAudio, { once: true });
+document.getElementById("app").addEventListener("click", ensureAudio, { once: true });
 
 document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("mouseenter", () => {
     const v = voices.find(x => x.el === el);
-    if (!v) return;
-    v.focusGain.gain.setTargetAtTime(0.045, ctx.currentTime, 1.2);
+    if (v) v.focusGain.gain.setTargetAtTime(0.045, ctx.currentTime, 1.2);
   });
 
   el.addEventListener("mouseleave", () => {
     const v = voices.find(x => x.el === el);
-    if (!v) return;
-    v.focusGain.gain.setTargetAtTime(0, ctx.currentTime, 2.5);
+    if (v) v.focusGain.gain.setTargetAtTime(0, ctx.currentTime, 2.5);
   });
 
   el.addEventListener("click", softClick);
@@ -270,6 +187,7 @@ const overlay = document.getElementById("about-overlay");
 const closeBtn = document.getElementById("about-close");
 
 trigger.addEventListener("click", () => {
+  ensureAudio();
   overlay.classList.remove("hidden");
   softClick();
 });
