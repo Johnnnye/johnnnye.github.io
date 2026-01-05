@@ -59,30 +59,56 @@
 
 <script>
 /* =========================
-   AUDIO ENGINE — ORGANIC
+   AUDIO ENGINE — BALANCED
 ========================= */
 
-let audioCtx, masterGain;
+let audioCtx;
+let masterGain;
+let heroGain, categoryGain;
 let noiseSource, noiseGain, filter;
 let audioStarted = false;
-let mouseX = 0;
 
+/* CATEGORY CHARACTER ONLY AFFECTS TONE, NOT VOLUME */
 const CATEGORY_SETTINGS = {
-  picture:   { cutoff: 1200, gain: 0.22 },
-  music:     { cutoff: 800,  gain: 0.25 },
-  redesigns: { cutoff: 600,  gain: 0.18 },
-  games:     { cutoff: 1000, gain: 0.28 }
+  picture:   { cutoff: 1400 },
+  music:     { cutoff: 900  },
+  redesigns: { cutoff: 700  },
+  games:     { cutoff: 1100 }
 };
 
 function initAudio() {
   if (audioStarted) return;
 
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  /* MASTER */
   masterGain = audioCtx.createGain();
-  masterGain.gain.value = 0;
+  masterGain.gain.value = 0.2; // overall ceiling
   masterGain.connect(audioCtx.destination);
 
-  // Noise buffer
+  /* HERO BED (always on, very quiet) */
+  heroGain = audioCtx.createGain();
+  heroGain.gain.value = 0.03; // VERY subtle
+
+  const heroNoise = audioCtx.createBufferSource();
+  const heroBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+  const heroData = heroBuffer.getChannelData(0);
+  for (let i = 0; i < heroData.length; i++) {
+    heroData[i] = (Math.random() * 2 - 1) * 0.5;
+  }
+
+  const heroFilter = audioCtx.createBiquadFilter();
+  heroFilter.type = "lowpass";
+  heroFilter.frequency.value = 600;
+
+  heroNoise.buffer = heroBuffer;
+  heroNoise.loop = true;
+  heroNoise.connect(heroFilter);
+  heroFilter.connect(heroGain);
+  heroGain.connect(masterGain);
+  heroNoise.start();
+
+  /* CATEGORY LAYER (comes and goes) */
   const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
   const data = buffer.getChannelData(0);
   for (let i = 0; i < data.length; i++) {
@@ -97,53 +123,40 @@ function initAudio() {
   filter.type = "lowpass";
   filter.frequency.value = 800;
 
-  noiseGain = audioCtx.createGain();
-  noiseGain.gain.value = 0;
+  categoryGain = audioCtx.createGain();
+  categoryGain.gain.value = 0; // silent until hover
 
   noiseSource.connect(filter);
-  filter.connect(noiseGain);
-  noiseGain.connect(masterGain);
+  filter.connect(categoryGain);
+  categoryGain.connect(masterGain);
 
   noiseSource.start();
 
-  masterGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 1.5);
   audioStarted = true;
 }
 
+/* CATEGORY INTERACTION — QUIET BLOOMS */
 function fadeToCategory(type) {
   if (!audioStarted) return;
 
-  const settings = CATEGORY_SETTINGS[type];
   filter.frequency.linearRampToValueAtTime(
-    settings.cutoff,
-    audioCtx.currentTime + 1.2
+    CATEGORY_SETTINGS[type].cutoff,
+    audioCtx.currentTime + 1.5
   );
-  noiseGain.gain.linearRampToValueAtTime(
-    settings.gain,
-    audioCtx.currentTime + 1.2
+
+  categoryGain.gain.linearRampToValueAtTime(
+    0.05, // much quieter than before
+    audioCtx.currentTime + 1.5
   );
 }
 
-function fadeOut() {
+function fadeOutCategory() {
   if (!audioStarted) return;
-  noiseGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.5);
+  categoryGain.gain.linearRampToValueAtTime(
+    0,
+    audioCtx.currentTime + 2
+  );
 }
-
-/* =========================
-   MOUSE MODULATION (VERY SLOW)
-========================= */
-
-document.addEventListener("mousemove", e => {
-  mouseX = e.clientX / window.innerWidth;
-  if (filter) {
-    const drift = 200 + mouseX * 200;
-    filter.frequency.setTargetAtTime(
-      filter.frequency.value + drift,
-      audioCtx.currentTime,
-      1.5
-    );
-  }
-});
 
 /* =========================
    INTERACTIONS
@@ -158,28 +171,30 @@ nodes.forEach(node => {
   node.addEventListener("mouseenter", () => {
     fadeToCategory(node.dataset.type);
   });
-  node.addEventListener("mouseleave", fadeOut);
+  node.addEventListener("mouseleave", fadeOutCategory);
 });
 
 /* =========================
-   SOFT TRANSIENT (OVERLAY)
+   OVERLAY TRANSIENT (VERY SOFT)
 ========================= */
 
 function softPulse() {
   if (!audioStarted) return;
+
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
+
   osc.type = "sine";
-  osc.frequency.value = 90;
+  osc.frequency.value = 80;
   gain.gain.value = 0;
 
   osc.connect(gain);
   gain.connect(masterGain);
 
   osc.start();
-  gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.1);
-  gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.8);
-  osc.stop(audioCtx.currentTime + 1);
+  gain.gain.linearRampToValueAtTime(0.04, audioCtx.currentTime + 0.15);
+  gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.2);
+  osc.stop(audioCtx.currentTime + 1.3);
 }
 
 /* =========================
