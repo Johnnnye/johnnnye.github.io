@@ -8,100 +8,134 @@
 /* ===== BASE ===== */
 html, body {
   height: 100%;
-  font-family: "Rubik Dirt", system-ui, sans-serif;
-  color: #111;
+  font-family: "Inter", system-ui, sans-serif;
+  background: #f5f6f4;
+  color: #222;
 }
 
-/* ===== BACKGROUND ===== */
-.page {
-  min-height: 100%;
-  background: url("images/hero-bg.jpg") center / cover no-repeat fixed;
-  padding: 4rem 2rem;
+/* ===== CONTAINER ===== */
+.container {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
 }
 
-/* ===== SECTIONS ===== */
-section {
-  max-width: 900px;
-  margin: 4rem auto;
+/* ===== HERO ===== */
+.hero {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  transform: translateX(-50%);
   text-align: center;
 }
 
-/* ===== HERO (ALWAYS ANIMATED) ===== */
 .hero h1 {
-  font-size: 5.5rem;
-  letter-spacing: 0.25rem;
-  animation: heroShard 2.5s infinite alternate;
+  font-size: 3.2rem;
+  font-weight: 400;
+  animation: breathe 12s ease-in-out infinite;
 }
 
-.hero-sub {
-  font-size: 2.4rem;
-  margin-top: 1rem;
-  animation: heroShard 2.5s infinite alternate;
+.role {
+  margin-top: 0.6rem;
+  font-size: 1.1rem;
+  font-weight: 300;
+  opacity: 0.75;
 }
 
-/* ===== HEADINGS ===== */
-h2 {
-  font-size: 3.4rem;
-  margin-bottom: 1.5rem;
-  text-transform: uppercase;
+/* ===== PROJECT FIELD ===== */
+.projects {
+  position: absolute;
+  inset: 0;
 }
 
-/* ===== BODY TEXT ===== */
-p {
+/* Each project is a quiet point in space */
+.project {
+  position: absolute;
+  font-size: 1.2rem;
+  font-weight: 400;
+  opacity: 0.35;
+  cursor: pointer;
+  transition:
+    opacity 1.2s ease,
+    transform 6s ease;
+}
+
+/* Soft drift */
+.project {
+  animation: drift 25s ease-in-out infinite alternate;
+}
+
+.project:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* ===== OVERLAY ===== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(245, 246, 244, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease;
+}
+
+.overlay.hidden {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.overlay-content {
+  max-width: 420px;
+  text-align: center;
+}
+
+.overlay-content h2 {
   font-size: 2rem;
+  font-weight: 400;
   margin-bottom: 1rem;
 }
 
-/* ===== READABILITY OUTLINE ===== */
-h1, h2, p, a {
-  text-shadow:
-    2px 2px 0 #fff,
-   -2px -2px 0 #fff,
-    1px -1px 0 #fff,
-   -1px  1px 0 #fff;
+.overlay-content p {
+  font-size: 1rem;
+  font-weight: 300;
+  opacity: 0.8;
 }
 
-/* ===== LINKS ONLY ANIMATE ===== */
-a {
-  color: #111;
-  text-decoration: none;
-  display: inline-block;
-}
-
-a:hover {
-  animation: linkShard 0.6s infinite alternate;
-  transform: scale(1.08) rotate(-1deg);
+.close {
+  margin-top: 2rem;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  opacity: 0.6;
   cursor: pointer;
 }
 
-/* ===== HERO SHARD MOTION ===== */
-@keyframes heroShard {
+/* ===== ANIMATIONS ===== */
+
+/* Hero breathing */
+@keyframes breathe {
   0% {
-    text-shadow:
-      2px 2px 0 #ff6f61,
-     -2px -2px 0 #6fbfff,
-      1px 1px 0 #fff;
+    opacity: 0.85;
+    letter-spacing: 0.02em;
+  }
+  50% {
+    opacity: 1;
+    letter-spacing: 0.05em;
   }
   100% {
-    text-shadow:
-      5px 1px 0 #ff6f61,
-     -4px -2px 0 #6fbfff,
-      2px 2px 0 #fff;
+    opacity: 0.85;
+    letter-spacing: 0.02em;
   }
 }
 
-/* ===== LINK SHARD FLICKER ===== */
-@keyframes linkShard {
+/* Project drift */
+@keyframes drift {
   0% {
-    text-shadow:
-      2px 2px 0 #ff6f61,
-     -2px -2px 0 #6fbfff,
-      1px 1px 0 #fff;
+    transform: translateY(0);
   }
   100% {
-    text-shadow:
-      4px 0 0 #ff6f61,
-     -4px -1px 0 #6fbfff,
-      2px 2px 0 #fff;
+    transform: translateY(-12px);
   }
 }
