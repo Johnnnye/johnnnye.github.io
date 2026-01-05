@@ -12,31 +12,39 @@
 
 <main class="container" id="app">
 
+  <!-- HERO -->
   <section class="hero">
     <h1 id="about-trigger">John Emslie</h1>
     <p class="role">Sound Designer & Composer</p>
   </section>
 
+  <!-- CATEGORY FIELD -->
   <section class="categories">
+    <!-- D Dorian -->
     <div class="node" data-note="146.83" data-pan="-0.4" style="top:32%; left:30%;">
       <span class="dot"></span><span class="label">Picture</span>
     </div>
+
     <div class="node" data-note="174.61" data-pan="0.35" style="top:50%; left:62%;">
       <span class="dot"></span><span class="label">Music</span>
     </div>
+
     <div class="node" data-note="196.00" data-pan="-0.15" style="top:68%; left:40%;">
       <span class="dot"></span><span class="label">Redesigns</span>
     </div>
+
     <div class="node" data-note="220.00" data-pan="0.2" style="top:78%; left:58%;">
       <span class="dot"></span><span class="label">Games</span>
     </div>
   </section>
 
+  <!-- CONTACT -->
   <footer class="contact">
     <span>Contact</span><br>
     <a href="mailto:john@youremail.com">john@youremail.com</a>
   </footer>
 
+  <!-- ABOUT OVERLAY -->
   <div class="overlay hidden" id="about-overlay">
     <div class="overlay-content">
       <p>
@@ -52,16 +60,12 @@
 
 <script>
 /* =========================
-   AUDIO CORE
+   AUDIO CORE (CLEAN)
 ========================= */
 
 let ctx, master, reverb;
 let voices = [];
 let audioStarted = false;
-
-let lastX = 0;
-let lastTime = performance.now();
-let scratchCooldown = 0;
 
 function ensureAudio() {
   if (!ctx) initAudio();
@@ -77,10 +81,10 @@ function initAudio() {
   master.gain.value = 0.25;
   master.connect(ctx.destination);
 
-  /* REVERB */
+  /* REVERB (shared space) */
   reverb = ctx.createConvolver();
   const ir = ctx.createBuffer(2, ctx.sampleRate * 2, ctx.sampleRate);
-  for (let c = 0; c < ir.numberOfChannels; c++) {
+  for (let c = 0; c < 2; c++) {
     const d = ir.getChannelData(c);
     for (let i = 0; i < d.length; i++) {
       d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.6));
@@ -133,19 +137,19 @@ function initAudio() {
 }
 
 /* =========================
-   BLENDED CLICK (75% OLD / 25% THUD)
+   ORIGINAL SOFT CLICK
 ========================= */
 
 function softClick() {
   ensureAudio();
-  const now = ctx.currentTime;
 
-  /* OLD CLICK CORE */
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
+
   osc.type = "sine";
   osc.frequency.value = 140;
 
+  const now = ctx.currentTime;
   gain.gain.setValueAtTime(0, now);
   gain.gain.linearRampToValueAtTime(0.06, now + 0.02);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
@@ -156,76 +160,10 @@ function softClick() {
 
   osc.start(now);
   osc.stop(now + 0.7);
-
-  /* 25% LOW THUD */
-  const thudOsc = ctx.createOscillator();
-  const thudGain = ctx.createGain();
-
-  thudOsc.type = "sine";
-  thudOsc.frequency.value = 85;
-
-  thudGain.gain.setValueAtTime(0, now);
-  thudGain.gain.linearRampToValueAtTime(0.02, now + 0.015);
-  thudGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
-
-  thudOsc.connect(thudGain);
-  thudGain.connect(master);
-  thudGain.connect(reverb);
-
-  thudOsc.start(now);
-  thudOsc.stop(now + 0.4);
 }
 
 /* =========================
-   SCRATCHY MOUSE MOVEMENT
-========================= */
-
-function triggerScratch(intensity) {
-  const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.02, ctx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < data.length; i++) {
-    data[i] = (Math.random() * 2 - 1);
-  }
-
-  const noise = ctx.createBufferSource();
-  noise.buffer = buffer;
-
-  const band = ctx.createBiquadFilter();
-  band.type = "bandpass";
-  band.frequency.value = 900 + Math.random() * 600;
-  band.Q.value = 1.2;
-
-  const gain = ctx.createGain();
-  gain.gain.value = 0.015 * intensity;
-
-  noise.connect(band);
-  band.connect(gain);
-  gain.connect(master);
-
-  noise.start();
-  noise.stop(ctx.currentTime + 0.025);
-}
-
-document.addEventListener("mousemove", e => {
-  if (!audioStarted) return;
-
-  const now = performance.now();
-  const dx = e.clientX - lastX;
-  const dt = now - lastTime || 16;
-
-  const velocity = Math.abs(dx / dt);
-  lastX = e.clientX;
-  lastTime = now;
-
-  scratchCooldown -= dt;
-  if (velocity > 0.35 && scratchCooldown <= 0) {
-    triggerScratch(Math.min(velocity, 1));
-    scratchCooldown = 50;
-  }
-});
-
-/* =========================
-   NODE FOCUS
+   INTERACTION
 ========================= */
 
 document.getElementById("app").addEventListener("click", ensureAudio, { once: true });
