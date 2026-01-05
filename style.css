@@ -27,6 +27,8 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
+  z-index: 10;            /* 🔥 THIS FIXES IT */
+  pointer-events: auto;  /* 🔥 ENSURES CLICKING */
 }
 
 .hero h1 {
@@ -47,6 +49,7 @@ html, body {
 .categories {
   position: absolute;
   inset: 0;
+  z-index: 1; /* BELOW HERO */
 }
 
 /* Node = dot + text */
@@ -96,6 +99,7 @@ html, body {
   text-align: center;
   font-size: 0.85rem;
   opacity: 0.5;
+  z-index: 10;
 }
 
 .contact a {
@@ -116,6 +120,7 @@ html, body {
   align-items: center;
   justify-content: center;
   transition: opacity 0.8s ease;
+  z-index: 20;
 }
 
 .overlay.hidden {
@@ -146,7 +151,6 @@ html, body {
 
 /* ===== ANIMATIONS ===== */
 
-/* Hero breathing – noticeable but calm */
 @keyframes breathe {
   0% {
     opacity: 0.75;
@@ -162,7 +166,6 @@ html, body {
   }
 }
 
-/* Slow drift for nodes */
 @keyframes drift {
   0% {
     transform: translateY(0);
