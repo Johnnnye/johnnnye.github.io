@@ -32,13 +32,11 @@
     </div>
   </section>
 
-  <!-- CONTACT (NO NODE, NO DOT) -->
   <footer class="contact">
     <span>Contact</span><br>
     <a href="mailto:john@youremail.com" id="contact-email">john@youremail.com</a>
   </footer>
 
-  <!-- ABOUT OVERLAY -->
   <div class="overlay hidden" id="about-overlay">
     <div class="overlay-content">
       <p>
@@ -52,7 +50,6 @@
 
 </main>
 
-<!-- PICTURE OVERLAY -->
 <div class="picture-overlay hidden" id="picture-overlay">
   <button class="picture-close" id="picture-close">×</button>
   <div class="picture-track">
@@ -69,7 +66,7 @@
    AUDIO CORE
 ========================= */
 
-let ctx, master, reverb;
+let ctx, master, reverb, limiter;
 let voices = [];
 let audioStarted = false;
 
@@ -80,6 +77,7 @@ let breathDuration = 8000;
 let contactOsc, contactGain;
 
 const titleEl = document.getElementById("about-trigger");
+const emailEl = document.getElementById("contact-email");
 
 function unlockAudio() {
   if (!ctx) initAudio();
@@ -92,21 +90,31 @@ function initAudio() {
   ctx = new (window.AudioContext || window.webkitAudioContext)();
 
   master = ctx.createGain();
-  master.gain.value = 0.65;
-  master.connect(ctx.destination);
+  master.gain.value = 0.9; // 🔊 LOUD
 
+  limiter = ctx.createDynamicsCompressor();
+  limiter.threshold.value = -12;
+  limiter.knee.value = 12;
+  limiter.ratio.value = 4;
+  limiter.attack.value = 0.003;
+  limiter.release.value = 0.25;
+
+  master.connect(limiter);
+  limiter.connect(ctx.destination);
+
+  /* REVERB */
   reverb = ctx.createConvolver();
   const ir = ctx.createBuffer(2, ctx.sampleRate * 2, ctx.sampleRate);
   for (let c = 0; c < 2; c++) {
     const d = ir.getChannelData(c);
     for (let i = 0; i < d.length; i++) {
-      d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.5));
+      d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.45));
     }
   }
   reverb.buffer = ir;
 
   const revGain = ctx.createGain();
-  revGain.gain.value = 0.28;
+  revGain.gain.value = 0.35; // 🔊 richer return
   reverb.connect(revGain);
   revGain.connect(master);
 
@@ -162,7 +170,7 @@ function initBreath() {
   breathFilter = ctx.createBiquadFilter();
   breathFilter.type = "bandpass";
   breathFilter.frequency.value = 600;
-  breathFilter.Q.value = 0.5;
+  breathFilter.Q.value = 0.45;
 
   breathGain = ctx.createGain();
   breathGain.gain.value = 0;
@@ -182,25 +190,29 @@ function breathLoop(now) {
   if (!audioStarted) return;
   const phase = ((now - breathStartTime) % breathDuration) / breathDuration;
   const amp = Math.sin(phase * Math.PI);
-  breathGain.gain.setTargetAtTime(amp * 0.18, ctx.currentTime, 0.15);
+  breathGain.gain.setTargetAtTime(
+    amp * 0.28, // 🔊 clearly audible
+    ctx.currentTime,
+    0.12
+  );
   requestAnimationFrame(breathLoop);
 }
 
 function breathIn() {
   unlockAudio();
-  breathGain.gain.setTargetAtTime(0.18, ctx.currentTime, 1.5);
+  breathGain.gain.setTargetAtTime(0.28, ctx.currentTime, 1);
 }
 
 function breathOut() {
-  breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2.5);
+  breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
 }
 
-/* ===== CONTACT NOTE (EMAIL ONLY) ===== */
+/* ===== CONTACT NOTE ===== */
 
 function initContactTone() {
   contactOsc = ctx.createOscillator();
   contactOsc.type = "sine";
-  contactOsc.frequency.value = 146.83 * 1.5; // perfect fifth
+  contactOsc.frequency.value = 146.83 * 1.5;
   contactGain = ctx.createGain();
   contactGain.gain.value = 0;
 
@@ -219,48 +231,48 @@ function softClick() {
   osc.frequency.value = 140;
   const now = ctx.currentTime;
   gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(0.08, now + 0.02);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
+  gain.gain.linearRampToValueAtTime(0.1, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
   osc.connect(gain);
   gain.connect(master);
   gain.connect(reverb);
   osc.start(now);
-  osc.stop(now + 0.8);
+  osc.stop(now + 0.7);
 }
 
-/* ===== INTERACTION ===== */
+/* ===== HOVER UNLOCK FOR EVERYTHING ===== */
 
 document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("mouseenter", () => {
     unlockAudio();
     breathIn();
     const v = voices.find(x => x.el === el);
-    if (v) v.focusGain.gain.setTargetAtTime(0.08, ctx.currentTime, 1);
+    if (v) v.focusGain.gain.setTargetAtTime(0.14, ctx.currentTime, 0.8);
   });
 
   el.addEventListener("mouseleave", () => {
     breathOut();
     const v = voices.find(x => x.el === el);
-    if (v) v.focusGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
+    if (v) v.focusGain.gain.setTargetAtTime(0, ctx.currentTime, 1.5);
   });
 
   el.addEventListener("click", softClick);
 });
 
-/* NAME */
-titleEl.addEventListener("mouseenter", breathIn);
+titleEl.addEventListener("mouseenter", () => {
+  unlockAudio();
+  breathIn();
+});
 titleEl.addEventListener("mouseleave", breathOut);
 
-/* EMAIL */
-const email = document.getElementById("contact-email");
-email.addEventListener("mouseenter", () => {
+emailEl.addEventListener("mouseenter", () => {
   unlockAudio();
-  contactGain.gain.setTargetAtTime(0.05, ctx.currentTime, 1.2);
+  contactGain.gain.setTargetAtTime(0.12, ctx.currentTime, 1);
 });
-email.addEventListener("mouseleave", () => {
-  contactGain.gain.setTargetAtTime(0, ctx.currentTime, 2.5);
+emailEl.addEventListener("mouseleave", () => {
+  contactGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
 });
-email.addEventListener("click", softClick);
+emailEl.addEventListener("click", softClick);
 
 /* ABOUT */
 const overlay = document.getElementById("about-overlay");
@@ -281,10 +293,4 @@ document.querySelector(".picture-node").addEventListener("click", () => {
 document.getElementById("picture-close").addEventListener("click", () => {
   pictureOverlay.classList.add("hidden");
 });
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") pictureOverlay.classList.add("hidden");
-});
-</script>
-
-</body>
-</html>
+document.add
