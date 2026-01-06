@@ -37,7 +37,6 @@
     <a href="mailto:john@youremail.com" id="contact-email">john@youremail.com</a>
   </footer>
 
-  <!-- ABOUT OVERLAY (UNCHANGED) -->
   <div class="overlay hidden" id="about-overlay">
     <div class="overlay-content">
       <p>
@@ -51,12 +50,8 @@
 
 </main>
 
-<!-- =========================
-     PICTURE OVERLAY (NEW)
-========================= -->
 <div class="picture-overlay hidden" id="picture-overlay">
   <button class="picture-close" id="picture-close">×</button>
-
   <div class="picture-track">
     <div class="picture-item">Video 1</div>
     <div class="picture-item">Video 2</div>
@@ -68,20 +63,17 @@
 
 <script>
 /* =========================
-   AUDIO + INTERACTION
-   (UNMODIFIED — YOUR CODE)
+   AUDIO CORE
 ========================= */
 
 let ctx, master, reverb;
 let voices = [];
 let audioStarted = false;
 
-/* breathing */
 let breathNoise, breathGain, breathFilter;
 let breathStartTime;
 let breathDuration = 8000;
 
-/* contact fifth */
 let contactOsc, contactGain;
 
 const titleEl = document.getElementById("about-trigger");
@@ -97,7 +89,7 @@ function initAudio() {
   ctx = new (window.AudioContext || window.webkitAudioContext)();
 
   master = ctx.createGain();
-  master.gain.value = 0.25;
+  master.gain.value = 0.32; // 🔊 louder overall
   master.connect(ctx.destination);
 
   reverb = ctx.createConvolver();
@@ -152,7 +144,8 @@ function initAudio() {
   audioStarted = true;
 }
 
-/* BREATH */
+/* ===== BREATH ===== */
+
 function initBreath() {
   const buffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
   const data = buffer.getChannelData(0);
@@ -185,14 +178,19 @@ function breathLoop(now) {
   if (!audioStarted) return;
   const phase = ((now - breathStartTime) % breathDuration) / breathDuration;
   const amp = Math.sin(phase * Math.PI);
-  breathGain.gain.setTargetAtTime(amp * 0.07, ctx.currentTime, 0.2);
+  breathGain.gain.setTargetAtTime(
+    amp * 0.11, // 🔊 louder breathing
+    ctx.currentTime,
+    0.2
+  );
   requestAnimationFrame(breathLoop);
 }
 
 function breathIn() {
   ensureAudio();
-  breathGain.gain.setTargetAtTime(0.07, ctx.currentTime, 2);
+  breathGain.gain.setTargetAtTime(0.11, ctx.currentTime, 2);
 }
+
 function breathOut() {
   breathGain.gain.setTargetAtTime(0, ctx.currentTime, 3);
 }
@@ -245,11 +243,9 @@ document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("click", softClick);
 });
 
-/* NAME */
 titleEl.addEventListener("mouseenter", breathIn);
 titleEl.addEventListener("mouseleave", breathOut);
 
-/* CONTACT */
 const email = document.getElementById("contact-email");
 email.addEventListener("mouseenter", () => {
   ensureAudio();
@@ -260,7 +256,6 @@ email.addEventListener("mouseleave", () => {
 });
 email.addEventListener("click", softClick);
 
-/* ABOUT */
 const overlay = document.getElementById("about-overlay");
 document.getElementById("about-trigger").addEventListener("click", () => {
   overlay.classList.remove("hidden");
@@ -270,14 +265,8 @@ document.getElementById("about-close").addEventListener("click", () => {
   overlay.classList.add("hidden");
   softClick();
 });
-</script>
 
-<script>
-/* =========================
-   PICTURE OVERLAY LOGIC
-   (ADD-ON ONLY)
-========================= */
-
+/* PICTURE OVERLAY */
 const pictureOverlay = document.getElementById("picture-overlay");
 const pictureNode = document.querySelector(".picture-node");
 const pictureClose = document.getElementById("picture-close");
@@ -285,15 +274,11 @@ const pictureClose = document.getElementById("picture-close");
 pictureNode.addEventListener("click", () => {
   pictureOverlay.classList.remove("hidden");
 });
-
 pictureClose.addEventListener("click", () => {
   pictureOverlay.classList.add("hidden");
 });
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    pictureOverlay.classList.add("hidden");
-  }
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") pictureOverlay.classList.add("hidden");
 });
 </script>
 
