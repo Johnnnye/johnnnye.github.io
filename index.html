@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>John Emslie – Sound Designer & Composer</title>
-
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -63,7 +62,7 @@
 
 <script>
 /* =========================
-   AUDIO SYSTEM (STABLE)
+   AUDIO CORE
 ========================= */
 
 let ctx;
@@ -72,7 +71,11 @@ let reverb;
 let nodeVoices = [];
 let audioUnlocked = false;
 
-/* unlock audio ONCE */
+/* breathing */
+let breathSource, breathGain, breathFilter;
+let breathing = false;
+let breathPhase = 0;
+
 function unlockAudio() {
   if (audioUnlocked) return;
 
@@ -82,6 +85,7 @@ function unlockAudio() {
   master.gain.value = 0.25;
   master.connect(ctx.destination);
 
+  // reverb
   reverb = ctx.createConvolver();
   const ir = ctx.createBuffer(2, ctx.sampleRate * 2, ctx.sampleRate);
   for (let c = 0; c < 2; c++) {
@@ -98,6 +102,8 @@ function unlockAudio() {
   revGain.connect(master);
 
   buildNodes();
+  buildBreath();
+
   audioUnlocked = true;
 }
 
@@ -133,18 +139,70 @@ document.querySelectorAll(".node").forEach(el => {
     if (!audioUnlocked) return;
     const v = nodeVoices.find(v => v.el === el);
     if (v) v.gain.gain.setTargetAtTime(0.06, ctx.currentTime, 1);
+    startBreath();
   });
 
   el.addEventListener("mouseleave", () => {
     if (!audioUnlocked) return;
     const v = nodeVoices.find(v => v.el === el);
     if (v) v.gain.gain.setTargetAtTime(0, ctx.currentTime, 1.5);
+    stopBreath();
   });
 
-  el.addEventListener("click", () => {
-    clickSound();
-  });
+  el.addEventListener("click", clickSound);
 });
+
+/* =========================
+   BREATHING
+========================= */
+
+function buildBreath() {
+  const buffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+
+  breathSource = ctx.createBufferSource();
+  breathSource.buffer = buffer;
+  breathSource.loop = true;
+
+  breathFilter = ctx.createBiquadFilter();
+  breathFilter.type = "bandpass";
+  breathFilter.frequency.value = 650;
+  breathFilter.Q.value = 0.7;
+
+  breathGain = ctx.createGain();
+  breathGain.gain.value = 0;
+
+  breathSource.connect(breathFilter);
+  breathFilter.connect(breathGain);
+  breathGain.connect(reverb);
+
+  breathSource.start();
+  requestAnimationFrame(breathLoop);
+}
+
+function breathLoop() {
+  if (breathing && audioUnlocked) {
+    breathPhase += 0.015;
+    const amp = Math.sin(breathPhase) * 0.06;
+    breathGain.gain.setTargetAtTime(Math.max(0, amp), ctx.currentTime, 0.3);
+  }
+  requestAnimationFrame(breathLoop);
+}
+
+function startBreath() {
+  breathing = true;
+}
+
+function stopBreath() {
+  breathing = false;
+  breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
+}
+
+/* also breathe on name */
+const nameEl = document.getElementById("about-trigger");
+nameEl.addEventListener("mouseenter", startBreath);
+nameEl.addEventListener("mouseleave", stopBreath);
 
 /* =========================
    CLICK SOUND
@@ -177,15 +235,12 @@ function clickSound() {
 ========================= */
 
 const pictureOverlay = document.getElementById("picture-overlay");
-const pictureNode = document.getElementById("picture-node");
-const pictureClose = document.getElementById("picture-close");
-
-pictureNode.addEventListener("click", () => {
+document.getElementById("picture-node").addEventListener("click", () => {
   pictureOverlay.classList.remove("hidden");
   clickSound();
 });
 
-pictureClose.addEventListener("click", () => {
+document.getElementById("picture-close").addEventListener("click", () => {
   pictureOverlay.classList.add("hidden");
   clickSound();
 });
@@ -195,6 +250,7 @@ document.getElementById("about-trigger").addEventListener("click", () => {
   aboutOverlay.classList.remove("hidden");
   clickSound();
 });
+
 document.getElementById("about-close").addEventListener("click", () => {
   aboutOverlay.classList.add("hidden");
   clickSound();
