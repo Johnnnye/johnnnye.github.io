@@ -32,11 +32,12 @@
     </div>
   </section>
 
+  <!-- EMAIL ONLY (NO CONTACT LABEL) -->
   <footer class="contact">
-    <span>Contact</span><br>
     <a href="mailto:john@youremail.com" id="contact-email">john@youremail.com</a>
   </footer>
 
+  <!-- ABOUT OVERLAY -->
   <div class="overlay hidden" id="about-overlay">
     <div class="overlay-content">
       <p>
@@ -50,6 +51,7 @@
 
 </main>
 
+<!-- PICTURE OVERLAY -->
 <div class="picture-overlay hidden" id="picture-overlay">
   <button class="picture-close" id="picture-close">×</button>
   <div class="picture-track">
@@ -66,7 +68,7 @@
    AUDIO CORE
 ========================= */
 
-let ctx, master, reverb, limiter;
+let ctx, master, reverb;
 let voices = [];
 let audioStarted = false;
 
@@ -79,10 +81,13 @@ let contactOsc, contactGain;
 const titleEl = document.getElementById("about-trigger");
 const emailEl = document.getElementById("contact-email");
 
-function unlockAudio() {
+/* 🔓 ONE-TIME AUDIO UNLOCK (REQUIRED BY BROWSER) */
+function unlockAudioOnce() {
   if (!ctx) initAudio();
   if (ctx.state === "suspended") ctx.resume();
+  document.removeEventListener("click", unlockAudioOnce);
 }
+document.addEventListener("click", unlockAudioOnce, { once: true });
 
 function initAudio() {
   if (audioStarted) return;
@@ -90,19 +95,9 @@ function initAudio() {
   ctx = new (window.AudioContext || window.webkitAudioContext)();
 
   master = ctx.createGain();
-  master.gain.value = 0.9; // 🔊 LOUD
+  master.gain.value = 0.9;
+  master.connect(ctx.destination);
 
-  limiter = ctx.createDynamicsCompressor();
-  limiter.threshold.value = -12;
-  limiter.knee.value = 12;
-  limiter.ratio.value = 4;
-  limiter.attack.value = 0.003;
-  limiter.release.value = 0.25;
-
-  master.connect(limiter);
-  limiter.connect(ctx.destination);
-
-  /* REVERB */
   reverb = ctx.createConvolver();
   const ir = ctx.createBuffer(2, ctx.sampleRate * 2, ctx.sampleRate);
   for (let c = 0; c < 2; c++) {
@@ -114,11 +109,10 @@ function initAudio() {
   reverb.buffer = ir;
 
   const revGain = ctx.createGain();
-  revGain.gain.value = 0.35; // 🔊 richer return
+  revGain.gain.value = 0.35;
   reverb.connect(revGain);
   revGain.connect(master);
 
-  /* NODE VOICES */
   document.querySelectorAll(".node").forEach(el => {
     const freq = parseFloat(el.dataset.note);
     const panVal = parseFloat(el.dataset.pan);
@@ -190,16 +184,11 @@ function breathLoop(now) {
   if (!audioStarted) return;
   const phase = ((now - breathStartTime) % breathDuration) / breathDuration;
   const amp = Math.sin(phase * Math.PI);
-  breathGain.gain.setTargetAtTime(
-    amp * 0.28, // 🔊 clearly audible
-    ctx.currentTime,
-    0.12
-  );
+  breathGain.gain.setTargetAtTime(amp * 0.28, ctx.currentTime, 0.12);
   requestAnimationFrame(breathLoop);
 }
 
 function breathIn() {
-  unlockAudio();
   breathGain.gain.setTargetAtTime(0.28, ctx.currentTime, 1);
 }
 
@@ -207,7 +196,7 @@ function breathOut() {
   breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
 }
 
-/* ===== CONTACT NOTE ===== */
+/* ===== CONTACT NOTE (EMAIL) ===== */
 
 function initContactTone() {
   contactOsc = ctx.createOscillator();
@@ -224,7 +213,6 @@ function initContactTone() {
 
 /* CLICK */
 function softClick() {
-  unlockAudio();
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.type = "sine";
@@ -240,11 +228,10 @@ function softClick() {
   osc.stop(now + 0.7);
 }
 
-/* ===== HOVER UNLOCK FOR EVERYTHING ===== */
+/* ===== INTERACTION ===== */
 
 document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("mouseenter", () => {
-    unlockAudio();
     breathIn();
     const v = voices.find(x => x.el === el);
     if (v) v.focusGain.gain.setTargetAtTime(0.14, ctx.currentTime, 0.8);
@@ -259,14 +246,12 @@ document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("click", softClick);
 });
 
-titleEl.addEventListener("mouseenter", () => {
-  unlockAudio();
-  breathIn();
-});
+/* TITLE */
+titleEl.addEventListener("mouseenter", breathIn);
 titleEl.addEventListener("mouseleave", breathOut);
 
+/* EMAIL */
 emailEl.addEventListener("mouseenter", () => {
-  unlockAudio();
   contactGain.gain.setTargetAtTime(0.12, ctx.currentTime, 1);
 });
 emailEl.addEventListener("mouseleave", () => {
@@ -293,4 +278,10 @@ document.querySelector(".picture-node").addEventListener("click", () => {
 document.getElementById("picture-close").addEventListener("click", () => {
   pictureOverlay.classList.add("hidden");
 });
-document.add
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") pictureOverlay.classList.add("hidden");
+});
+</script>
+
+</body>
+</html>
