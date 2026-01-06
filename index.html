@@ -78,6 +78,69 @@
 
 <script>
 /* =========================
+   AUDIO CORE (MINIMAL)
+========================= */
+
+let ctx, master, reverb;
+let audioStarted = false;
+
+function ensureAudio() {
+  if (!ctx) initAudio();
+  if (ctx.state === "suspended") ctx.resume();
+}
+
+function initAudio() {
+  if (audioStarted) return;
+
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+  master = ctx.createGain();
+  master.gain.value = 0.25;
+  master.connect(ctx.destination);
+
+  // simple shared reverb
+  reverb = ctx.createConvolver();
+  const ir = ctx.createBuffer(2, ctx.sampleRate * 2, ctx.sampleRate);
+  for (let c = 0; c < 2; c++) {
+    const d = ir.getChannelData(c);
+    for (let i = 0; i < d.length; i++) {
+      d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.6));
+    }
+  }
+  reverb.buffer = ir;
+
+  const revGain = ctx.createGain();
+  revGain.gain.value = 0.18;
+  reverb.connect(revGain);
+  revGain.connect(master);
+
+  audioStarted = true;
+}
+
+/* soft click */
+function softClick() {
+  ensureAudio();
+
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = "sine";
+  osc.frequency.value = 140;
+
+  const now = ctx.currentTime;
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.06, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+
+  osc.connect(gain);
+  gain.connect(master);
+  gain.connect(reverb);
+
+  osc.start(now);
+  osc.stop(now + 0.7);
+}
+
+/* =========================
    OVERLAY HELPERS
 ========================= */
 
@@ -92,7 +155,7 @@ function closeOverlay(el) {
 }
 
 /* =========================
-   PICTURE OVERLAY LOGIC
+   OVERLAY WIRES
 ========================= */
 
 const pictureNode = document.getElementById("picture-node");
@@ -108,10 +171,6 @@ pictureClose.addEventListener("click", () => {
   closeOverlay(pictureOverlay);
 });
 
-/* =========================
-   EXISTING ABOUT LOGIC
-========================= */
-
 const aboutTrigger = document.getElementById("about-trigger");
 const aboutOverlay = document.getElementById("about-overlay");
 const aboutClose = document.getElementById("about-close");
@@ -125,9 +184,6 @@ aboutClose.addEventListener("click", () => {
   closeOverlay(aboutOverlay);
 });
 </script>
-
-<!-- AUDIO + INTERACTION SCRIPT -->
-<script src="audio.js"></script>
 
 </body>
 </html>
