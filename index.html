@@ -10,74 +10,40 @@
 
 <main class="container">
 
-  <!-- HERO -->
   <section class="hero">
     <h1 id="about-trigger">John Emslie</h1>
     <p class="role">Sound Designer & Composer</p>
   </section>
 
-  <!-- NODES -->
   <section class="categories">
-    <div class="node" data-note="146.83" id="picture-node" style="top:32%; left:30%;">
-      <span class="dot"></span><span class="label">Picture</span>
-    </div>
-    <div class="node" data-note="174.61" style="top:50%; left:62%;">
-      <span class="dot"></span><span class="label">Music</span>
-    </div>
-    <div class="node" data-note="196.00" style="top:68%; left:40%;">
-      <span class="dot"></span><span class="label">Redesigns</span>
-    </div>
-    <div class="node" data-note="220.00" style="top:78%; left:58%;">
-      <span class="dot"></span><span class="label">Games</span>
-    </div>
+    <div class="node" data-note="146.83" style="top:32%; left:30%;">Picture</div>
+    <div class="node" data-note="174.61" style="top:50%; left:62%;">Music</div>
+    <div class="node" data-note="196.00" style="top:68%; left:40%;">Redesigns</div>
+    <div class="node" data-note="220.00" style="top:78%; left:58%;">Games</div>
   </section>
 
-  <!-- CONTACT -->
   <footer class="contact">
-    <a href="mailto:john@youremail.com">john@youremail.com</a>
+    <a href="mailto:john@youremail.com" id="contact">john@youremail.com</a>
   </footer>
-
-  <!-- ABOUT OVERLAY -->
-  <div class="overlay hidden" id="about-overlay">
-    <div class="overlay-content">
-      <p>
-        I work with sound as texture, space, and motion.<br><br>
-        Focused on clarity, restraint, and interaction.
-      </p>
-      <button class="close" id="about-close">Close</button>
-    </div>
-  </div>
-
-  <!-- PICTURE OVERLAY -->
-  <div class="overlay hidden" id="picture-overlay">
-    <div class="overlay-content wide">
-      <h2>Picture</h2>
-      <p>Selected work for film and visual media.</p>
-      <div class="video-placeholder">Video Placeholder</div>
-      <button class="close" id="picture-close">Close</button>
-    </div>
-  </div>
 
 </main>
 
 <script>
 /* =========================
-   AUDIO CORE
+   AUDIO – SINGLE SOURCE OF TRUTH
 ========================= */
 
 let ctx;
 let master;
 let reverb;
-let nodeVoices = [];
-let audioUnlocked = false;
+let breathGain;
+let breathOsc;
+let nodes = [];
+let unlocked = false;
 
-/* breathing */
-let breathSource, breathGain, breathFilter;
-let breathing = false;
-let breathPhase = 0;
-
-function unlockAudio() {
-  if (audioUnlocked) return;
+/* ---------- UNLOCK ---------- */
+function unlock() {
+  if (unlocked) return;
 
   ctx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -85,7 +51,7 @@ function unlockAudio() {
   master.gain.value = 0.25;
   master.connect(ctx.destination);
 
-  // reverb
+  // Reverb
   reverb = ctx.createConvolver();
   const ir = ctx.createBuffer(2, ctx.sampleRate * 2, ctx.sampleRate);
   for (let c = 0; c < 2; c++) {
@@ -97,31 +63,58 @@ function unlockAudio() {
   reverb.buffer = ir;
 
   const revGain = ctx.createGain();
-  revGain.gain.value = 0.2;
+  revGain.gain.value = 0.25;
   reverb.connect(revGain);
   revGain.connect(master);
 
-  buildNodes();
   buildBreath();
+  buildNodes();
+  buildContact();
 
-  audioUnlocked = true;
+  unlocked = true;
 }
 
-["click", "mousemove", "keydown", "touchstart"].forEach(e =>
-  window.addEventListener(e, unlockAudio, { once: true })
-);
+window.addEventListener("mousedown", unlock, { once: true });
+window.addEventListener("mousemove", unlock, { once: true });
 
-/* =========================
-   NODE TONES
-========================= */
+/* ---------- BREATH (ALWAYS ON) ---------- */
+function buildBreath() {
+  breathOsc = ctx.createOscillator();
+  breathOsc.type = "sine";
+  breathOsc.frequency.value = 0.08; // LFO rate
 
+  breathGain = ctx.createGain();
+  breathGain.gain.value = 0;
+
+  const noise = ctx.createBufferSource();
+  const buffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+  noise.buffer = buffer;
+  noise.loop = true;
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = "bandpass";
+  filter.frequency.value = 600;
+  filter.Q.value = 0.8;
+
+  breathOsc.connect(breathGain);
+  breathGain.connect(filter.frequency);
+  noise.connect(filter);
+  filter.connect(reverb);
+
+  breathOsc.start();
+  noise.start();
+}
+
+/* ---------- NODES ---------- */
 function buildNodes() {
   document.querySelectorAll(".node").forEach(el => {
     const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-
     osc.type = "sine";
     osc.frequency.value = parseFloat(el.dataset.note);
+
+    const gain = ctx.createGain();
     gain.gain.value = 0;
 
     osc.connect(gain);
@@ -130,86 +123,54 @@ function buildNodes() {
 
     osc.start();
 
-    nodeVoices.push({ el, gain });
+    el.addEventListener("mouseenter", () => {
+      gain.gain.setTargetAtTime(0.06, ctx.currentTime, 0.8);
+    });
+
+    el.addEventListener("mouseleave", () => {
+      gain.gain.setTargetAtTime(0, ctx.currentTime, 1.2);
+    });
+
+    el.addEventListener("click", clickSound);
   });
 }
 
-document.querySelectorAll(".node").forEach(el => {
+/* ---------- CONTACT (FIXED) ---------- */
+function buildContact() {
+  const el = document.getElementById("contact");
+
+  const osc = ctx.createOscillator();
+  osc.type = "sine";
+  osc.frequency.value = 146.83 * 1.5;
+
+  const gain = ctx.createGain();
+  gain.gain.value = 0;
+
+  osc.connect(gain);
+  gain.connect(master);
+  gain.connect(reverb);
+  osc.start();
+
   el.addEventListener("mouseenter", () => {
-    if (!audioUnlocked) return;
-    const v = nodeVoices.find(v => v.el === el);
-    if (v) v.gain.gain.setTargetAtTime(0.06, ctx.currentTime, 1);
-    startBreath();
+    gain.gain.setTargetAtTime(0.04, ctx.currentTime, 1);
   });
 
   el.addEventListener("mouseleave", () => {
-    if (!audioUnlocked) return;
-    const v = nodeVoices.find(v => v.el === el);
-    if (v) v.gain.gain.setTargetAtTime(0, ctx.currentTime, 1.5);
-    stopBreath();
+    gain.gain.setTargetAtTime(0, ctx.currentTime, 1.5);
   });
 
-  el.addEventListener("click", clickSound);
-});
-
-/* =========================
-   BREATHING
-========================= */
-
-function buildBreath() {
-  const buffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
-
-  breathSource = ctx.createBufferSource();
-  breathSource.buffer = buffer;
-  breathSource.loop = true;
-
-  breathFilter = ctx.createBiquadFilter();
-  breathFilter.type = "bandpass";
-  breathFilter.frequency.value = 650;
-  breathFilter.Q.value = 0.7;
-
-  breathGain = ctx.createGain();
-  breathGain.gain.value = 0;
-
-  breathSource.connect(breathFilter);
-  breathFilter.connect(breathGain);
-  breathGain.connect(reverb);
-
-  breathSource.start();
-  requestAnimationFrame(breathLoop);
+  el.addEventListener("click", e => {
+    e.preventDefault();          // CRITICAL
+    clickSound();
+    setTimeout(() => {
+      window.location.href = el.href;
+    }, 120);
+  });
 }
 
-function breathLoop() {
-  if (breathing && audioUnlocked) {
-    breathPhase += 0.015;
-    const amp = Math.sin(breathPhase) * 0.06;
-    breathGain.gain.setTargetAtTime(Math.max(0, amp), ctx.currentTime, 0.3);
-  }
-  requestAnimationFrame(breathLoop);
-}
-
-function startBreath() {
-  breathing = true;
-}
-
-function stopBreath() {
-  breathing = false;
-  breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
-}
-
-/* also breathe on name */
-const nameEl = document.getElementById("about-trigger");
-nameEl.addEventListener("mouseenter", startBreath);
-nameEl.addEventListener("mouseleave", stopBreath);
-
-/* =========================
-   CLICK SOUND
-========================= */
-
+/* ---------- CLICK ---------- */
 function clickSound() {
-  if (!audioUnlocked) return;
+  if (!unlocked) return;
 
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
@@ -229,32 +190,6 @@ function clickSound() {
   osc.start(t);
   osc.stop(t + 0.6);
 }
-
-/* =========================
-   OVERLAYS
-========================= */
-
-const pictureOverlay = document.getElementById("picture-overlay");
-document.getElementById("picture-node").addEventListener("click", () => {
-  pictureOverlay.classList.remove("hidden");
-  clickSound();
-});
-
-document.getElementById("picture-close").addEventListener("click", () => {
-  pictureOverlay.classList.add("hidden");
-  clickSound();
-});
-
-const aboutOverlay = document.getElementById("about-overlay");
-document.getElementById("about-trigger").addEventListener("click", () => {
-  aboutOverlay.classList.remove("hidden");
-  clickSound();
-});
-
-document.getElementById("about-close").addEventListener("click", () => {
-  aboutOverlay.classList.add("hidden");
-  clickSound();
-});
 </script>
 
 </body>
