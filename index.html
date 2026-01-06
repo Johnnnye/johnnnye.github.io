@@ -20,19 +20,16 @@
 
   <!-- CATEGORY FIELD -->
   <section class="categories">
-    <div class="node" id="picture-node" data-note="146.83" data-pan="-0.4" style="top:32%; left:30%;">
+    <div class="node" id="picture-node" style="top:32%; left:30%;">
       <span class="dot"></span><span class="label">Picture</span>
     </div>
-
-    <div class="node" data-note="174.61" data-pan="0.35" style="top:50%; left:62%;">
+    <div class="node" style="top:50%; left:62%;">
       <span class="dot"></span><span class="label">Music</span>
     </div>
-
-    <div class="node" data-note="196.00" data-pan="-0.15" style="top:68%; left:40%;">
+    <div class="node" style="top:68%; left:40%;">
       <span class="dot"></span><span class="label">Redesigns</span>
     </div>
-
-    <div class="node" data-note="220.00" data-pan="0.2" style="top:78%; left:58%;">
+    <div class="node" style="top:78%; left:58%;">
       <span class="dot"></span><span class="label">Games</span>
     </div>
   </section>
@@ -40,7 +37,7 @@
   <!-- CONTACT -->
   <footer class="contact">
     <span>Contact</span><br>
-    <a href="mailto:john@youremail.com" id="contact-email">john@youremail.com</a>
+    <a href="mailto:john@youremail.com">john@youremail.com</a>
   </footer>
 
   <!-- ABOUT OVERLAY -->
@@ -61,7 +58,6 @@
       <h2>Picture</h2>
       <p class="overlay-intro">
         Selected work for film, trailers, and short-form picture.
-        Focused on atmosphere, narrative support, and restraint.
       </p>
 
       <div class="video-grid">
@@ -78,19 +74,14 @@
 
 <script>
 /* =========================
-   AUDIO CORE (MINIMAL)
+   AUDIO CORE
 ========================= */
 
 let ctx, master, reverb;
-let audioStarted = false;
-
-function ensureAudio() {
-  if (!ctx) initAudio();
-  if (ctx.state === "suspended") ctx.resume();
-}
+let audioReady = false;
 
 function initAudio() {
-  if (audioStarted) return;
+  if (ctx) return;
 
   ctx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -98,7 +89,6 @@ function initAudio() {
   master.gain.value = 0.25;
   master.connect(ctx.destination);
 
-  // simple shared reverb
   reverb = ctx.createConvolver();
   const ir = ctx.createBuffer(2, ctx.sampleRate * 2, ctx.sampleRate);
   for (let c = 0; c < 2; c++) {
@@ -113,13 +103,26 @@ function initAudio() {
   revGain.gain.value = 0.18;
   reverb.connect(revGain);
   revGain.connect(master);
-
-  audioStarted = true;
 }
 
-/* soft click */
+/* resume ON FIRST USER GESTURE */
+function unlockAudio() {
+  initAudio();
+  if (ctx.state === "suspended") ctx.resume();
+  audioReady = true;
+}
+
+/* attach once */
+["click", "mousemove", "keydown", "touchstart"].forEach(evt => {
+  window.addEventListener(evt, unlockAudio, { once: true });
+});
+
+/* =========================
+   CLICK SOUND
+========================= */
+
 function softClick() {
-  ensureAudio();
+  if (!audioReady) return;
 
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
@@ -141,7 +144,7 @@ function softClick() {
 }
 
 /* =========================
-   OVERLAY HELPERS
+   OVERLAYS
 ========================= */
 
 function openOverlay(el) {
@@ -154,35 +157,19 @@ function closeOverlay(el) {
   softClick();
 }
 
-/* =========================
-   OVERLAY WIRES
-========================= */
-
 const pictureNode = document.getElementById("picture-node");
 const pictureOverlay = document.getElementById("picture-overlay");
 const pictureClose = document.getElementById("picture-close");
 
-pictureNode.addEventListener("click", () => {
-  ensureAudio();
-  openOverlay(pictureOverlay);
-});
-
-pictureClose.addEventListener("click", () => {
-  closeOverlay(pictureOverlay);
-});
+pictureNode.addEventListener("click", () => openOverlay(pictureOverlay));
+pictureClose.addEventListener("click", () => closeOverlay(pictureOverlay));
 
 const aboutTrigger = document.getElementById("about-trigger");
 const aboutOverlay = document.getElementById("about-overlay");
 const aboutClose = document.getElementById("about-close");
 
-aboutTrigger.addEventListener("click", () => {
-  ensureAudio();
-  openOverlay(aboutOverlay);
-});
-
-aboutClose.addEventListener("click", () => {
-  closeOverlay(aboutOverlay);
-});
+aboutTrigger.addEventListener("click", () => openOverlay(aboutOverlay));
+aboutClose.addEventListener("click", () => closeOverlay(aboutOverlay));
 </script>
 
 </body>
