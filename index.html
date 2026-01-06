@@ -32,8 +32,9 @@
     </div>
   </section>
 
-  <footer class="contact">
-    <span>Contact</span><br>
+  <footer class="contact node" id="contact-node">
+    <span class="dot"></span>
+    <span class="label">Contact</span><br>
     <a href="mailto:john@youremail.com" id="contact-email">john@youremail.com</a>
   </footer>
 
@@ -78,7 +79,7 @@ let contactOsc, contactGain;
 
 const titleEl = document.getElementById("about-trigger");
 
-function ensureAudio() {
+function unlockAudio() {
   if (!ctx) initAudio();
   if (ctx.state === "suspended") ctx.resume();
 }
@@ -89,7 +90,7 @@ function initAudio() {
   ctx = new (window.AudioContext || window.webkitAudioContext)();
 
   master = ctx.createGain();
-  master.gain.value = 0.32; // 🔊 louder overall
+  master.gain.value = 0.65; // 🔊 MUCH louder
   master.connect(ctx.destination);
 
   reverb = ctx.createConvolver();
@@ -97,19 +98,19 @@ function initAudio() {
   for (let c = 0; c < 2; c++) {
     const d = ir.getChannelData(c);
     for (let i = 0; i < d.length; i++) {
-      d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.6));
+      d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.5));
     }
   }
   reverb.buffer = ir;
 
   const revGain = ctx.createGain();
-  revGain.gain.value = 0.18;
+  revGain.gain.value = 0.28; // 🔊 more return
   reverb.connect(revGain);
   revGain.connect(master);
 
   document.querySelectorAll(".node").forEach(el => {
-    const freq = parseFloat(el.dataset.note);
-    const panVal = parseFloat(el.dataset.pan);
+    const freq = parseFloat(el.dataset.note || 146.83);
+    const panVal = parseFloat(el.dataset.pan || 0);
 
     const baseGain = ctx.createGain();
     const focusGain = ctx.createGain();
@@ -157,8 +158,8 @@ function initBreath() {
 
   breathFilter = ctx.createBiquadFilter();
   breathFilter.type = "bandpass";
-  breathFilter.frequency.value = 650;
-  breathFilter.Q.value = 0.6;
+  breathFilter.frequency.value = 600;
+  breathFilter.Q.value = 0.5;
 
   breathGain = ctx.createGain();
   breathGain.gain.value = 0;
@@ -178,30 +179,28 @@ function breathLoop(now) {
   if (!audioStarted) return;
   const phase = ((now - breathStartTime) % breathDuration) / breathDuration;
   const amp = Math.sin(phase * Math.PI);
-  breathGain.gain.setTargetAtTime(
-    amp * 0.11, // 🔊 louder breathing
-    ctx.currentTime,
-    0.2
-  );
+  breathGain.gain.setTargetAtTime(amp * 0.18, ctx.currentTime, 0.15); // 🔊 louder breath
   requestAnimationFrame(breathLoop);
 }
 
 function breathIn() {
-  ensureAudio();
-  breathGain.gain.setTargetAtTime(0.11, ctx.currentTime, 2);
+  unlockAudio();
+  breathGain.gain.setTargetAtTime(0.18, ctx.currentTime, 1.5);
 }
 
 function breathOut() {
-  breathGain.gain.setTargetAtTime(0, ctx.currentTime, 3);
+  breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2.5);
 }
 
-/* CONTACT */
+/* CONTACT TONE */
 function initContactTone() {
   contactOsc = ctx.createOscillator();
   contactOsc.type = "sine";
   contactOsc.frequency.value = 146.83 * 1.5;
+
   contactGain = ctx.createGain();
   contactGain.gain.value = 0;
+
   contactOsc.connect(contactGain);
   contactGain.connect(reverb);
   contactGain.connect(master);
@@ -210,54 +209,50 @@ function initContactTone() {
 
 /* CLICK */
 function softClick() {
-  ensureAudio();
+  unlockAudio();
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.type = "sine";
   osc.frequency.value = 140;
   const now = ctx.currentTime;
   gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(0.06, now + 0.02);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+  gain.gain.linearRampToValueAtTime(0.08, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
   osc.connect(gain);
   gain.connect(master);
   gain.connect(reverb);
   osc.start(now);
-  osc.stop(now + 0.7);
+  osc.stop(now + 0.8);
 }
 
-/* INTERACTION */
-document.getElementById("app").addEventListener("mousemove", ensureAudio, { once: true });
-
+/* INTERACTION — GUARANTEED UNLOCK */
 document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("mouseenter", () => {
+    unlockAudio();
     breathIn();
     const v = voices.find(x => x.el === el);
-    if (v) v.focusGain.gain.setTargetAtTime(0.045, ctx.currentTime, 1.2);
+    if (v) v.focusGain.gain.setTargetAtTime(0.08, ctx.currentTime, 1);
   });
+
   el.addEventListener("mouseleave", () => {
     breathOut();
     const v = voices.find(x => x.el === el);
-    if (v) v.focusGain.gain.setTargetAtTime(0, ctx.currentTime, 2.5);
+    if (v) v.focusGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
   });
+
   el.addEventListener("click", softClick);
 });
 
+/* NAME */
 titleEl.addEventListener("mouseenter", breathIn);
 titleEl.addEventListener("mouseleave", breathOut);
 
-const email = document.getElementById("contact-email");
-email.addEventListener("mouseenter", () => {
-  ensureAudio();
-  contactGain.gain.setTargetAtTime(0.035, ctx.currentTime, 1.5);
-});
-email.addEventListener("mouseleave", () => {
-  contactGain.gain.setTargetAtTime(0, ctx.currentTime, 3);
-});
-email.addEventListener("click", softClick);
+/* CONTACT EMAIL STILL CLICKS */
+document.getElementById("contact-email").addEventListener("click", softClick);
 
+/* ABOUT */
 const overlay = document.getElementById("about-overlay");
-document.getElementById("about-trigger").addEventListener("click", () => {
+titleEl.addEventListener("click", () => {
   overlay.classList.remove("hidden");
   softClick();
 });
@@ -268,13 +263,10 @@ document.getElementById("about-close").addEventListener("click", () => {
 
 /* PICTURE OVERLAY */
 const pictureOverlay = document.getElementById("picture-overlay");
-const pictureNode = document.querySelector(".picture-node");
-const pictureClose = document.getElementById("picture-close");
-
-pictureNode.addEventListener("click", () => {
+document.querySelector(".picture-node").addEventListener("click", () => {
   pictureOverlay.classList.remove("hidden");
 });
-pictureClose.addEventListener("click", () => {
+document.getElementById("picture-close").addEventListener("click", () => {
   pictureOverlay.classList.add("hidden");
 });
 document.addEventListener("keydown", e => {
