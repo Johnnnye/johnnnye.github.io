@@ -27,8 +27,8 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
-  z-index: 10;
-  pointer-events: auto;
+  z-index: 10;            /* 🔥 THIS FIXES IT */
+  pointer-events: auto;  /* 🔥 ENSURES CLICKING */
 }
 
 .hero h1 {
@@ -49,9 +49,10 @@ html, body {
 .categories {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 1; /* BELOW HERO */
 }
 
+/* Node = dot + text */
 .node {
   position: absolute;
   display: flex;
@@ -68,6 +69,7 @@ html, body {
   transform: scale(1.05);
 }
 
+/* Dot */
 .dot {
   width: 5px;
   height: 5px;
@@ -81,6 +83,7 @@ html, body {
   opacity: 1;
 }
 
+/* Label */
 .label {
   font-size: 1.1rem;
   font-weight: 400;
@@ -108,7 +111,7 @@ html, body {
   opacity: 0.8;
 }
 
-/* ===== ABOUT OVERLAY ===== */
+/* ===== OVERLAY ===== */
 .overlay {
   position: fixed;
   inset: 0;
@@ -144,62 +147,6 @@ html, body {
 
 .close:hover {
   opacity: 0.8;
-}
-
-/* ===== PICTURE OVERLAY (NEW) ===== */
-
-.picture-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(245, 246, 244, 0.96);
-  z-index: 30;
-  display: flex;
-  align-items: center;
-  opacity: 1;
-}
-
-.picture-overlay.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.picture-track {
-  display: flex;
-  gap: 6vw;
-  padding: 0 8vw;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-}
-
-.picture-track::-webkit-scrollbar {
-  display: none;
-}
-
-.picture-item {
-  flex: 0 0 70vw;
-  height: 42vh;
-  background: #e3e3e3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  scroll-snap-align: center;
-  font-size: 0.9rem;
-  opacity: 0.85;
-}
-
-.picture-close {
-  position: absolute;
-  top: 3%;
-  right: 4%;
-  font-size: 2rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-.picture-close:hover {
-  opacity: 1;
 }
 
 /* ===== ANIMATIONS ===== */
