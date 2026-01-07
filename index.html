@@ -33,10 +33,10 @@
     </div>
   </section>
 
-  <!-- CONTACT NODE -->
+  <!-- CONTACT -->
   <footer class="contact">
-    <a href="mailto:typesofapes@gmail.com" id="contact-email">
-      <div class="node contact-node" data-note="246.94" data-pan="0">
+    <a href="mailto:typesofapes@gmail.com" id="contact-link">
+      <div class="node contact-node">
         <span class="dot"></span>
         <span class="label">Contact</span>
       </div>
@@ -57,29 +57,6 @@
 
 </main>
 
-<!-- PICTURE OVERLAY -->
-<div class="picture-overlay hidden" id="picture-overlay">
-  <button class="picture-close" id="picture-close">×</button>
-
-  <div class="picture-track">
-    <div class="picture-project">
-      <div class="project-text">
-        <strong>Project Title</strong><br>
-        Sound design and music for short-form picture.<br>
-        Focus on texture, restraint, and spatial movement.
-      </div>
-
-      <div class="project-video">
-        <iframe
-          id="picture-video-1"
-          src="https://player.vimeo.com/video/892530565"
-          allowfullscreen>
-        </iframe>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
 /* =========================
    AUDIO CORE
@@ -96,9 +73,11 @@ let breathDuration = 8000;
 let contactOsc, contactGain;
 
 const titleEl = document.getElementById("about-trigger");
-const contactEl = document.querySelector(".contact-node");
+const aboutOverlay = document.getElementById("about-overlay");
+const aboutClose = document.getElementById("about-close");
+const contactNode = document.querySelector(".contact-node");
 
-/* UNLOCK AUDIO */
+/* AUDIO UNLOCK */
 document.addEventListener("click", () => {
   if (!ctx) initAudio();
   if (ctx.state === "suspended") ctx.resume();
@@ -111,7 +90,6 @@ function initAudio() {
 
   master = ctx.createGain();
   master.gain.value = 0.9;
-  window.siteMaster = master;
 
   const limiter = ctx.createDynamicsCompressor();
   limiter.threshold.value = -6;
@@ -123,6 +101,7 @@ function initAudio() {
   master.connect(limiter);
   limiter.connect(ctx.destination);
 
+  /* REVERB */
   reverb = ctx.createConvolver();
   const ir = ctx.createBuffer(2, ctx.sampleRate * 2, ctx.sampleRate);
   for (let c = 0; c < 2; c++) {
@@ -155,7 +134,6 @@ function initAudio() {
 
     const osc = ctx.createOscillator();
     const focusOsc = ctx.createOscillator();
-
     osc.type = "sine";
     focusOsc.type = "sine";
     osc.frequency.value = freq;
@@ -174,10 +152,10 @@ function initAudio() {
     voices.push({ el, baseGain, focusGain });
   });
 
-  /* CONTACT TONE */
+  /* CONTACT TONE — IN KEY (D MAJOR, A = 220) */
   contactOsc = ctx.createOscillator();
   contactOsc.type = "sine";
-  contactOsc.frequency.value = 246.94;
+  contactOsc.frequency.value = 220; // A3
   contactGain = ctx.createGain();
   contactGain.gain.value = 0;
 
@@ -227,6 +205,23 @@ function breathLoop(now) {
   requestAnimationFrame(breathLoop);
 }
 
+/* CLICK SOUND */
+function softClick() {
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "sine";
+  osc.frequency.value = 140;
+  const now = ctx.currentTime;
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.1, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+  osc.connect(gain);
+  gain.connect(master);
+  gain.connect(reverb);
+  osc.start(now);
+  osc.stop(now + 0.6);
+}
+
 /* INTERACTION */
 document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("mouseenter", () => {
@@ -238,23 +233,26 @@ document.querySelectorAll(".node").forEach(el => {
     const v = voices.find(x => x.el === el);
     if (v) v.focusGain.gain.setTargetAtTime(0, ctx.currentTime, 1.5);
   });
+
+  el.addEventListener("click", softClick);
 });
 
 /* CONTACT HOVER */
-contactEl.addEventListener("mouseenter", () => {
+contactNode.addEventListener("mouseenter", () => {
   contactGain.gain.setTargetAtTime(0.12, ctx.currentTime, 1);
 });
-contactEl.addEventListener("mouseleave", () => {
+contactNode.addEventListener("mouseleave", () => {
   contactGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
 });
 
-/* OVERLAYS */
-document.querySelector(".picture-node").addEventListener("click", () => {
-  document.getElementById("picture-overlay").classList.remove("hidden");
+/* ABOUT */
+titleEl.addEventListener("click", () => {
+  aboutOverlay.classList.remove("hidden");
+  softClick();
 });
-
-document.getElementById("picture-close").addEventListener("click", () => {
-  document.getElementById("picture-overlay").classList.add("hidden");
+aboutClose.addEventListener("click", () => {
+  aboutOverlay.classList.add("hidden");
+  softClick();
 });
 </script>
 
