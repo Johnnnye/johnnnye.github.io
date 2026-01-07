@@ -122,6 +122,7 @@ function initAudio() {
   revGain.connect(master);
 
   document.querySelectorAll(".node").forEach(el => {
+      if (el.classList.contains("contact-node")) return;
     const freq = parseFloat(el.dataset.note);
     const panVal = parseFloat(el.dataset.pan);
 
