@@ -316,3 +316,26 @@ document.addEventListener("keydown", e => {
 
 </body>
 </html>
+
+    // ===== VIMEO AUDIO DUCKING =====
+document.querySelectorAll("iframe[src*='vimeo.com']").forEach(iframe => {
+  const player = new Vimeo.Player(iframe);
+
+  player.on("play", () => {
+    if (window.siteMaster) {
+      window.siteMaster.gain.setTargetAtTime(0.15, ctx.currentTime, 0.4);
+    }
+  });
+
+  player.on("pause", () => {
+    if (window.siteMaster) {
+      window.siteMaster.gain.setTargetAtTime(0.9, ctx.currentTime, 1.2);
+    }
+  });
+
+  player.on("ended", () => {
+    if (window.siteMaster) {
+      window.siteMaster.gain.setTargetAtTime(0.9, ctx.currentTime, 1.2);
+    }
+  });
+});
