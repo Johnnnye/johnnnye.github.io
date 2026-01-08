@@ -1,11 +1,12 @@
-/* RESET */
+
+/* ===== RESET ===== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* BASE */
+/* ===== BASE ===== */
 html, body {
   height: 100%;
   font-family: "Inter", system-ui, sans-serif;
@@ -13,14 +14,14 @@ html, body {
   color: #222;
 }
 
-/* CONTAINER */
+/* ===== CONTAINER ===== */
 .container {
   position: relative;
   height: 100%;
   overflow: hidden;
 }
 
-/* HERO */
+/* ===== HERO ===== */
 .hero {
   position: absolute;
   top: 12%;
@@ -28,6 +29,7 @@ html, body {
   transform: translateX(-50%);
   text-align: center;
   z-index: 10;
+  pointer-events: auto;
 }
 
 .hero h1 {
@@ -44,7 +46,7 @@ html, body {
   opacity: 0.7;
 }
 
-/* CATEGORIES */
+/* ===== CATEGORY FIELD ===== */
 .categories {
   position: absolute;
   inset: 0;
@@ -73,19 +75,28 @@ html, body {
   border-radius: 50%;
   background: #222;
   opacity: 0.6;
+  transition: opacity 1.2s ease;
+}
+
+.node:hover .dot {
+  opacity: 1;
 }
 
 .label {
   font-size: 1.1rem;
   font-weight: 400;
+  white-space: nowrap;
 }
 
-/* CONTACT */
+/* ===== CONTACT ===== */
 .contact {
   position: absolute;
   bottom: 3%;
   left: 50%;
   transform: translateX(-50%);
+  text-align: center;
+  font-size: 0.85rem;
+  opacity: 0.5;
   z-index: 10;
 }
 
@@ -94,14 +105,19 @@ html, body {
   text-decoration: none;
 }
 
-/* ABOUT OVERLAY */
+.contact a:hover {
+  opacity: 0.8;
+}
+
+/* ===== ABOUT OVERLAY ===== */
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(245,246,244,0.92);
+  background: rgba(245, 246, 244, 0.92);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: opacity 0.8s ease;
   z-index: 20;
 }
 
@@ -110,14 +126,104 @@ html, body {
   pointer-events: none;
 }
 
-/* ANIMATIONS */
+.overlay-content {
+  max-width: 420px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.close {
+  margin-top: 2rem;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.close:hover {
+  opacity: 0.8;
+}
+
+/* ===== PICTURE OVERLAY (NEW) ===== */
+
+.picture-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(245, 246, 244, 0.96);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+}
+
+.picture-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.picture-track {
+  display: flex;
+  gap: 6vw;
+  padding: 0 8vw;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+
+.picture-track::-webkit-scrollbar {
+  display: none;
+}
+
+.picture-item {
+  flex: 0 0 70vw;
+  height: 42vh;
+  background: #e3e3e3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: center;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.picture-close {
+  position: absolute;
+  top: 3%;
+  right: 4%;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.picture-close:hover {
+  opacity: 1;
+}
+
+/* ===== ANIMATIONS ===== */
+
 @keyframes breathe {
-  0% { opacity: 0.75; letter-spacing: 0.02em; }
-  50% { opacity: 1; letter-spacing: 0.12em; }
-  100% { opacity: 0.75; letter-spacing: 0.02em; }
+  0% {
+    opacity: 0.75;
+    letter-spacing: 0.02em;
+  }
+  50% {
+    opacity: 1;
+    letter-spacing: 0.12em;
+  }
+  100% {
+    opacity: 0.75;
+    letter-spacing: 0.02em;
+  }
 }
 
 @keyframes drift {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-14px); }
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-14px);
+  }
 }
