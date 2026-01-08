@@ -32,10 +32,12 @@
     </div>
   </section>
 
+  <!-- EMAIL ONLY (NO CONTACT LABEL) -->
   <footer class="contact">
     <a href="mailto:john@youremail.com" id="contact-email">Contact</a>
   </footer>
 
+  <!-- ABOUT OVERLAY -->
   <div class="overlay hidden" id="about-overlay">
     <div class="overlay-content">
       <p>
@@ -49,6 +51,7 @@
 
 </main>
 
+<!-- PICTURE OVERLAY -->
 <div class="picture-overlay hidden" id="picture-overlay">
   <button class="picture-close" id="picture-close">×</button>
   <div class="picture-track">
@@ -78,16 +81,13 @@ let contactOsc, contactGain;
 const titleEl = document.getElementById("about-trigger");
 const emailEl = document.getElementById("contact-email");
 
-/* 🔓 AUDIO UNLOCK — THIS WAS MISSING */
+/* 🔓 ONE-TIME AUDIO UNLOCK (REQUIRED BY BROWSER) */
 function unlockAudioOnce() {
   if (!ctx) initAudio();
   if (ctx.state === "suspended") ctx.resume();
   document.removeEventListener("click", unlockAudioOnce);
-  document.removeEventListener("mousemove", unlockAudioOnce);
 }
-
 document.addEventListener("click", unlockAudioOnce, { once: true });
-document.addEventListener("mousemove", unlockAudioOnce, { once: true });
 
 function initAudio() {
   if (audioStarted) return;
@@ -196,13 +196,12 @@ function breathOut() {
   breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
 }
 
-/* ===== CONTACT NOTE ===== */
+/* ===== CONTACT NOTE (EMAIL) ===== */
 
 function initContactTone() {
   contactOsc = ctx.createOscillator();
   contactOsc.type = "sine";
   contactOsc.frequency.value = 146.83 * 1.5;
-
   contactGain = ctx.createGain();
   contactGain.gain.value = 0;
 
@@ -228,12 +227,13 @@ function softClick() {
   osc.start(now);
   osc.stop(now + 0.7);
 }
-
 function muteSiteAudio() {
-  master.gain.setTargetAtTime(0, ctx.currentTime, 0.4);
+  if (!ctx || !master) return;
+  master.gain.setTargetAtTime(0.0, ctx.currentTime, 0.4);
 }
 
 function unmuteSiteAudio() {
+  if (!ctx || !master) return;
   master.gain.setTargetAtTime(0.9, ctx.currentTime, 0.8);
 }
 
@@ -281,10 +281,20 @@ document.getElementById("about-close").addEventListener("click", () => {
   softClick();
 });
 
-/* PICTURE */
+/* PICTURE OVERLAY */
 const pictureOverlay = document.getElementById("picture-overlay");
 document.querySelector(".picture-node").addEventListener("click", () => {
   pictureOverlay.classList.remove("hidden");
   muteSiteAudio();
 });
-document
+document.getElementById("picture-close").addEventListener("click", () => {
+  pictureOverlay.classList.add("hidden");
+  unmuteSiteAudio();
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") pictureOverlay.classList.add("hidden");
+});
+</script>
+
+</body>
+</html>
