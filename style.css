@@ -74,17 +74,11 @@ html, body {
   border-radius: 50%;
   background: #222;
   opacity: 0.6;
-  transition: opacity 1.2s ease;
-}
-
-.node:hover .dot {
-  opacity: 1;
 }
 
 .label {
   font-size: 1.1rem;
   font-weight: 400;
-  white-space: nowrap;
 }
 
 /* ===== CONTACT ===== */
@@ -93,70 +87,22 @@ html, body {
   bottom: 3%;
   left: 50%;
   transform: translateX(-50%);
-  text-align: center;
   font-size: 0.85rem;
   opacity: 0.5;
-  z-index: 10;
 }
 
-.contact a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.contact a:hover {
-  opacity: 0.8;
-}
-
-/* ===== ABOUT OVERLAY ===== */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(245, 246, 244, 0.92);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.8s ease;
-  z-index: 20;
-}
-
-.overlay.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.overlay-content {
-  max-width: 420px;
-  text-align: center;
-  font-size: 1.1rem;
-  font-weight: 300;
-  line-height: 1.6;
-}
-
-.close {
-  margin-top: 2rem;
-  background: none;
-  border: none;
-  font-size: 0.9rem;
-  opacity: 0.5;
-  cursor: pointer;
-}
-
-.close:hover {
-  opacity: 0.8;
-}
-
-/* ===== PICTURE OVERLAY ===== */
-
+/* ===== OVERLAYS ===== */
+.overlay,
 .picture-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(245, 246, 244, 0.96);
-  z-index: 30;
+  background: rgba(245,246,244,0.95);
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
+.overlay.hidden,
 .picture-overlay.hidden {
   opacity: 0;
   pointer-events: none;
@@ -164,32 +110,14 @@ html, body {
 
 .picture-track {
   display: flex;
-  gap: 6vw;
   padding: 0 8vw;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-}
-
-.picture-track::-webkit-scrollbar {
-  display: none;
 }
 
 .picture-project {
-  flex: 0 0 70vw;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  scroll-snap-align: center;
-}
-
-.project-text {
-  font-size: 0.95rem;
-  line-height: 1.5;
-  max-width: 420px;
+  width: 70vw;
 }
 
 .project-video {
-  width: 100%;
   aspect-ratio: 16 / 9;
   background: #000;
 }
@@ -207,36 +135,16 @@ html, body {
   font-size: 2rem;
   background: none;
   border: none;
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-.picture-close:hover {
-  opacity: 1;
 }
 
 /* ===== ANIMATIONS ===== */
-
 @keyframes breathe {
-  0% {
-    opacity: 0.75;
-    letter-spacing: 0.02em;
-  }
-  50% {
-    opacity: 1;
-    letter-spacing: 0.12em;
-  }
-  100% {
-    opacity: 0.75;
-    letter-spacing: 0.02em;
-  }
+  0% { opacity: 0.75; letter-spacing: 0.02em; }
+  50% { opacity: 1; letter-spacing: 0.12em; }
+  100% { opacity: 0.75; letter-spacing: 0.02em; }
 }
 
 @keyframes drift {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-14px);
-  }
+  from { transform: translateY(0); }
+  to { transform: translateY(-14px); }
 }
