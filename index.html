@@ -306,6 +306,22 @@ document.getElementById("picture-close").addEventListener("click", () => {
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") pictureOverlay.classList.add("hidden");
 });
+
+/* STOP VIMEO WHEN PICTURE OVERLAY CLOSES */
+const vimeoFrame = document.getElementById("picture-video-1");
+
+function stopVimeo() {
+  if (!vimeoFrame) return;
+  vimeoFrame.contentWindow.postMessage(
+    JSON.stringify({ method: "pause" }),
+    "*"
+  );
+}
+
+document.getElementById("picture-close").addEventListener("click", stopVimeo);
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") stopVimeo();
+});  
 </script>
 
 </body>
