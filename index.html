@@ -32,8 +32,9 @@
     </div>
   </section>
 
+  <!-- EMAIL ONLY (NO CONTACT LABEL) -->
   <footer class="contact">
-    <a href="mailto:john@youremail.com" id="contact-email">contact</a>
+    <a href="mailto:john@youremail.com" id="contact-email">Contact</a>
   </footer>
 
   <!-- ABOUT OVERLAY -->
@@ -74,18 +75,19 @@ let audioStarted = false;
 let breathNoise, breathGain, breathFilter;
 let breathStartTime;
 let breathDuration = 8000;
-let breathAllowed = false;
 
 let contactOsc, contactGain;
 
 const titleEl = document.getElementById("about-trigger");
 const emailEl = document.getElementById("contact-email");
 
-/* 🔓 AUDIO UNLOCK */
-document.addEventListener("click", () => {
+/* 🔓 ONE-TIME AUDIO UNLOCK (REQUIRED BY BROWSER) */
+function unlockAudioOnce() {
   if (!ctx) initAudio();
   if (ctx.state === "suspended") ctx.resume();
-}, { once: true });
+  document.removeEventListener("click", unlockAudioOnce);
+}
+document.addEventListener("click", unlockAudioOnce, { once: true });
 
 function initAudio() {
   if (audioStarted) return;
@@ -140,7 +142,7 @@ function initAudio() {
     osc.start();
     focusOsc.start();
 
-    voices.push({ el, focusGain });
+    voices.push({ el, baseGain, focusGain });
   });
 
   initBreath();
@@ -180,22 +182,26 @@ function initBreath() {
 
 function breathLoop(now) {
   if (!audioStarted) return;
-
   const phase = ((now - breathStartTime) % breathDuration) / breathDuration;
-  const shape = Math.sin(phase * Math.PI);
-  const amp = breathAllowed ? shape * 0.28 : 0;
-
-  breathGain.gain.setTargetAtTime(amp, ctx.currentTime, 0.15);
+  const amp = Math.sin(phase * Math.PI);
+  breathGain.gain.setTargetAtTime(amp * 0.28, ctx.currentTime, 0.12);
   requestAnimationFrame(breathLoop);
 }
 
-/* ===== CONTACT TONE ===== */
+function breathIn() {
+  breathGain.gain.setTargetAtTime(0.28, ctx.currentTime, 1);
+}
+
+function breathOut() {
+  breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
+}
+
+/* ===== CONTACT NOTE (EMAIL) ===== */
 
 function initContactTone() {
   contactOsc = ctx.createOscillator();
   contactOsc.type = "sine";
   contactOsc.frequency.value = 146.83 * 1.5;
-
   contactGain = ctx.createGain();
   contactGain.gain.value = 0;
 
@@ -221,43 +227,39 @@ function softClick() {
   osc.start(now);
   osc.stop(now + 0.7);
 }
-
-/* ===== BREATH GATE ===== */
-
-function cursorWithinNodeBounds(x) {
-  const nodes = document.querySelectorAll(".node");
-  let min = Infinity, max = -Infinity;
-  nodes.forEach(n => {
-    const r = n.getBoundingClientRect();
-    min = Math.min(min, r.left);
-    max = Math.max(max, r.right);
-  });
-  return x >= min && x <= max;
+function muteSiteAudio() {
+  if (!ctx || !master) return;
+  master.gain.setTargetAtTime(0.0, ctx.currentTime, 0.4);
 }
 
-document.addEventListener("mousemove", e => {
-  if (!cursorWithinNodeBounds(e.clientX)) breathAllowed = false;
-});
+function unmuteSiteAudio() {
+  if (!ctx || !master) return;
+  master.gain.setTargetAtTime(0.9, ctx.currentTime, 0.8);
+}
 
 /* ===== INTERACTION ===== */
 
 document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("mouseenter", () => {
-    breathAllowed = true;
+    breathIn();
     const v = voices.find(x => x.el === el);
     if (v) v.focusGain.gain.setTargetAtTime(0.14, ctx.currentTime, 0.8);
   });
+
   el.addEventListener("mouseleave", () => {
-    breathAllowed = false;
+    breathOut();
     const v = voices.find(x => x.el === el);
     if (v) v.focusGain.gain.setTargetAtTime(0, ctx.currentTime, 1.5);
   });
+
   el.addEventListener("click", softClick);
 });
 
-titleEl.addEventListener("mouseenter", () => breathAllowed = true);
-titleEl.addEventListener("mouseleave", () => breathAllowed = false);
+/* TITLE */
+titleEl.addEventListener("mouseenter", breathIn);
+titleEl.addEventListener("mouseleave", breathOut);
 
+/* EMAIL */
 emailEl.addEventListener("mouseenter", () => {
   contactGain.gain.setTargetAtTime(0.12, ctx.currentTime, 1);
 });
@@ -266,35 +268,31 @@ emailEl.addEventListener("mouseleave", () => {
 });
 emailEl.addEventListener("click", softClick);
 
-/* ===== OVERLAYS ===== */
-
-function muteSite() {
-  master.gain.setTargetAtTime(0, ctx.currentTime, 0.4);
-}
-function unmuteSite() {
-  master.gain.setTargetAtTime(0.9, ctx.currentTime, 0.8);
-}
-
+/* ABOUT */
 const overlay = document.getElementById("about-overlay");
 titleEl.addEventListener("click", () => {
   overlay.classList.remove("hidden");
-  muteSite();
+  muteSiteAudio();
   softClick();
 });
 document.getElementById("about-close").addEventListener("click", () => {
   overlay.classList.add("hidden");
-  unmuteSite();
+  unmuteSiteAudio();
   softClick();
 });
 
+/* PICTURE OVERLAY */
 const pictureOverlay = document.getElementById("picture-overlay");
 document.querySelector(".picture-node").addEventListener("click", () => {
   pictureOverlay.classList.remove("hidden");
-  muteSite();
+  muteSiteAudio();
 });
 document.getElementById("picture-close").addEventListener("click", () => {
   pictureOverlay.classList.add("hidden");
-  unmuteSite();
+  unmuteSiteAudio();
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") pictureOverlay.classList.add("hidden");
 });
 </script>
 
