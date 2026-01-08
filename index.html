@@ -7,7 +7,6 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <script src="https://player.vimeo.com/api/player.js"></script>
 </head>
 <body>
 
@@ -33,14 +32,9 @@
     </div>
   </section>
 
-  <!-- CONTACT -->
+  <!-- EMAIL ONLY (NO CONTACT LABEL) -->
   <footer class="contact">
-    <a href="mailto:typesofapes@gmail.com" id="contact-link">
-      <div class="node contact-node">
-        <span class="dot"></span>
-        <span class="label">Contact</span>
-      </div>
-    </a>
+    <a href="mailto:john@youremail.com" id="contact-email">john@youremail.com</a>
   </footer>
 
   <!-- ABOUT OVERLAY -->
@@ -56,6 +50,18 @@
   </div>
 
 </main>
+
+<!-- PICTURE OVERLAY -->
+<div class="picture-overlay hidden" id="picture-overlay">
+  <button class="picture-close" id="picture-close">×</button>
+  <div class="picture-track">
+    <div class="picture-item">Video 1</div>
+    <div class="picture-item">Video 2</div>
+    <div class="picture-item">Video 3</div>
+    <div class="picture-item">Video 4</div>
+    <div class="picture-item">Video 5</div>
+  </div>
+</div>
 
 <script>
 /* =========================
@@ -73,15 +79,15 @@ let breathDuration = 8000;
 let contactOsc, contactGain;
 
 const titleEl = document.getElementById("about-trigger");
-const aboutOverlay = document.getElementById("about-overlay");
-const aboutClose = document.getElementById("about-close");
-const contactNode = document.querySelector(".contact-node");
+const emailEl = document.getElementById("contact-email");
 
-/* AUDIO UNLOCK */
-document.addEventListener("click", () => {
+/* 🔓 ONE-TIME AUDIO UNLOCK (REQUIRED BY BROWSER) */
+function unlockAudioOnce() {
   if (!ctx) initAudio();
   if (ctx.state === "suspended") ctx.resume();
-}, { once: true });
+  document.removeEventListener("click", unlockAudioOnce);
+}
+document.addEventListener("click", unlockAudioOnce, { once: true });
 
 function initAudio() {
   if (audioStarted) return;
@@ -90,18 +96,8 @@ function initAudio() {
 
   master = ctx.createGain();
   master.gain.value = 0.9;
+  master.connect(ctx.destination);
 
-  const limiter = ctx.createDynamicsCompressor();
-  limiter.threshold.value = -6;
-  limiter.knee.value = 6;
-  limiter.ratio.value = 12;
-  limiter.attack.value = 0.003;
-  limiter.release.value = 0.15;
-
-  master.connect(limiter);
-  limiter.connect(ctx.destination);
-
-  /* REVERB */
   reverb = ctx.createConvolver();
   const ir = ctx.createBuffer(2, ctx.sampleRate * 2, ctx.sampleRate);
   for (let c = 0; c < 2; c++) {
@@ -117,23 +113,20 @@ function initAudio() {
   reverb.connect(revGain);
   revGain.connect(master);
 
-  /* NODE VOICES */
   document.querySelectorAll(".node").forEach(el => {
-    if (el.classList.contains("contact-node")) return;
-
     const freq = parseFloat(el.dataset.note);
     const panVal = parseFloat(el.dataset.pan);
 
     const baseGain = ctx.createGain();
     const focusGain = ctx.createGain();
-    baseGain.gain.value = 0;
-    focusGain.gain.value = 0;
-
     const pan = ctx.createStereoPanner();
-    pan.pan.value = panVal;
-
     const osc = ctx.createOscillator();
     const focusOsc = ctx.createOscillator();
+
+    baseGain.gain.value = 0;
+    focusGain.gain.value = 0;
+    pan.pan.value = panVal;
+
     osc.type = "sine";
     focusOsc.type = "sine";
     osc.frequency.value = freq;
@@ -152,23 +145,13 @@ function initAudio() {
     voices.push({ el, baseGain, focusGain });
   });
 
-  /* CONTACT TONE — IN KEY (D MAJOR, A = 220) */
-  contactOsc = ctx.createOscillator();
-  contactOsc.type = "sine";
-  contactOsc.frequency.value = 220; // A3
-  contactGain = ctx.createGain();
-  contactGain.gain.value = 0;
-
-  contactOsc.connect(contactGain);
-  contactGain.connect(reverb);
-  contactGain.connect(master);
-  contactOsc.start();
-
   initBreath();
+  initContactTone();
   audioStarted = true;
 }
 
-/* BREATH */
+/* ===== BREATH ===== */
+
 function initBreath() {
   const buffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
   const data = buffer.getChannelData(0);
@@ -191,21 +174,44 @@ function initBreath() {
   breathGain.connect(reverb);
   breathNoise.start();
 
+  const styles = getComputedStyle(titleEl);
+  breathDuration = parseFloat(styles.animationDuration || "8") * 1000;
   breathStartTime = performance.now();
   requestAnimationFrame(breathLoop);
 }
 
 function breathLoop(now) {
+  if (!audioStarted) return;
   const phase = ((now - breathStartTime) % breathDuration) / breathDuration;
-  breathGain.gain.setTargetAtTime(
-    Math.sin(phase * Math.PI) * 0.28,
-    ctx.currentTime,
-    0.12
-  );
+  const amp = Math.sin(phase * Math.PI);
+  breathGain.gain.setTargetAtTime(amp * 0.28, ctx.currentTime, 0.12);
   requestAnimationFrame(breathLoop);
 }
 
-/* CLICK SOUND */
+function breathIn() {
+  breathGain.gain.setTargetAtTime(0.28, ctx.currentTime, 1);
+}
+
+function breathOut() {
+  breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
+}
+
+/* ===== CONTACT NOTE (EMAIL) ===== */
+
+function initContactTone() {
+  contactOsc = ctx.createOscillator();
+  contactOsc.type = "sine";
+  contactOsc.frequency.value = 146.83 * 1.5;
+  contactGain = ctx.createGain();
+  contactGain.gain.value = 0;
+
+  contactOsc.connect(contactGain);
+  contactGain.connect(reverb);
+  contactGain.connect(master);
+  contactOsc.start();
+}
+
+/* CLICK */
 function softClick() {
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
@@ -214,22 +220,25 @@ function softClick() {
   const now = ctx.currentTime;
   gain.gain.setValueAtTime(0, now);
   gain.gain.linearRampToValueAtTime(0.1, now + 0.02);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
   osc.connect(gain);
   gain.connect(master);
   gain.connect(reverb);
   osc.start(now);
-  osc.stop(now + 0.6);
+  osc.stop(now + 0.7);
 }
 
-/* INTERACTION */
+/* ===== INTERACTION ===== */
+
 document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("mouseenter", () => {
+    breathIn();
     const v = voices.find(x => x.el === el);
     if (v) v.focusGain.gain.setTargetAtTime(0.14, ctx.currentTime, 0.8);
   });
 
   el.addEventListener("mouseleave", () => {
+    breathOut();
     const v = voices.find(x => x.el === el);
     if (v) v.focusGain.gain.setTargetAtTime(0, ctx.currentTime, 1.5);
   });
@@ -237,22 +246,40 @@ document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("click", softClick);
 });
 
-/* CONTACT HOVER */
-contactNode.addEventListener("mouseenter", () => {
+/* TITLE */
+titleEl.addEventListener("mouseenter", breathIn);
+titleEl.addEventListener("mouseleave", breathOut);
+
+/* EMAIL */
+emailEl.addEventListener("mouseenter", () => {
   contactGain.gain.setTargetAtTime(0.12, ctx.currentTime, 1);
 });
-contactNode.addEventListener("mouseleave", () => {
+emailEl.addEventListener("mouseleave", () => {
   contactGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
 });
+emailEl.addEventListener("click", softClick);
 
 /* ABOUT */
+const overlay = document.getElementById("about-overlay");
 titleEl.addEventListener("click", () => {
-  aboutOverlay.classList.remove("hidden");
+  overlay.classList.remove("hidden");
   softClick();
 });
-aboutClose.addEventListener("click", () => {
-  aboutOverlay.classList.add("hidden");
+document.getElementById("about-close").addEventListener("click", () => {
+  overlay.classList.add("hidden");
   softClick();
+});
+
+/* PICTURE OVERLAY */
+const pictureOverlay = document.getElementById("picture-overlay");
+document.querySelector(".picture-node").addEventListener("click", () => {
+  pictureOverlay.classList.remove("hidden");
+});
+document.getElementById("picture-close").addEventListener("click", () => {
+  pictureOverlay.classList.add("hidden");
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") pictureOverlay.classList.add("hidden");
 });
 </script>
 
