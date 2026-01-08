@@ -1,3 +1,4 @@
+style.css:
 /* ===== RESET ===== */
 * {
   margin: 0;
@@ -74,11 +75,17 @@ html, body {
   border-radius: 50%;
   background: #222;
   opacity: 0.6;
+  transition: opacity 1.2s ease;
+}
+
+.node:hover .dot {
+  opacity: 1;
 }
 
 .label {
   font-size: 1.1rem;
   font-weight: 400;
+  white-space: nowrap;
 }
 
 /* ===== CONTACT ===== */
@@ -87,22 +94,70 @@ html, body {
   bottom: 3%;
   left: 50%;
   transform: translateX(-50%);
+  text-align: center;
   font-size: 0.85rem;
   opacity: 0.5;
+  z-index: 10;
 }
 
-/* ===== OVERLAYS ===== */
-.overlay,
-.picture-overlay {
+.contact a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.contact a:hover {
+  opacity: 0.8;
+}
+
+/* ===== ABOUT OVERLAY ===== */
+.overlay {
   position: fixed;
   inset: 0;
-  background: rgba(245,246,244,0.95);
+  background: rgba(245, 246, 244, 0.92);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: opacity 0.8s ease;
+  z-index: 20;
 }
 
-.overlay.hidden,
+.overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.overlay-content {
+  max-width: 420px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.close {
+  margin-top: 2rem;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.close:hover {
+  opacity: 0.8;
+}
+
+/* ===== PICTURE OVERLAY (NEW) ===== */
+
+.picture-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(245, 246, 244, 0.96);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+}
+
 .picture-overlay.hidden {
   opacity: 0;
   pointer-events: none;
@@ -110,22 +165,26 @@ html, body {
 
 .picture-track {
   display: flex;
+  gap: 6vw;
   padding: 0 8vw;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
 }
 
-.picture-project {
-  width: 70vw;
+.picture-track::-webkit-scrollbar {
+  display: none;
 }
 
-.project-video {
-  aspect-ratio: 16 / 9;
-  background: #000;
-}
-
-.project-video iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
+.picture-item {
+  flex: 0 0 70vw;
+  height: 42vh;
+  background: #e3e3e3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: center;
+  font-size: 0.9rem;
+  opacity: 0.85;
 }
 
 .picture-close {
@@ -135,16 +194,66 @@ html, body {
   font-size: 2rem;
   background: none;
   border: none;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.picture-close:hover {
+  opacity: 1;
 }
 
 /* ===== ANIMATIONS ===== */
+
 @keyframes breathe {
-  0% { opacity: 0.75; letter-spacing: 0.02em; }
-  50% { opacity: 1; letter-spacing: 0.12em; }
-  100% { opacity: 0.75; letter-spacing: 0.02em; }
+  0% {
+    opacity: 0.75;
+    letter-spacing: 0.02em;
+  }
+  50% {
+    opacity: 1;
+    letter-spacing: 0.12em;
+  }
+  100% {
+    opacity: 0.75;
+    letter-spacing: 0.02em;
+  }
 }
 
 @keyframes drift {
-  from { transform: translateY(0); }
-  to { transform: translateY(-14px); }
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-14px);
+  }
+}
+/* ===== CONTACT AS NODE (VISUAL ONLY) ===== */
+
+#contact-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.1rem;
+  font-weight: 400;
+  opacity: 0.35;
+  transition: opacity 1.2s ease, transform 6s ease;
+}
+
+#contact-email::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #222;
+  opacity: 0.6;
+  transition: opacity 1.2s ease;
+}
+
+#contact-email:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+#contact-email:hover::before {
+  opacity: 1;
 }
