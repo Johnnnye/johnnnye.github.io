@@ -227,6 +227,3 @@ html, body {
     transform: translateY(-14px);
   }
 }
-.contact .node {
-  position: static;
-}
