@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -261,3 +262,27 @@ emailEl.addEventListener("click", softClick);
 
 /* ABOUT */
 const overlay = document.getElementById("about-overlay");
+titleEl.addEventListener("click", () => {
+  overlay.classList.remove("hidden");
+  softClick();
+});
+document.getElementById("about-close").addEventListener("click", () => {
+  overlay.classList.add("hidden");
+  softClick();
+});
+
+/* PICTURE OVERLAY */
+const pictureOverlay = document.getElementById("picture-overlay");
+document.querySelector(".picture-node").addEventListener("click", () => {
+  pictureOverlay.classList.remove("hidden");
+});
+document.getElementById("picture-close").addEventListener("click", () => {
+  pictureOverlay.classList.add("hidden");
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") pictureOverlay.classList.add("hidden");
+});
+</script>
+
+</body>
+</html>
