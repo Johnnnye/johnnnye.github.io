@@ -32,9 +32,8 @@
     </div>
   </section>
 
-  <!-- CONTACT -->
   <footer class="contact">
-    <a href="mailto:john@youremail.com" id="contact-email">Contact</a>
+    <a href="mailto:john@youremail.com" id="contact-email">contact</a>
   </footer>
 
   <!-- ABOUT OVERLAY -->
@@ -75,19 +74,18 @@ let audioStarted = false;
 let breathNoise, breathGain, breathFilter;
 let breathStartTime;
 let breathDuration = 8000;
+let breathAllowed = false;
 
 let contactOsc, contactGain;
 
 const titleEl = document.getElementById("about-trigger");
 const emailEl = document.getElementById("contact-email");
 
-/* ONE-TIME AUDIO UNLOCK */
-function unlockAudioOnce() {
+/* 🔓 AUDIO UNLOCK */
+document.addEventListener("click", () => {
   if (!ctx) initAudio();
   if (ctx.state === "suspended") ctx.resume();
-  document.removeEventListener("click", unlockAudioOnce);
-}
-document.addEventListener("click", unlockAudioOnce, { once: true });
+}, { once: true });
 
 function initAudio() {
   if (audioStarted) return;
@@ -142,7 +140,7 @@ function initAudio() {
     osc.start();
     focusOsc.start();
 
-    voices.push({ el, baseGain, focusGain });
+    voices.push({ el, focusGain });
   });
 
   initBreath();
@@ -182,18 +180,13 @@ function initBreath() {
 
 function breathLoop(now) {
   if (!audioStarted) return;
+
   const phase = ((now - breathStartTime) % breathDuration) / breathDuration;
-  const amp = Math.sin(phase * Math.PI);
-  breathGain.gain.setTargetAtTime(amp * 0.28, ctx.currentTime, 0.12);
+  const shape = Math.sin(phase * Math.PI);
+  const amp = breathAllowed ? shape * 0.28 : 0;
+
+  breathGain.gain.setTargetAtTime(amp, ctx.currentTime, 0.15);
   requestAnimationFrame(breathLoop);
-}
-
-function breathIn() {
-  breathGain.gain.setTargetAtTime(0.28, ctx.currentTime, 1);
-}
-
-function breathOut() {
-  breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
 }
 
 /* ===== CONTACT TONE ===== */
@@ -202,6 +195,7 @@ function initContactTone() {
   contactOsc = ctx.createOscillator();
   contactOsc.type = "sine";
   contactOsc.frequency.value = 146.83 * 1.5;
+
   contactGain = ctx.createGain();
   contactGain.gain.value = 0;
 
@@ -228,64 +222,42 @@ function softClick() {
   osc.stop(now + 0.7);
 }
 
-/* ===== GLOBAL AUDIO MUTE FOR OVERLAYS ===== */
+/* ===== BREATH GATE ===== */
 
-function muteSiteAudio() {
-  if (!ctx || !master) return;
-  master.gain.setTargetAtTime(0.0, ctx.currentTime, 0.4);
-}
-
-function unmuteSiteAudio() {
-  if (!ctx || !master) return;
-  master.gain.setTargetAtTime(0.9, ctx.currentTime, 0.8);
-}
-
-/* ===== BREATH SPATIAL GATE ===== */
-
-function isCursorWithinNodeBounds(x) {
+function cursorWithinNodeBounds(x) {
   const nodes = document.querySelectorAll(".node");
-  let minX = Infinity;
-  let maxX = -Infinity;
-
-  nodes.forEach(node => {
-    const rect = node.getBoundingClientRect();
-    minX = Math.min(minX, rect.left);
-    maxX = Math.max(maxX, rect.right);
+  let min = Infinity, max = -Infinity;
+  nodes.forEach(n => {
+    const r = n.getBoundingClientRect();
+    min = Math.min(min, r.left);
+    max = Math.max(max, r.right);
   });
-
-  return x >= minX && x <= maxX;
+  return x >= min && x <= max;
 }
 
-document.addEventListener("mousemove", (e) => {
-  if (!audioStarted) return;
-  if (!isCursorWithinNodeBounds(e.clientX)) {
-    breathOut();
-  }
+document.addEventListener("mousemove", e => {
+  if (!cursorWithinNodeBounds(e.clientX)) breathAllowed = false;
 });
 
 /* ===== INTERACTION ===== */
 
 document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("mouseenter", () => {
-    breathIn();
+    breathAllowed = true;
     const v = voices.find(x => x.el === el);
     if (v) v.focusGain.gain.setTargetAtTime(0.14, ctx.currentTime, 0.8);
   });
-
   el.addEventListener("mouseleave", () => {
-    breathOut();
+    breathAllowed = false;
     const v = voices.find(x => x.el === el);
     if (v) v.focusGain.gain.setTargetAtTime(0, ctx.currentTime, 1.5);
   });
-
   el.addEventListener("click", softClick);
 });
 
-/* TITLE */
-titleEl.addEventListener("mouseenter", breathIn);
-titleEl.addEventListener("mouseleave", breathOut);
+titleEl.addEventListener("mouseenter", () => breathAllowed = true);
+titleEl.addEventListener("mouseleave", () => breathAllowed = false);
 
-/* EMAIL */
 emailEl.addEventListener("mouseenter", () => {
   contactGain.gain.setTargetAtTime(0.12, ctx.currentTime, 1);
 });
@@ -294,34 +266,35 @@ emailEl.addEventListener("mouseleave", () => {
 });
 emailEl.addEventListener("click", softClick);
 
-/* ABOUT OVERLAY */
+/* ===== OVERLAYS ===== */
+
+function muteSite() {
+  master.gain.setTargetAtTime(0, ctx.currentTime, 0.4);
+}
+function unmuteSite() {
+  master.gain.setTargetAtTime(0.9, ctx.currentTime, 0.8);
+}
+
 const overlay = document.getElementById("about-overlay");
 titleEl.addEventListener("click", () => {
   overlay.classList.remove("hidden");
-  muteSiteAudio();
+  muteSite();
   softClick();
 });
 document.getElementById("about-close").addEventListener("click", () => {
   overlay.classList.add("hidden");
-  unmuteSiteAudio();
+  unmuteSite();
   softClick();
 });
 
-/* PICTURE OVERLAY */
 const pictureOverlay = document.getElementById("picture-overlay");
 document.querySelector(".picture-node").addEventListener("click", () => {
   pictureOverlay.classList.remove("hidden");
-  muteSiteAudio();
+  muteSite();
 });
 document.getElementById("picture-close").addEventListener("click", () => {
   pictureOverlay.classList.add("hidden");
-  unmuteSiteAudio();
-});
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") {
-    pictureOverlay.classList.add("hidden");
-    unmuteSiteAudio();
-  }
+  unmuteSite();
 });
 </script>
 
