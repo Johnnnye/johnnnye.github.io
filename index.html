@@ -32,7 +32,6 @@
     </div>
   </section>
 
-  <!-- EMAIL ONLY (NO CONTACT LABEL) -->
   <footer class="contact">
     <a href="mailto:john@youremail.com" id="contact-email">Contact</a>
   </footer>
@@ -56,7 +55,6 @@
   <button class="picture-close" id="picture-close">×</button>
 
   <div class="picture-track">
-
     <div class="picture-item">
       <iframe
         id="picture-video-1"
@@ -71,7 +69,6 @@
     <div class="picture-item">Video 3</div>
     <div class="picture-item">Video 4</div>
     <div class="picture-item">Video 5</div>
-
   </div>
 </div>
 
@@ -93,13 +90,15 @@ let contactOsc, contactGain;
 const titleEl = document.getElementById("about-trigger");
 const emailEl = document.getElementById("contact-email");
 
-/* 🔓 ONE-TIME AUDIO UNLOCK (REQUIRED BY BROWSER) */
+/* 🔓 AUDIO UNLOCK (CLICK OR MOVE) */
 function unlockAudioOnce() {
   if (!ctx) initAudio();
   if (ctx.state === "suspended") ctx.resume();
   document.removeEventListener("click", unlockAudioOnce);
+  document.removeEventListener("mousemove", unlockAudioOnce);
 }
 document.addEventListener("click", unlockAudioOnce, { once: true });
+document.addEventListener("mousemove", unlockAudioOnce, { once: true });
 
 function initAudio() {
   if (audioStarted) return;
@@ -186,8 +185,6 @@ function initBreath() {
   breathGain.connect(reverb);
   breathNoise.start();
 
-  const styles = getComputedStyle(titleEl);
-  breathDuration = parseFloat(styles.animationDuration || "8") * 1000;
   breathStartTime = performance.now();
   requestAnimationFrame(breathLoop);
 }
@@ -208,12 +205,13 @@ function breathOut() {
   breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
 }
 
-/* ===== CONTACT NOTE (EMAIL) ===== */
+/* ===== CONTACT NOTE ===== */
 
 function initContactTone() {
   contactOsc = ctx.createOscillator();
   contactOsc.type = "sine";
   contactOsc.frequency.value = 146.83 * 1.5;
+
   contactGain = ctx.createGain();
   contactGain.gain.value = 0;
 
@@ -229,23 +227,24 @@ function softClick() {
   const gain = ctx.createGain();
   osc.type = "sine";
   osc.frequency.value = 140;
+
   const now = ctx.currentTime;
   gain.gain.setValueAtTime(0, now);
   gain.gain.linearRampToValueAtTime(0.1, now + 0.02);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+
   osc.connect(gain);
   gain.connect(master);
   gain.connect(reverb);
   osc.start(now);
   osc.stop(now + 0.7);
 }
+
 function muteSiteAudio() {
-  if (!ctx || !master) return;
-  master.gain.setTargetAtTime(0.0, ctx.currentTime, 0.4);
+  master.gain.setTargetAtTime(0, ctx.currentTime, 0.4);
 }
 
 function unmuteSiteAudio() {
-  if (!ctx || !master) return;
   master.gain.setTargetAtTime(0.9, ctx.currentTime, 0.8);
 }
 
@@ -267,11 +266,9 @@ document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("click", softClick);
 });
 
-/* TITLE */
 titleEl.addEventListener("mouseenter", breathIn);
 titleEl.addEventListener("mouseleave", breathOut);
 
-/* EMAIL */
 emailEl.addEventListener("mouseenter", () => {
   contactGain.gain.setTargetAtTime(0.12, ctx.currentTime, 1);
 });
@@ -295,33 +292,34 @@ document.getElementById("about-close").addEventListener("click", () => {
 
 /* PICTURE OVERLAY */
 const pictureOverlay = document.getElementById("picture-overlay");
-document.querySelector(".picture-node").addEventListener("click", () => {
-  pictureOverlay.classList.remove("hidden");
-  muteSiteAudio();
-});
-document.getElementById("picture-close").addEventListener("click", () => {
-  pictureOverlay.classList.add("hidden");
-  unmuteSiteAudio();
-});
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") pictureOverlay.classList.add("hidden");
-});
-
-/* STOP VIMEO WHEN PICTURE OVERLAY CLOSES */
 const vimeoFrame = document.getElementById("picture-video-1");
 
 function stopVimeo() {
-  if (!vimeoFrame) return;
+  if (!vimeoFrame || !vimeoFrame.contentWindow) return;
   vimeoFrame.contentWindow.postMessage(
     JSON.stringify({ method: "pause" }),
     "*"
   );
 }
 
-document.getElementById("picture-close").addEventListener("click", stopVimeo);
+document.querySelector(".picture-node").addEventListener("click", () => {
+  pictureOverlay.classList.remove("hidden");
+  muteSiteAudio();
+});
+
+document.getElementById("picture-close").addEventListener("click", () => {
+  pictureOverlay.classList.add("hidden");
+  unmuteSiteAudio();
+  stopVimeo();
+});
+
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") stopVimeo();
-});  
+  if (e.key === "Escape") {
+    pictureOverlay.classList.add("hidden");
+    unmuteSiteAudio();
+    stopVimeo();
+  }
+});
 </script>
 
 </body>
