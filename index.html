@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,7 +32,7 @@
     </div>
   </section>
 
-  <!-- EMAIL ONLY (NO CONTACT LABEL) -->
+  <!-- CONTACT -->
   <footer class="contact">
     <a href="mailto:john@youremail.com" id="contact-email">Contact</a>
   </footer>
@@ -82,7 +81,7 @@ let contactOsc, contactGain;
 const titleEl = document.getElementById("about-trigger");
 const emailEl = document.getElementById("contact-email");
 
-/* 🔓 ONE-TIME AUDIO UNLOCK (REQUIRED BY BROWSER) */
+/* ONE-TIME AUDIO UNLOCK */
 function unlockAudioOnce() {
   if (!ctx) initAudio();
   if (ctx.state === "suspended") ctx.resume();
@@ -197,7 +196,7 @@ function breathOut() {
   breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
 }
 
-/* ===== CONTACT NOTE (EMAIL) ===== */
+/* ===== CONTACT TONE ===== */
 
 function initContactTone() {
   contactOsc = ctx.createOscillator();
@@ -228,6 +227,9 @@ function softClick() {
   osc.start(now);
   osc.stop(now + 0.7);
 }
+
+/* ===== GLOBAL AUDIO MUTE FOR OVERLAYS ===== */
+
 function muteSiteAudio() {
   if (!ctx || !master) return;
   master.gain.setTargetAtTime(0.0, ctx.currentTime, 0.4);
@@ -237,6 +239,29 @@ function unmuteSiteAudio() {
   if (!ctx || !master) return;
   master.gain.setTargetAtTime(0.9, ctx.currentTime, 0.8);
 }
+
+/* ===== BREATH SPATIAL GATE ===== */
+
+function isCursorWithinNodeBounds(x) {
+  const nodes = document.querySelectorAll(".node");
+  let minX = Infinity;
+  let maxX = -Infinity;
+
+  nodes.forEach(node => {
+    const rect = node.getBoundingClientRect();
+    minX = Math.min(minX, rect.left);
+    maxX = Math.max(maxX, rect.right);
+  });
+
+  return x >= minX && x <= maxX;
+}
+
+document.addEventListener("mousemove", (e) => {
+  if (!audioStarted) return;
+  if (!isCursorWithinNodeBounds(e.clientX)) {
+    breathOut();
+  }
+});
 
 /* ===== INTERACTION ===== */
 
@@ -269,7 +294,7 @@ emailEl.addEventListener("mouseleave", () => {
 });
 emailEl.addEventListener("click", softClick);
 
-/* ABOUT */
+/* ABOUT OVERLAY */
 const overlay = document.getElementById("about-overlay");
 titleEl.addEventListener("click", () => {
   overlay.classList.remove("hidden");
@@ -293,7 +318,10 @@ document.getElementById("picture-close").addEventListener("click", () => {
   unmuteSiteAudio();
 });
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") pictureOverlay.classList.add("hidden");
+  if (e.key === "Escape") {
+    pictureOverlay.classList.add("hidden");
+    unmuteSiteAudio();
+  }
 });
 </script>
 
