@@ -301,16 +301,3 @@ html, body {
   height: 100%;
   border: none;
 }
-
-.project-link {
-  display: inline-block;
-  margin-top: 1.2rem;
-  font-size: 0.85rem;
-  text-decoration: none;
-  color: inherit;
-  opacity: 0.6;
-}
-
-.project-link:hover {
-  opacity: 1;
-}
