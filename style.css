@@ -304,18 +304,12 @@ html, body {
   height: 100%;
   border: none;
 }
-
-/* FORCE SCROLLING FOR NON-LINEAR LINKS */
-.picture-track > a.picture-item {
-  display: flex;
-  flex: 0 0 70vw;
-}
-/* FORCE HORIZONTAL SCROLL FOR NON-LINEAR OVERLAY */
+/* NON-LINEAR: 3 ITEMS SIDE BY SIDE, NO SCROLL */
 #nonlinear-overlay .picture-track {
-  overflow-x: scroll;
+  overflow: hidden;
 }
 
 #nonlinear-overlay .picture-item {
-  min-width: 70vw;
-  flex: 0 0 auto;
+  flex: 1;
+  min-width: 0;
 }
