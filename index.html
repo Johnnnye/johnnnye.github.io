@@ -462,10 +462,10 @@ document.querySelector(".picture-node").addEventListener("click", () => {
   muteSiteAudio();
 });
 
-nonlinearClose.addEventListener("click", () => {
-  nonlinearOverlay.classList.add("hidden");
+document.getElementById("picture-close").addEventListener("click", () => {
+  pictureOverlay.classList.add("hidden");
   unmuteSiteAudio();
-  setTimeout(softClick, 120);
+  stopVimeo();
 });
 
 document.addEventListener("keydown", e => {
@@ -490,11 +490,8 @@ nonlinearNode.addEventListener("click", () => {
 nonlinearClose.addEventListener("click", () => {
   nonlinearOverlay.classList.add("hidden");
   unmuteSiteAudio();
-  setTimeout(softClick, 120);
 });
 </script>
 
 </body>
 </html>
-
-
