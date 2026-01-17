@@ -21,16 +21,12 @@
     <div class="node picture-node" data-note="146.83" data-pan="-0.4" style="top:32%; left:30%;">
       <span class="dot"></span><span class="label">Linear</span>
     </div>
-
-    <!-- NON-LINEAR NODE (ONLY ADDED CLASS) -->
-    <div class="node nonlinear-node" data-note="174.61" data-pan="0.35" style="top:50%; left:62%;">
+    <div class="node" data-note="174.61" data-pan="0.35" style="top:50%; left:62%;">
       <span class="dot"></span><span class="label">Non-Linear</span>
     </div>
-
     <div class="node" data-note="196.00" data-pan="-0.15" style="top:68%; left:40%;">
       <span class="dot"></span><span class="label">Redesigns</span>
     </div>
-
     <div class="node" data-note="220.00" data-pan="0.2" style="top:78%; left:58%;">
       <span class="dot"></span><span class="label">Music and Sound Art</span>
     </div>
@@ -54,47 +50,157 @@
 
 </main>
 
-<!-- PICTURE OVERLAY (UNCHANGED) -->
+<!-- PICTURE OVERLAY -->
 <div class="picture-overlay hidden" id="picture-overlay">
   <button class="picture-close" id="picture-close">×</button>
-  <div class="picture-track">
-    <!-- your existing picture items stay here -->
-  </div>
-</div>
-
-<!-- NON-LINEAR OVERLAY (NEW, REUSES SAME STYLES) -->
-<div class="picture-overlay hidden" id="nonlinear-overlay">
-  <button class="picture-close" id="nonlinear-close">×</button>
 
   <div class="picture-track">
 
-    <a class="picture-item" href="https://yourgame1.itch.io" target="_blank">
+    <!-- VIDEO 1 -->
+    <div class="picture-item">
       <div class="project-text">
-        <strong>Project One</strong><br>
-        Interactive sound design project.
+        <strong>Project Name</strong><br>
+        Sound design and music created for picture-based work.<br>
+        Focus on texture, spatial movement, and emotional restraint,
+        supporting narrative without drawing attention to itself.
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
       </div>
-    </a>
 
-    <a class="picture-item" href="https://yourgame2.itch.io" target="_blank">
-      <div class="project-text">
-        <strong>Project Two</strong><br>
-        Non-linear audio systems and implementation.
+      <div class="project-video">
+        <iframe
+          id="picture-video-1"
+          src="https://player.vimeo.com/video/1153134132"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
       </div>
-    </a>
+    </div>
 
-    <a class="picture-item" href="https://yourgame3.itch.io" target="_blank">
+    <!-- VIDEO 2 -->
+    <div class="picture-item">
       <div class="project-text">
-        <strong>Project Three</strong><br>
-        Experimental interactive audio work.
+        <strong>Project Name</strong><br>
+        Sound design and music for linear visual media.<br>
+        Emphasis on pacing, tonal balance, and subtle narrative support.
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
       </div>
-    </a>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-2"
+          src="https://player.vimeo.com/video/1153134107"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- VIDEO 3 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Project Name</strong><br>
+        Audio work supporting visual storytelling through restraint
+        and careful use of space and dynamics.
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-3"
+          src="https://player.vimeo.com/video/1153134085"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- VIDEO 4 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Project Name</strong><br>
+        Sound design created to enhance mood, rhythm,
+        and narrative clarity without overpowering the image.
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-4"
+          src="https://player.vimeo.com/video/1153134193"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- VIDEO 5 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Project Name</strong><br>
+        Experimental and narrative-focused sound work,
+        designed to complement pacing and visual tone.
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-5"
+          src="https://player.vimeo.com/video/1153134161"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- VIDEO 6 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Project Name</strong><br>
+        Sound design and music supporting visual media,
+        prioritizing clarity, atmosphere, and emotional intent.
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-6"
+          src="https://player.vimeo.com/video/1153134218"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
 
   </div>
 </div>
 
 <script>
 /* =========================
-   AUDIO CORE (UNCHANGED)
+   AUDIO CORE
 ========================= */
 
 let ctx, master, reverb;
@@ -110,7 +216,7 @@ let contactOsc, contactGain;
 const titleEl = document.getElementById("about-trigger");
 const emailEl = document.getElementById("contact-email");
 
-/* AUDIO UNLOCK */
+/* 🔓 AUDIO UNLOCK (CLICK OR MOVE) */
 function unlockAudioOnce() {
   if (!ctx) initAudio();
   if (ctx.state === "suspended") ctx.resume();
@@ -176,50 +282,86 @@ function initAudio() {
     voices.push({ el, baseGain, focusGain });
   });
 
+  initBreath();
+  initContactTone();
   audioStarted = true;
 }
 
-/* INTERACTION */
+/* ===== BREATH ===== */
 
-document.querySelectorAll(".node").forEach(el => {
-  el.addEventListener("click", () => {
-    if (audioStarted) softClick();
-  });
-});
+function initBreath() {
+  const buffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
 
-/* PICTURE OVERLAY */
-const pictureOverlay = document.getElementById("picture-overlay");
-document.querySelector(".picture-node").addEventListener("click", () => {
-  pictureOverlay.classList.remove("hidden");
-  muteSiteAudio();
-});
-document.getElementById("picture-close").addEventListener("click", () => {
-  pictureOverlay.classList.add("hidden");
-  unmuteSiteAudio();
-});
+  breathNoise = ctx.createBufferSource();
+  breathNoise.buffer = buffer;
+  breathNoise.loop = true;
 
-/* NON-LINEAR OVERLAY */
-const nonlinearOverlay = document.getElementById("nonlinear-overlay");
-document.querySelector(".nonlinear-node").addEventListener("click", () => {
-  nonlinearOverlay.classList.remove("hidden");
-  muteSiteAudio();
-});
-document.getElementById("nonlinear-close").addEventListener("click", () => {
-  nonlinearOverlay.classList.add("hidden");
-  unmuteSiteAudio();
-});
+  breathFilter = ctx.createBiquadFilter();
+  breathFilter.type = "bandpass";
+  breathFilter.frequency.value = 600;
+  breathFilter.Q.value = 0.45;
 
+  breathGain = ctx.createGain();
+  breathGain.gain.value = 0;
+
+  breathNoise.connect(breathFilter);
+  breathFilter.connect(breathGain);
+  breathGain.connect(reverb);
+  breathNoise.start();
+
+  breathStartTime = performance.now();
+  requestAnimationFrame(breathLoop);
+}
+
+function breathLoop(now) {
+  if (!audioStarted) return;
+  const phase = ((now - breathStartTime) % breathDuration) / breathDuration;
+  const amp = Math.sin(phase * Math.PI);
+  breathGain.gain.setTargetAtTime(amp * 0.28, ctx.currentTime, 0.12);
+  requestAnimationFrame(breathLoop);
+}
+
+function breathIn() {
+  breathGain.gain.setTargetAtTime(0.28, ctx.currentTime, 1);
+}
+
+function breathOut() {
+  breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
+}
+
+/* ===== CONTACT NOTE ===== */
+
+function initContactTone() {
+  contactOsc = ctx.createOscillator();
+  contactOsc.type = "sine";
+  contactOsc.frequency.value = 146.83 * 1.5;
+
+  contactGain = ctx.createGain();
+  contactGain.gain.value = 0;
+
+  contactOsc.connect(contactGain);
+  contactGain.connect(reverb);
+  contactGain.connect(master);
+  contactOsc.start();
+}
+
+/* CLICK */
 function softClick() {
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.type = "sine";
   osc.frequency.value = 140;
+
   const now = ctx.currentTime;
   gain.gain.setValueAtTime(0, now);
   gain.gain.linearRampToValueAtTime(0.1, now + 0.02);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+
   osc.connect(gain);
   gain.connect(master);
+  gain.connect(reverb);
   osc.start(now);
   osc.stop(now + 0.7);
 }
@@ -231,7 +373,82 @@ function muteSiteAudio() {
 function unmuteSiteAudio() {
   master.gain.setTargetAtTime(0.9, ctx.currentTime, 0.8);
 }
+
+/* ===== INTERACTION ===== */
+
+document.querySelectorAll(".node").forEach(el => {
+  el.addEventListener("mouseenter", () => {
+    breathIn();
+    const v = voices.find(x => x.el === el);
+    if (v) v.focusGain.gain.setTargetAtTime(0.14, ctx.currentTime, 0.8);
+  });
+
+  el.addEventListener("mouseleave", () => {
+    breathOut();
+    const v = voices.find(x => x.el === el);
+    if (v) v.focusGain.gain.setTargetAtTime(0, ctx.currentTime, 1.5);
+  });
+
+  el.addEventListener("click", softClick);
+});
+
+titleEl.addEventListener("mouseenter", breathIn);
+titleEl.addEventListener("mouseleave", breathOut);
+
+emailEl.addEventListener("mouseenter", () => {
+  contactGain.gain.setTargetAtTime(0.12, ctx.currentTime, 1);
+});
+emailEl.addEventListener("mouseleave", () => {
+  contactGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
+});
+emailEl.addEventListener("click", softClick);
+
+/* ABOUT */
+const overlay = document.getElementById("about-overlay");
+titleEl.addEventListener("click", () => {
+  overlay.classList.remove("hidden");
+  muteSiteAudio();
+  softClick();
+});
+document.getElementById("about-close").addEventListener("click", () => {
+  overlay.classList.add("hidden");
+  unmuteSiteAudio();
+  softClick();
+});
+
+/* PICTURE OVERLAY */
+const pictureOverlay = document.getElementById("picture-overlay");
+const vimeoFrame = document.getElementById("picture-video-1");
+
+function stopVimeo() {
+  if (!vimeoFrame || !vimeoFrame.contentWindow) return;
+  vimeoFrame.contentWindow.postMessage(
+    JSON.stringify({ method: "pause" }),
+    "*"
+  );
+}
+
+document.querySelector(".picture-node").addEventListener("click", () => {
+  pictureOverlay.classList.remove("hidden");
+  muteSiteAudio();
+});
+
+document.getElementById("picture-close").addEventListener("click", () => {
+  pictureOverlay.classList.add("hidden");
+  unmuteSiteAudio();
+  stopVimeo();
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    pictureOverlay.classList.add("hidden");
+    unmuteSiteAudio();
+    stopVimeo();
+  }
+});
 </script>
 
 </body>
 </html>
+
+
