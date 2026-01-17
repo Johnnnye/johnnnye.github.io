@@ -301,3 +301,213 @@ html, body {
   height: 100%;
   border: none;
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>John Emslie – Sound Designer & Composer</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main class="container" id="app">
+
+  <section class="hero">
+    <h1 id="about-trigger">John Emslie</h1>
+    <p class="role">Sound Designer & Composer</p>
+  </section>
+
+  <section class="categories">
+    <!-- CHANGED: Linear → Picture -->
+    <div class="node picture-node" data-note="146.83" data-pan="-0.4" style="top:32%; left:30%;">
+      <span class="dot"></span><span class="label">Picture</span>
+    </div>
+
+    <!-- CHANGED: Non-Linear → Interactive -->
+    <div class="node" data-note="174.61" data-pan="0.35" style="top:50%; left:62%;">
+      <span class="dot"></span><span class="label">Interactive</span>
+    </div>
+
+    <div class="node" data-note="196.00" data-pan="-0.15" style="top:68%; left:40%;">
+      <span class="dot"></span><span class="label">Redesigns</span>
+    </div>
+    <div class="node" data-note="220.00" data-pan="0.2" style="top:78%; left:58%;">
+      <span class="dot"></span><span class="label">Music and Sound Art</span>
+    </div>
+  </section>
+
+  <footer class="contact">
+    <a href="mailto:john@youremail.com" id="contact-email">Contact</a>
+  </footer>
+
+  <!-- ABOUT OVERLAY -->
+  <div class="overlay hidden" id="about-overlay">
+    <div class="overlay-content">
+      <p>
+        I work with sound as texture, space, and motion.<br><br>
+        My focus is on interaction, restraint, and emotional clarity
+        across games, picture, and experimental work.
+      </p>
+      <button class="close" id="about-close">Close</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- PICTURE OVERLAY -->
+<div class="picture-overlay hidden" id="picture-overlay">
+  <button class="picture-close" id="picture-close">×</button>
+
+  <div class="picture-track">
+
+    <!-- VIDEO 1 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Project Name</strong><br>
+        Sound design and music created for picture-based work.<br>
+        Focus on texture, spatial movement, and emotional restraint,
+        supporting narrative without drawing attention to itself.
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-1"
+          src="https://player.vimeo.com/video/1153134132"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- VIDEO 2 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Project Name</strong><br>
+        Sound design and music for linear visual media.<br>
+        Emphasis on pacing, tonal balance, and subtle narrative support.
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-2"
+          src="https://player.vimeo.com/video/1153134107"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- VIDEO 3 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Project Name</strong><br>
+        Audio work supporting visual storytelling through restraint
+        and careful use of space and dynamics.
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-3"
+          src="https://player.vimeo.com/video/1153134085"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- VIDEO 4 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Project Name</strong><br>
+        Sound design created to enhance mood, rhythm,
+        and narrative clarity without overpowering the image.
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-4"
+          src="https://player.vimeo.com/video/1153134193"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- VIDEO 5 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Project Name</strong><br>
+        Experimental and narrative-focused sound work,
+        designed to complement pacing and visual tone.
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-5"
+          src="https://player.vimeo.com/video/1153134161"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- VIDEO 6 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Project Name</strong><br>
+        Sound design and music supporting visual media,
+        prioritizing clarity, atmosphere, and emotional intent.
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-6"
+          src="https://player.vimeo.com/video/1153134218"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* SCRIPT UNCHANGED — EXACTLY AS YOU PROVIDED */
+</script>
+
+</body>
+</html>
