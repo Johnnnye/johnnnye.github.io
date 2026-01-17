@@ -310,3 +310,12 @@ html, body {
   display: flex;
   flex: 0 0 70vw;
 }
+/* FORCE HORIZONTAL SCROLL FOR NON-LINEAR OVERLAY */
+#nonlinear-overlay .picture-track {
+  overflow-x: scroll;
+}
+
+#nonlinear-overlay .picture-item {
+  min-width: 70vw;
+  flex: 0 0 auto;
+}
