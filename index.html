@@ -490,7 +490,7 @@ nonlinearNode.addEventListener("click", () => {
 nonlinearClose.addEventListener("click", () => {
   nonlinearOverlay.classList.add("hidden");
   unmuteSiteAudio();
-  softClick();
+  setTimeout(softClick, 120);
 });
 </script>
 
