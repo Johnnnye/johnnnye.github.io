@@ -313,3 +313,16 @@ html, body {
   flex: 1;
   min-width: 0;
 }
+
+/* NON-LINEAR THUMBNAILS */
+#nonlinear-overlay .picture-item {
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+#nonlinear-overlay .picture-item img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
