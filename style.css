@@ -1,3 +1,4 @@
+style.css:
 /* ===== RESET ===== */
 * {
   margin: 0;
@@ -146,7 +147,8 @@ html, body {
   opacity: 0.8;
 }
 
-/* ===== PICTURE OVERLAY ===== */
+/* ===== PICTURE OVERLAY (NEW) ===== */
+
 .picture-overlay {
   position: fixed;
   inset: 0;
@@ -179,8 +181,10 @@ html, body {
   background: #e3e3e3;
   display: flex;
   align-items: center;
-  gap: 4vw;
+  justify-content: center;
   scroll-snap-align: center;
+  font-size: 0.9rem;
+  opacity: 0.85;
 }
 
 .picture-close {
@@ -198,6 +202,76 @@ html, body {
   opacity: 1;
 }
 
+/* ===== ANIMATIONS ===== */
+
+@keyframes breathe {
+  0% {
+    opacity: 0.75;
+    letter-spacing: 0.02em;
+  }
+  50% {
+    opacity: 1;
+    letter-spacing: 0.12em;
+  }
+  100% {
+    opacity: 0.75;
+    letter-spacing: 0.02em;
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-14px);
+  }
+}
+/* ===== CONTACT AS NODE (VISUAL ONLY) ===== */
+
+#contact-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.1rem;
+  font-weight: 400;
+  opacity: 0.35;
+  transition: opacity 1.2s ease, transform 6s ease;
+}
+
+#contact-email::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #222;
+  opacity: 0.6;
+  transition: opacity 1.2s ease;
+}
+
+#contact-email:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+#contact-email:hover::before {
+  opacity: 1;
+}
+.picture-item iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* ===== PICTURE PROJECT LAYOUT FIX ===== */
+
+.picture-item {
+  display: flex;
+  align-items: center;
+  gap: 4vw;
+}
+
+/* Text column */
 .project-text {
   flex: 0 0 32%;
   font-size: 0.95rem;
@@ -209,12 +283,14 @@ html, body {
   font-weight: 500;
 }
 
+/* Rights line */
 .project-text .rights {
   margin-top: 1rem;
   font-size: 0.75rem;
   opacity: 0.5;
 }
 
+/* Video column */
 .project-video {
   flex: 1;
   aspect-ratio: 16 / 9;
@@ -224,63 +300,4 @@ html, body {
   width: 100%;
   height: 100%;
   border: none;
-}
-
-/* ===== INTERACTIVE OVERLAY ===== */
-.interactive-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(245, 246, 244, 0.96);
-  z-index: 30;
-  display: flex;
-  align-items: center;
-}
-
-.interactive-overlay.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.interactive-track {
-  display: flex;
-  gap: 4vw;
-  padding: 0 8vw;
-}
-
-.interactive-item {
-  width: 18vw;
-  text-decoration: none;
-  color: inherit;
-  opacity: 0.85;
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-.interactive-item:hover {
-  opacity: 1;
-  transform: scale(1.03);
-}
-
-.interactive-item img {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  background: #ccc;
-}
-
-.interactive-title {
-  margin-top: 0.6rem;
-  font-size: 0.9rem;
-  opacity: 0.75;
-}
-
-/* ===== ANIMATIONS ===== */
-@keyframes breathe {
-  0% { opacity: 0.75; letter-spacing: 0.02em; }
-  50% { opacity: 1; letter-spacing: 0.12em; }
-  100% { opacity: 0.75; letter-spacing: 0.02em; }
-}
-
-@keyframes drift {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-14px); }
 }
