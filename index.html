@@ -525,6 +525,53 @@ document.addEventListener("keydown", e => {
     stopVimeo();
   }
 });
+
+/* ===== NON-LINEAR OVERLAY ===== */
+
+const nonlinearOverlay = document.getElementById("nonlinear-overlay");
+const nonlinearClose = document.getElementById("nonlinear-close");
+
+/* IMPORTANT: this targets the Non-Linear node */
+const nonlinearNode = Array.from(document.querySelectorAll(".node"))
+  .find(n => n.textContent.includes("Non-Linear"));
+
+const nonlinearVideos = [
+  document.getElementById("nonlinear-video-1"),
+  document.getElementById("nonlinear-video-2"),
+  document.getElementById("nonlinear-video-3")
+];
+
+function stopNonlinearVideos() {
+  nonlinearVideos.forEach(frame => {
+    if (!frame || !frame.contentWindow) return;
+    frame.contentWindow.postMessage(
+      JSON.stringify({ method: "pause" }),
+      "*"
+    );
+  });
+}
+
+/* OPEN */
+nonlinearNode.addEventListener("click", () => {
+  nonlinearOverlay.classList.remove("hidden");
+  muteSiteAudio();
+});
+
+/* CLOSE (X) */
+nonlinearClose.addEventListener("click", () => {
+  nonlinearOverlay.classList.add("hidden");
+  stopNonlinearVideos();
+  unmuteSiteAudio();
+});
+
+/* CLOSE (ESC) */
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !nonlinearOverlay.classList.contains("hidden")) {
+    nonlinearOverlay.classList.add("hidden");
+    stopNonlinearVideos();
+    unmuteSiteAudio();
+  }
+});
 </script>
 
 </body>
