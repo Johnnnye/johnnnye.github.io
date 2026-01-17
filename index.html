@@ -462,11 +462,10 @@ document.querySelector(".picture-node").addEventListener("click", () => {
   muteSiteAudio();
 });
 
-document.getElementById("picture-close").addEventListener("click", () => {
-  pictureOverlay.classList.add("hidden");
+nonlinearClose.addEventListener("click", () => {
+  nonlinearOverlay.classList.add("hidden");
   unmuteSiteAudio();
-  stopVimeo();
-  softClick();
+  setTimeout(softClick, 120);
 });
 
 document.addEventListener("keydown", e => {
