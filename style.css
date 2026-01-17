@@ -304,25 +304,19 @@ html, body {
   height: 100%;
   border: none;
 }
-/* NON-LINEAR: 3 ITEMS SIDE BY SIDE, NO SCROLL */
-#nonlinear-overlay .picture-track {
-  overflow: hidden;
-}
-
+/* NON-LINEAR: 3 ITEMS SIDE BY SIDE + THUMBNAILS */
 #nonlinear-overlay .picture-item {
   flex: 1;
   min-width: 0;
-}
-
-/* NON-LINEAR THUMBNAILS */
-#nonlinear-overlay .picture-item {
+  height: auto;          /* IMPORTANT */
+  background: none;      /* IMPORTANT */
   flex-direction: column;
-  justify-content: flex-start;
+  align-items: stretch;
 }
 
 #nonlinear-overlay .picture-item img {
+  display: block;        /* IMPORTANT */
   width: 100%;
-  height: auto;
   aspect-ratio: 16 / 9;
   object-fit: cover;
 }
