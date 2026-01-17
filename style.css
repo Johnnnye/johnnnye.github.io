@@ -307,5 +307,6 @@ html, body {
 
 /* FORCE SCROLLING FOR NON-LINEAR LINKS */
 .picture-track > a.picture-item {
+  display: flex;
   flex: 0 0 70vw;
 }
