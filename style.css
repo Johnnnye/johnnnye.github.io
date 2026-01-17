@@ -304,3 +304,8 @@ html, body {
   height: 100%;
   border: none;
 }
+
+/* FORCE SCROLLING FOR NON-LINEAR LINKS */
+.picture-track > a.picture-item {
+  flex: 0 0 70vw;
+}
