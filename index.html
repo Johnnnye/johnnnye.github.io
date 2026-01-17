@@ -476,6 +476,22 @@ document.addEventListener("keydown", e => {
     stopVimeo();
   }
 });
+
+/* ===== NON-LINEAR OVERLAY ===== */
+
+const nonlinearOverlay = document.getElementById("nonlinear-overlay");
+const nonlinearNode = document.querySelector(".nonlinear-node");
+const nonlinearClose = nonlinearOverlay.querySelector(".picture-close");
+
+nonlinearNode.addEventListener("click", () => {
+  nonlinearOverlay.classList.remove("hidden");
+  muteSiteAudio();
+});
+
+nonlinearClose.addEventListener("click", () => {
+  nonlinearOverlay.classList.add("hidden");
+  unmuteSiteAudio();
+});
 </script>
 
 </body>
