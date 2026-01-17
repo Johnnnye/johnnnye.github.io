@@ -519,6 +519,35 @@ document.addEventListener("keydown", e => {
     stopVimeo();
   }
 });
+
+/* ===== INTERACTIVE OVERLAY ===== */
+
+const interactiveOverlay = document.getElementById("interactive-overlay");
+const interactiveClose = document.getElementById("interactive-close");
+
+/* target node by label text */
+const interactiveNode = Array.from(document.querySelectorAll(".node"))
+  .find(n => n.textContent.includes("Interactive"));
+
+/* OPEN */
+interactiveNode.addEventListener("click", () => {
+  interactiveOverlay.classList.remove("hidden");
+  muteSiteAudio();
+});
+
+/* CLOSE (X) */
+interactiveClose.addEventListener("click", () => {
+  interactiveOverlay.classList.add("hidden");
+  unmuteSiteAudio();
+});
+
+/* CLOSE (ESC) */
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !interactiveOverlay.classList.contains("hidden")) {
+    interactiveOverlay.classList.add("hidden");
+    unmuteSiteAudio();
+  }
+});
 </script>
 
 </body>
