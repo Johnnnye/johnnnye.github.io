@@ -169,6 +169,9 @@ html, body {
   padding: 0 8vw;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+}
+  
 }
 
 .picture-track::-webkit-scrollbar {
