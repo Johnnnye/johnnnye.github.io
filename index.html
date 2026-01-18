@@ -643,9 +643,27 @@ document.getElementById("about-close").addEventListener("click", () => {
   softClick();
 });
 
-/* PICTURE OVERLAY */
+/* =========================
+   OVERLAYS (FIXED)
+========================= */
+
+/* --- ELEMENTS --- */
 const pictureOverlay = document.getElementById("picture-overlay");
+const nonlinearOverlay = document.getElementById("nonlinear-overlay");
+
+const pictureNode = document.querySelector(".picture-node");
+const nonlinearNode = document.querySelector(".nonlinear-node");
+
+const pictureClose = document.getElementById("picture-close");
+const nonlinearClose = nonlinearOverlay.querySelector(".picture-close");
+
 const vimeoFrame = document.getElementById("picture-video-1");
+
+/* --- HELPERS --- */
+function closeAllOverlays() {
+  pictureOverlay.classList.add("hidden");
+  nonlinearOverlay.classList.add("hidden");
+}
 
 function stopVimeo() {
   if (!vimeoFrame || !vimeoFrame.contentWindow) return;
@@ -655,42 +673,25 @@ function stopVimeo() {
   );
 }
 
-document.querySelector(".picture-node").addEventListener("click", () => {
-  nonlinearOverlay.classList.add("hidden"); // 🔒 close non-linear overlay
+/* --- OPENERS --- */
+pictureNode.addEventListener("click", () => {
+  closeAllOverlays();
   pictureOverlay.classList.remove("hidden");
   muteSiteAudio();
 });
 
-document.getElementById("picture-close").addEventListener("click", () => {
+nonlinearNode.addEventListener("click", () => {
+  closeAllOverlays();
+  nonlinearOverlay.classList.remove("hidden");
+  muteSiteAudio();
+});
+
+/* --- CLOSERS --- */
+pictureClose.addEventListener("click", () => {
   pictureOverlay.classList.add("hidden");
   unmuteSiteAudio();
   stopVimeo();
   setTimeout(softClick, 120);
-});
-
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") {
-    pictureOverlay.classList.add("hidden");
-    unmuteSiteAudio();
-    stopVimeo();
-  }
-});
-
-/* ===== NON-LINEAR OVERLAY ===== */
-
-const nonlinearOverlay = document.getElementById("nonlinear-overlay");
-const nonlinearNode = document.querySelector(".nonlinear-node");
-const nonlinearClose = nonlinearOverlay.querySelector(".picture-close");
-
-function closeAllOverlays() {
-  pictureOverlay.classList.add("hidden");
-  nonlinearOverlay.classList.add("hidden");
-}
-
-nonlinearNode.addEventListener("click", () => {
-  pictureOverlay.classList.add("hidden");   // 🔒 close picture overlay
-  nonlinearOverlay.classList.remove("hidden");
-  muteSiteAudio();
 });
 
 nonlinearClose.addEventListener("click", () => {
@@ -698,7 +699,12 @@ nonlinearClose.addEventListener("click", () => {
   unmuteSiteAudio();
   setTimeout(softClick, 120);
 });
-</script>
 
-</body>
-</html>
+/* --- ESCAPE KEY --- */
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    closeAllOverlays();
+    unmuteSiteAudio();
+    stopVimeo();
+  }
+});
