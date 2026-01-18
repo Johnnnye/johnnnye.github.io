@@ -320,3 +320,6 @@ html, body {
   aspect-ratio: 16 / 9;
   object-fit: cover;
 }
+.project-text {
+  pointer-events: none;
+}
