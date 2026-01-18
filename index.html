@@ -682,6 +682,11 @@ const nonlinearOverlay = document.getElementById("nonlinear-overlay");
 const nonlinearNode = document.querySelector(".nonlinear-node");
 const nonlinearClose = nonlinearOverlay.querySelector(".picture-close");
 
+function closeAllOverlays() {
+  pictureOverlay.classList.add("hidden");
+  nonlinearOverlay.classList.add("hidden");
+}
+
 nonlinearNode.addEventListener("click", () => {
   pictureOverlay.classList.add("hidden");   // 🔒 close picture overlay
   nonlinearOverlay.classList.remove("hidden");
