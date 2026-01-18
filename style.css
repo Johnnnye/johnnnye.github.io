@@ -323,11 +323,7 @@ html, body {
 .project-text {
   pointer-events: none;
 }
-
-/* === NON-LINEAR OVERLAY: TEXT PANEL === */
+/* === NON-LINEAR OVERLAY: TEXT SHOULD NOT CAPTURE CLICKS === */
 .project-text {
-  pointer-events: none;               /* text is NOT clickable */
-  background: rgba(0, 0, 0, 0.55);     /* subtle dark backing */
-  padding: 0.75rem 0.9rem;
-  border-radius: 4px;
+  pointer-events: none;
 }
