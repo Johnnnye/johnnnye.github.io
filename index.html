@@ -656,6 +656,7 @@ function stopVimeo() {
 }
 
 document.querySelector(".picture-node").addEventListener("click", () => {
+  nonlinearOverlay.classList.add("hidden"); // 🔒 close non-linear overlay
   pictureOverlay.classList.remove("hidden");
   muteSiteAudio();
 });
