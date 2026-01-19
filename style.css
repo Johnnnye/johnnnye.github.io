@@ -278,8 +278,11 @@ html, body {
 .project-text {
   flex: 0 0 32%;
   font-size: 0.95rem;
-  line-height: 1.55;
+  line-height: 1.45;
   opacity: 0.85;
+
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 .project-text strong {
