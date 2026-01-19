@@ -328,6 +328,6 @@ html, body {
   pointer-events: none;
 }
 
-.project-text {
-  overflow-y: auto;
+.picture-overlay .project-text {
+  overflow-y: auto !important;
 }
