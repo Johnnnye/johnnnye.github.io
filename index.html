@@ -600,6 +600,23 @@ nonlinearClose.addEventListener("click", () => {
   unmuteSiteAudio();
   setTimeout(softClick, 120);
 });
+
+/* ===== REDESIGNS OVERLAY ===== */
+
+const redesignsOverlay = document.getElementById("redesigns-overlay");
+const redesignsNode = document.querySelectorAll(".node")[2]; // third node = Redesigns
+const redesignsClose = redesignsOverlay.querySelector(".picture-close");
+
+redesignsNode.addEventListener("click", () => {
+  redesignsOverlay.classList.remove("hidden");
+  muteSiteAudio();
+});
+
+redesignsClose.addEventListener("click", () => {
+  redesignsOverlay.classList.add("hidden");
+  unmuteSiteAudio();
+  setTimeout(softClick, 120);
+});
 </script>
 
 </body>
