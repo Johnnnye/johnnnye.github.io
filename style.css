@@ -1,4 +1,3 @@
-style.css:
 /* ===== RESET ===== */
 * {
   margin: 0;
@@ -75,11 +74,6 @@ html, body {
   border-radius: 50%;
   background: #222;
   opacity: 0.6;
-  transition: opacity 1.2s ease;
-}
-
-.node:hover .dot {
-  opacity: 1;
 }
 
 .label {
@@ -94,7 +88,6 @@ html, body {
   bottom: 3%;
   left: 50%;
   transform: translateX(-50%);
-  text-align: center;
   font-size: 0.85rem;
   opacity: 0.5;
   z-index: 10;
@@ -105,10 +98,6 @@ html, body {
   text-decoration: none;
 }
 
-.contact a:hover {
-  opacity: 0.8;
-}
-
 /* ===== ABOUT OVERLAY ===== */
 .overlay {
   position: fixed;
@@ -117,7 +106,6 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.8s ease;
   z-index: 20;
 }
 
@@ -143,12 +131,7 @@ html, body {
   cursor: pointer;
 }
 
-.close:hover {
-  opacity: 0.8;
-}
-
-/* ===== PICTURE OVERLAY (NEW) ===== */
-
+/* ===== PICTURE OVERLAY ===== */
 .picture-overlay {
   position: fixed;
   inset: 0;
@@ -169,27 +152,57 @@ html, body {
   padding: 0 8vw;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-}
-  
 }
 
 .picture-track::-webkit-scrollbar {
   display: none;
 }
 
+/* ===== PICTURE ITEMS ===== */
 .picture-item {
   flex: 0 0 70vw;
   height: 42vh;
   background: #e3e3e3;
   display: flex;
+  gap: 4vw;
   align-items: center;
-  justify-content: center;
   scroll-snap-align: center;
   font-size: 0.9rem;
-  opacity: 0.85;
 }
 
+/* ===== TEXT COLUMN ===== */
+.project-text {
+  flex: 0 0 32%;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  opacity: 0.85;
+  overflow: hidden;
+}
+
+.project-text strong {
+  font-weight: 500;
+}
+
+/* Rights */
+.project-text .rights {
+  margin-top: 0.8rem;
+  font-size: 0.75rem;
+  opacity: 0.5;
+}
+
+/* ===== VIDEO COLUMN ===== */
+.project-video {
+  flex: 1;
+  aspect-ratio: 16 / 9;
+}
+
+.project-video iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* ===== CLOSE BUTTON ===== */
 .picture-close {
   position: absolute;
   top: 3%;
@@ -201,139 +214,27 @@ html, body {
   opacity: 0.6;
 }
 
-.picture-close:hover {
-  opacity: 1;
-}
-
-/* ===== ANIMATIONS ===== */
-
-@keyframes breathe {
-  0% {
-    opacity: 0.75;
-    letter-spacing: 0.02em;
-  }
-  50% {
-    opacity: 1;
-    letter-spacing: 0.12em;
-  }
-  100% {
-    opacity: 0.75;
-    letter-spacing: 0.02em;
-  }
-}
-
-@keyframes drift {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-14px);
-  }
-}
-/* ===== CONTACT AS NODE (VISUAL ONLY) ===== */
-
-#contact-email {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 1.1rem;
-  font-weight: 400;
-  opacity: 0.35;
-  transition: opacity 1.2s ease, transform 6s ease;
-}
-
-#contact-email::before {
-  content: "";
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #222;
-  opacity: 0.6;
-  transition: opacity 1.2s ease;
-}
-
-#contact-email:hover {
-  opacity: 1;
-  transform: scale(1.05);
-}
-
-#contact-email:hover::before {
-  opacity: 1;
-}
-.picture-item iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-/* ===== PICTURE PROJECT LAYOUT FIX ===== */
-
-.picture-item {
-  display: flex;
-  align-items: center;
-  gap: 4vw;
-}
-
-/* Text column */
-.project-text {
-  flex: 0 0 32%;
-  font-size: 0.95rem;
-  line-height: 1.55;
-  opacity: 0.85;
-
-  max-height: 100%;
-  overflow-y: auto;
-}
-
-.picture-item {
-  align-items: stretch;
-}
-.project-text strong {
-  font-weight: 500;
-}
-
-/* Rights line */
-.project-text .rights {
-  margin-top: 1rem;
-  font-size: 0.75rem;
-  opacity: 0.5;
-}
-
-/* Video column */
-.project-video {
-  flex: 1;
-  aspect-ratio: 16 / 9;
-}
-
-.project-video iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-/* NON-LINEAR: 3 ITEMS SIDE BY SIDE + THUMBNAILS */
+/* ===== NON-LINEAR ===== */
 #nonlinear-overlay .picture-item {
-  flex: 1;
-  min-width: 0;
-  height: auto;          /* IMPORTANT */
-  background: none;      /* IMPORTANT */
   flex-direction: column;
-  align-items: stretch;
+  height: auto;
+  background: none;
 }
 
-#nonlinear-overlay .picture-item img {
-  display: block;        /* IMPORTANT */
+#nonlinear-overlay img {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
 }
-.project-text {
-  pointer-events: none;
-}
-/* === NON-LINEAR OVERLAY: TEXT SHOULD NOT CAPTURE CLICKS === */
-.project-text {
-  pointer-events: none;
+
+/* ===== ANIMATIONS ===== */
+@keyframes breathe {
+  0% { opacity: 0.75; }
+  50% { opacity: 1; }
+  100% { opacity: 0.75; }
 }
 
-.picture-overlay .project-text {
-  overflow-y: auto !important;
+@keyframes drift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-14px); }
 }
