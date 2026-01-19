@@ -280,6 +280,9 @@ html, body {
   font-size: 0.95rem;
   line-height: 1.55;
   opacity: 0.85;
+
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 .project-text strong {
