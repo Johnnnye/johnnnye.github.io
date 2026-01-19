@@ -327,3 +327,7 @@ html, body {
 .project-text {
   pointer-events: none;
 }
+
+.project-text {
+  overflow-y: auto;
+}
