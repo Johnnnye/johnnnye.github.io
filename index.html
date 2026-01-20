@@ -30,17 +30,29 @@
     <div class="node" data-note="220.00" data-pan="0.2" style="top:78%; left:58%;">
       <span class="dot"></span><span class="label">Music and Sound Art</span>
     </div>
-    <!-- LOGO NODE -->
-    
-    <div class="node logo-node" data-note="261.63" data-pan="0"
-         style="top:18%; left:14%; opacity:0.5;">
-      <img src="images/Logo.jpg" alt="JE logo" class="logo-image">
+        <!-- LOGO NODE -->
+    <div class="node logo-node"
+         data-note="261.63"
+         data-pan="0"
+         style="top:18%; left:14%; opacity:0.25;">
+      <img src="images/Logo.jpg" alt="JE logo" class="logo-img">
     </div>
   </section>
 
   <footer class="contact">
     <a href="mailto:typesofapes@gmail.com" id="contact-email">Contact</a>
   </footer>
+
+  <!-- LOGO CREDIT OVERLAY -->
+<div class="overlay hidden" id="logo-overlay">
+  <div class="overlay-content">
+    <p>
+      Website designed & built by<br>
+      <strong>John Emslie</strong>
+    </p>
+    <button class="close" id="logo-close">Close</button>
+  </div>
+</div>
 
   <!-- ABOUT OVERLAY -->
   <div class="overlay hidden" id="about-overlay">
@@ -428,6 +440,23 @@
 
   </div>
 </div>
+/* ===== LOGO OVERLAY ===== */
+
+const logoNode = document.querySelector(".logo-node");
+const logoOverlay = document.getElementById("logo-overlay");
+const logoClose = document.getElementById("logo-close");
+
+logoNode.addEventListener("click", () => {
+  logoOverlay.classList.remove("hidden");
+  muteSiteAudio();
+  softClick();
+});
+
+logoClose.addEventListener("click", () => {
+  logoOverlay.classList.add("hidden");
+  unmuteSiteAudio();
+  softClick();
+});
   
 <script>
 /* =========================
