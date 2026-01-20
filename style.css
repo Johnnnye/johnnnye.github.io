@@ -340,3 +340,18 @@ html, body {
 #music-overlay iframe {
   height: 450px; /* SoundCloud recommended */
 }
+
+/* ===== LOGO NODE ===== */
+.logo-node {
+  opacity: 0.12;
+}
+
+.logo-node .label {
+  font-size: 1.6rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+}
+
+.logo-node:hover {
+  opacity: 0.5;
+}
