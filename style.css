@@ -342,3 +342,23 @@ html, body {
 #music-overlay iframe {
   height: 450px; /* SoundCloud recommended */
 }
+
+/* LOGO NODE IMAGE */
+.logo-node .logo-image {
+  width: 64px;
+  height: auto;
+  opacity: 0.8;
+  transition: opacity 1.2s ease, transform 6s ease;
+  pointer-events: none;
+}
+
+.logo-node:hover .logo-image {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* remove dot / label if any exist */
+.logo-node .dot,
+.logo-node .label {
+  display: none;
+}
