@@ -444,7 +444,6 @@
 
   
 <script>
-<script>
 /* =========================
    AUDIO CORE
 ========================= */
@@ -462,7 +461,7 @@ let contactOsc, contactGain;
 const titleEl = document.getElementById("about-trigger");
 const emailEl = document.getElementById("contact-email");
 
-/* 🔓 AUDIO UNLOCK */
+/* 🔓 AUDIO UNLOCK (CLICK OR MOVE) */
 function unlockAudioOnce() {
   if (!ctx) initAudio();
   if (ctx.state === "suspended") ctx.resume();
@@ -593,8 +592,7 @@ function initContactTone() {
   contactOsc.start();
 }
 
-/* ===== CLICK ===== */
-
+/* CLICK */
 function softClick() {
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
@@ -621,28 +619,7 @@ function unmuteSiteAudio() {
   master.gain.setTargetAtTime(0.9, ctx.currentTime, 0.8);
 }
 
-/* =========================
-   STOP ALL EMBED AUDIO
-========================= */
-
-function stopAllEmbeds() {
-  document.querySelectorAll("iframe[src*='vimeo']").forEach(f => {
-    f.contentWindow?.postMessage(
-      JSON.stringify({ method: "pause" }),
-      "*"
-    );
-  });
-
-  document.querySelectorAll("iframe[src*='soundcloud']").forEach(f => {
-    const src = f.src;
-    f.src = "";
-    f.src = src;
-  });
-}
-
-/* =========================
-   INTERACTION
-========================= */
+/* ===== INTERACTION ===== */
 
 document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("mouseenter", () => {
@@ -660,37 +637,132 @@ document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("click", softClick);
 });
 
-/* ===== ABOUT ===== */
+titleEl.addEventListener("mouseenter", breathIn);
+titleEl.addEventListener("mouseleave", breathOut);
 
-const aboutOverlay = document.getElementById("about-overlay");
-document.getElementById("about-trigger").addEventListener("click", () => {
-  aboutOverlay.classList.remove("hidden");
+emailEl.addEventListener("mouseenter", () => {
+  contactGain.gain.setTargetAtTime(0.12, ctx.currentTime, 1);
+});
+emailEl.addEventListener("mouseleave", () => {
+  contactGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
+});
+emailEl.addEventListener("click", softClick);
+
+/* ABOUT */
+const overlay = document.getElementById("about-overlay");
+titleEl.addEventListener("click", () => {
+  overlay.classList.remove("hidden");
+  muteSiteAudio();
+  softClick();
+});
+document.getElementById("about-close").addEventListener("click", () => {
+  overlay.classList.add("hidden");
+  unmuteSiteAudio();
+  softClick();
+});
+
+/* PICTURE OVERLAY */
+const pictureOverlay = document.getElementById("picture-overlay");
+const vimeoFrame = document.getElementById("picture-video-1");
+
+function stopVimeo() {
+  if (!vimeoFrame || !vimeoFrame.contentWindow) return;
+  vimeoFrame.contentWindow.postMessage(
+    JSON.stringify({ method: "pause" }),
+    "*"
+  );
+}
+
+document.querySelector(".picture-node").addEventListener("click", () => {
+  pictureOverlay.classList.remove("hidden");
   muteSiteAudio();
 });
 
-document.getElementById("about-close").addEventListener("click", () => {
-  aboutOverlay.classList.add("hidden");
+document.getElementById("picture-close").addEventListener("click", () => {
+  pictureOverlay.classList.add("hidden");
   unmuteSiteAudio();
-});
-
-/* ===== GENERIC OVERLAY CLOSE ===== */
-
-document.querySelectorAll(".picture-close, #logo-close").forEach(btn => {
-  btn.addEventListener("click", () => {
-    stopAllEmbeds();
-    unmuteSiteAudio();
-    softClick();
-  });
+  stopVimeo();
+  setTimeout(softClick, 120);
 });
 
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") {
-    document.querySelectorAll(".overlay, .picture-overlay")
-      .forEach(o => o.classList.add("hidden"));
-    stopAllEmbeds();
+    pictureOverlay.classList.add("hidden");
     unmuteSiteAudio();
+    stopVimeo();
   }
 });
+
+/* ===== NON-LINEAR OVERLAY ===== */
+
+const nonlinearOverlay = document.getElementById("nonlinear-overlay");
+const nonlinearNode = document.querySelector(".nonlinear-node");
+const nonlinearClose = nonlinearOverlay.querySelector(".picture-close");
+
+nonlinearNode.addEventListener("click", () => {
+  nonlinearOverlay.classList.remove("hidden");
+  muteSiteAudio();
+});
+
+nonlinearClose.addEventListener("click", () => {
+  nonlinearOverlay.classList.add("hidden");
+  unmuteSiteAudio();
+  setTimeout(softClick, 120);
+});
+
+/* ===== REDESIGNS OVERLAY ===== */
+
+const redesignsOverlay = document.getElementById("redesigns-overlay");
+const redesignsNode = document.querySelectorAll(".node")[2]; // third node = Redesigns
+const redesignsClose = redesignsOverlay.querySelector(".picture-close");
+
+redesignsNode.addEventListener("click", () => {
+  redesignsOverlay.classList.remove("hidden");
+  muteSiteAudio();
+});
+
+redesignsClose.addEventListener("click", () => {
+  redesignsOverlay.classList.add("hidden");
+  unmuteSiteAudio();
+  setTimeout(softClick, 120);
+});
+
+/* ===== MUSIC & SOUND ART OVERLAY ===== */
+
+const musicOverlay = document.getElementById("music-overlay");
+const musicNode = document.querySelectorAll(".node")[3]; // fourth node
+const musicClose = musicOverlay.querySelector(".picture-close");
+
+musicNode.addEventListener("click", () => {
+  musicOverlay.classList.remove("hidden");
+  muteSiteAudio();
+});
+
+musicClose.addEventListener("click", () => {
+  musicOverlay.classList.add("hidden");
+  unmuteSiteAudio();
+  setTimeout(softClick, 120);
+});
+
+/* ===== LOGO OVERLAY ===== */
+
+const logoNode = document.querySelector(".logo-node");
+const logoOverlay = document.getElementById("logo-overlay");
+const logoClose = document.getElementById("logo-close");
+
+if (logoNode && logoOverlay && logoClose) {
+  logoNode.addEventListener("click", () => {
+    logoOverlay.classList.remove("hidden");
+    muteSiteAudio();
+    softClick();
+  });
+
+  logoClose.addEventListener("click", () => {
+    logoOverlay.classList.add("hidden");
+    unmuteSiteAudio();
+    softClick();
+  });
+}
 </script>
 
 </body>
