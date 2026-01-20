@@ -347,7 +347,7 @@ html, body {
 .logo-node .logo-image {
   width: 64px;
   height: auto;
-  opacity: 0.8;
+  opacity: 0.95;   /* darker at rest */
   transition: opacity 1.2s ease, transform 6s ease;
   pointer-events: none;
 }
