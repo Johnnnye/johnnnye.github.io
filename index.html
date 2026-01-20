@@ -18,6 +18,7 @@
   </section>
 
   <section class="categories">
+
     <div class="node picture-node" data-note="146.83" data-pan="-0.4" style="top:32%; left:30%;">
       <span class="dot"></span><span class="label">Linear</span>
     </div>
@@ -39,6 +40,7 @@
          style="top:18%; left:14%; opacity:0.15;">
       <span class="dot"></span><span class="label">JE</span>
     </div>
+
   </section>
 
   <footer class="contact">
@@ -79,12 +81,6 @@ let ctx, master, reverb;
 let voices = [];
 let audioStarted = false;
 
-let breathNoise, breathGain, breathFilter;
-let breathStartTime;
-let breathDuration = 8000;
-
-let contactOsc, contactGain;
-
 const titleEl = document.getElementById("about-trigger");
 const emailEl = document.getElementById("contact-email");
 
@@ -102,6 +98,7 @@ function initAudio() {
   if (audioStarted) return;
 
   ctx = new (window.AudioContext || window.webkitAudioContext)();
+
   master = ctx.createGain();
   master.gain.value = 0.9;
   master.connect(ctx.destination);
@@ -150,7 +147,7 @@ function initAudio() {
     osc.start();
     focusOsc.start();
 
-    voices.push({ el, baseGain, focusGain });
+    voices.push({ el, focusGain });
   });
 
   audioStarted = true;
