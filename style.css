@@ -330,3 +330,13 @@ html, body {
 .project-text {
   pointer-events: none;
 }
+
+/* MUSIC & SOUND ART – allow SoundCloud to fit */
+#music-overlay .picture-item {
+  height: auto;
+  align-items: flex-start;
+}
+
+#music-overlay iframe {
+  height: 450px; /* SoundCloud recommended */
+}
