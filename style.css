@@ -362,3 +362,21 @@ html, body {
 .logo-node .label {
   display: none;
 }
+
+/* ===== LOGO NODE ===== */
+.logo-node {
+  animation: drift 40s ease-in-out infinite alternate;
+}
+
+.logo-img {
+  width: 48px;          /* tweak if needed */
+  height: auto;
+  opacity: 0.7;
+  transition: opacity 1.2s ease, transform 6s ease;
+  pointer-events: none;
+}
+
+.logo-node:hover .logo-img {
+  opacity: 1;
+  transform: scale(1.05);
+}
