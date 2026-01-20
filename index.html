@@ -440,23 +440,7 @@
 
   </div>
 </div>
-/* ===== LOGO OVERLAY ===== */
 
-const logoNode = document.querySelector(".logo-node");
-const logoOverlay = document.getElementById("logo-overlay");
-const logoClose = document.getElementById("logo-close");
-
-logoNode.addEventListener("click", () => {
-  logoOverlay.classList.remove("hidden");
-  muteSiteAudio();
-  softClick();
-});
-
-logoClose.addEventListener("click", () => {
-  logoOverlay.classList.add("hidden");
-  unmuteSiteAudio();
-  softClick();
-});
   
 <script>
 /* =========================
@@ -758,6 +742,26 @@ musicClose.addEventListener("click", () => {
   unmuteSiteAudio();
   setTimeout(softClick, 120);
 });
+
+/* ===== LOGO OVERLAY ===== */
+
+const logoNode = document.querySelector(".logo-node");
+const logoOverlay = document.getElementById("logo-overlay");
+const logoClose = document.getElementById("logo-close");
+
+if (logoNode && logoOverlay && logoClose) {
+  logoNode.addEventListener("click", () => {
+    logoOverlay.classList.remove("hidden");
+    muteSiteAudio();
+    softClick();
+  });
+
+  logoClose.addEventListener("click", () => {
+    logoOverlay.classList.add("hidden");
+    unmuteSiteAudio();
+    softClick();
+  });
+}
 </script>
 
 </body>
