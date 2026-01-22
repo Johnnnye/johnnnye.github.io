@@ -211,32 +211,36 @@ html, body {
 }
 
 /* =========================================================
-   NON-LINEAR OVERLAY — FIXED (THIS WAS THE PROBLEM)
+   NON-LINEAR OVERLAY — CORRECT FIX
 ========================================================= */
 
+/* KEEP overlay centered vertically */
 #nonlinear-overlay {
-  align-items: flex-start; /* ← critical fix */
+  align-items: center;   /* <-- THIS is the fix */
 }
 
+/* Track should align items at top */
 #nonlinear-overlay .picture-track {
   align-items: flex-start;
 }
 
+/* Each project card */
 #nonlinear-overlay .picture-item {
   flex: 1;
   min-width: 0;
   height: auto;
   background: none;
+  display: flex;
   flex-direction: column;
   align-items: stretch;
 }
 
+/* Thumbnail size */
 #nonlinear-overlay .picture-thumb img {
   width: 100%;
   height: 180px;
   object-fit: cover;
 }
-
 /* ===== MUSIC OVERLAY ===== */
 #music-overlay .picture-item {
   height: auto;
