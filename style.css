@@ -172,10 +172,13 @@ html, body {
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
-}
   
 }
-
+  
+#nonlinear-overlay .picture-track {
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
 .picture-track::-webkit-scrollbar {
   display: none;
 }
