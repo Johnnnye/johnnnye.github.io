@@ -292,3 +292,16 @@ html, body {
   align-items: flex-start;
   padding-top: 12vh;
 }
+/* Re-enable links inside project text */
+.project-text a {
+  pointer-events: auto;
+}
+.project-text a {
+  color: inherit;
+  text-decoration: underline;
+  opacity: 0.7;
+}
+
+.project-text a:hover {
+  opacity: 1;
+}
