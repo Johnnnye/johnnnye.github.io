@@ -395,3 +395,7 @@ html, body {
 #nonlinear-overlay .picture-item {
   justify-content: flex-start;
 }
+#nonlinear-overlay .picture-item img {
+  display: block;
+  margin: 0;
+}
