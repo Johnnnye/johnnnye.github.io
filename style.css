@@ -167,7 +167,16 @@ html, body {
 }
 
 .picture-track::-webkit-scrollbar {
-  display: none;
+  height: 6px;
+}
+
+.picture-track::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.25);
+  border-radius: 3px;
+}
+
+.picture-track::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* ===== PICTURE ITEMS (LINEAR / REDESIGN DEFAULT) ===== */
