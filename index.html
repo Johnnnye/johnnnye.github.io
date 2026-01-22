@@ -678,7 +678,7 @@ const overlay = document.getElementById("about-overlay");
 titleEl.addEventListener("click", () => {
   overlay.classList.remove("hidden");
   muteSiteAudio();
-  softClick();
+  setTimeout(softClick, 200);
 });
 document.getElementById("about-close").addEventListener("click", () => {
   overlay.classList.add("hidden");
@@ -782,7 +782,7 @@ if (logoNode && logoOverlay && logoClose) {
   logoNode.addEventListener("click", () => {
     logoOverlay.classList.remove("hidden");
     muteSiteAudio();
-    softClick();
+    setTimeout(softClick, 200);
   });
 
   logoClose.addEventListener("click", () => {
