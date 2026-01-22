@@ -390,3 +390,8 @@ html, body {
   opacity: 1;
   text-decoration: underline;
 }
+
+/* NON-LINEAR: force top alignment */
+#nonlinear-overlay .picture-item {
+  justify-content: flex-start;
+}
