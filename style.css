@@ -315,9 +315,8 @@ html, body {
   opacity: 1;
 }
 /* === CLICKABLE THUMB HINT === */
-.picture-thumb img {
-  opacity: 0.7;
-  transition: opacity 0.6s ease;
+.picture-thumb {
+  display: block;
 }
 
 .picture-thumb:hover img {
