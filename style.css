@@ -1,6 +1,3 @@
-
-
-style.css:
 /* ===== RESET ===== */
 * {
   margin: 0;
@@ -31,7 +28,6 @@ html, body {
   transform: translateX(-50%);
   text-align: center;
   z-index: 10;
-  pointer-events: auto;
 }
 
 .hero h1 {
@@ -77,16 +73,10 @@ html, body {
   border-radius: 50%;
   background: #222;
   opacity: 0.6;
-  transition: opacity 1.2s ease;
-}
-
-.node:hover .dot {
-  opacity: 1;
 }
 
 .label {
   font-size: 1.1rem;
-  font-weight: 400;
   white-space: nowrap;
 }
 
@@ -96,38 +86,37 @@ html, body {
   bottom: 3%;
   left: 50%;
   transform: translateX(-50%);
-  text-align: center;
   font-size: 0.85rem;
   opacity: 0.5;
   z-index: 10;
 }
 
-.contact a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.contact a:hover {
-  opacity: 0.8;
-}
-
-/* ===== ABOUT OVERLAY ===== */
-.overlay {
+/* ===== OVERLAYS (BASE) ===== */
+.overlay,
+.picture-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(245, 246, 244, 0.92);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.8s ease;
+  background: rgba(245, 246, 244, 0.95);
   z-index: 20;
+  display: flex;
 }
 
-.overlay.hidden {
+.overlay {
+  align-items: center;
+  justify-content: center;
+}
+
+.picture-overlay {
+  align-items: center;
+}
+
+.overlay.hidden,
+.picture-overlay.hidden {
   opacity: 0;
   pointer-events: none;
 }
 
+/* ===== OVERLAY CONTENT ===== */
 .overlay-content {
   max-width: 420px;
   text-align: center;
@@ -136,60 +125,12 @@ html, body {
   line-height: 1.6;
 }
 
-.close {
-  margin-top: 2rem;
+.close,
+.picture-close {
   background: none;
   border: none;
-  font-size: 0.9rem;
-  opacity: 0.5;
   cursor: pointer;
-}
-
-.close:hover {
-  opacity: 0.8;
-}
-
-/* ===== PICTURE OVERLAY (NEW) ===== */
-
-.picture-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(245, 246, 244, 0.96);
-  z-index: 30;
-  display: flex;
-  align-items: center;
-}
-
-.picture-overlay.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.picture-track {
-  display: flex;
-  gap: 6vw;
-  padding: 0 8vw;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  
-}
-  
-#nonlinear-overlay .picture-track {
-  flex-wrap: nowrap;
-  align-items: flex-start;
-}
-
-.picture-item {
-  flex: 0 0 70vw;
-  height: 42vh;
-  background: #e3e3e3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  scroll-snap-align: center;
-  font-size: 0.9rem;
-  opacity: 0.85;
+  opacity: 0.6;
 }
 
 .picture-close {
@@ -197,108 +138,55 @@ html, body {
   top: 3%;
   right: 4%;
   font-size: 2rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  opacity: 0.6;
 }
 
+.close:hover,
 .picture-close:hover {
   opacity: 1;
 }
 
-/* ===== ANIMATIONS ===== */
-
-@keyframes breathe {
-  0% {
-    opacity: 0.75;
-    letter-spacing: 0.02em;
-  }
-  50% {
-    opacity: 1;
-    letter-spacing: 0.12em;
-  }
-  100% {
-    opacity: 0.75;
-    letter-spacing: 0.02em;
-  }
+/* ===== PICTURE TRACK ===== */
+.picture-track {
+  display: flex;
+  gap: 6vw;
+  padding: 0 8vw;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
 }
 
-@keyframes drift {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-14px);
-  }
-}
-/* ===== CONTACT AS NODE (VISUAL ONLY) ===== */
-
-#contact-email {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 1.1rem;
-  font-weight: 400;
-  opacity: 0.35;
-  transition: opacity 1.2s ease, transform 6s ease;
+.picture-track::-webkit-scrollbar {
+  display: none;
 }
 
-#contact-email::before {
-  content: "";
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #222;
-  opacity: 0.6;
-  transition: opacity 1.2s ease;
-}
-
-#contact-email:hover {
-  opacity: 1;
-  transform: scale(1.05);
-}
-
-#contact-email:hover::before {
-  opacity: 1;
-}
-.picture-item iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-/* ===== PICTURE PROJECT LAYOUT FIX ===== */
-
+/* ===== PICTURE ITEMS (LINEAR / REDESIGN DEFAULT) ===== */
 .picture-item {
+  flex: 0 0 70vw;
+  height: 42vh;
+  background: #e3e3e3;
   display: flex;
   align-items: center;
   gap: 4vw;
+  scroll-snap-align: center;
+  font-size: 0.9rem;
 }
 
-/* Text column */
+/* ===== TEXT + VIDEO ===== */
 .project-text {
   flex: 0 0 32%;
   font-size: 0.95rem;
   line-height: 1.45;
   opacity: 0.85;
-
   max-height: 100%;
   overflow-y: auto;
+  pointer-events: none;
 }
 
-.project-text strong {
-  font-weight: 500;
-}
-
-/* Rights line */
 .project-text .rights {
   margin-top: 1rem;
   font-size: 0.75rem;
   opacity: 0.5;
 }
 
-/* Video column */
 .project-video {
   flex: 1;
   aspect-ratio: 16 / 9;
@@ -309,58 +197,42 @@ html, body {
   height: 100%;
   border: none;
 }
-/* NON-LINEAR: 3 ITEMS SIDE BY SIDE + THUMBNAILS */
+
+/* =========================================================
+   NON-LINEAR OVERLAY — FIXED (THIS WAS THE PROBLEM)
+========================================================= */
+
+#nonlinear-overlay {
+  align-items: flex-start; /* ← critical fix */
+}
+
+#nonlinear-overlay .picture-track {
+  align-items: flex-start;
+}
+
 #nonlinear-overlay .picture-item {
   flex: 1;
   min-width: 0;
-  height: auto;          /* IMPORTANT */
-  background: none;      /* IMPORTANT */
+  height: auto;
+  background: none;
   flex-direction: column;
   align-items: stretch;
 }
 
-#nonlinear-overlay .picture-item img {
-  display: block;        /* IMPORTANT */
+#nonlinear-overlay .picture-thumb img {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: 180px;
   object-fit: cover;
 }
-.project-text {
-  pointer-events: none;
-}
-/* === NON-LINEAR OVERLAY: TEXT SHOULD NOT CAPTURE CLICKS === */
-.project-text {
-  pointer-events: none;
-}
 
-/* MUSIC & SOUND ART – allow SoundCloud to fit */
+/* ===== MUSIC OVERLAY ===== */
 #music-overlay .picture-item {
   height: auto;
   align-items: flex-start;
 }
 
 #music-overlay iframe {
-  height: 450px; /* SoundCloud recommended */
-}
-
-/* LOGO NODE IMAGE */
-.logo-node .logo-image {
-  width: 64px;
-  height: auto;
-  opacity: 0.5;   /* darker at rest */
-  transition: opacity 1.2s ease, transform 6s ease;
-  pointer-events: none;
-}
-
-.logo-node:hover .logo-image {
-  opacity: 1;
-  transform: scale(1.05);
-}
-
-/* remove dot / label if any exist */
-.logo-node .dot,
-.logo-node .label {
-  display: none;
+  height: 450px;
 }
 
 /* ===== LOGO NODE ===== */
@@ -368,9 +240,13 @@ html, body {
   animation: drift 40s ease-in-out infinite alternate;
 }
 
+.logo-node .dot,
+.logo-node .label {
+  display: none;
+}
+
 .logo-img {
-  width: 48px;          /* tweak if needed */
-  height: auto;
+  width: 48px;
   opacity: 0.7;
   transition: opacity 1.2s ease, transform 6s ease;
   pointer-events: none;
@@ -380,30 +256,15 @@ html, body {
   opacity: 1;
   transform: scale(1.05);
 }
-.project-link a {
-  font-size: 0.85rem;
-  opacity: 0.6;
-  text-decoration: none;
+
+/* ===== ANIMATIONS ===== */
+@keyframes breathe {
+  0% { opacity: 0.75; letter-spacing: 0.02em; }
+  50% { opacity: 1; letter-spacing: 0.12em; }
+  100% { opacity: 0.75; letter-spacing: 0.02em; }
 }
 
-.project-link a:hover {
-  opacity: 1;
-  text-decoration: underline;
-}
-
-/* NON-LINEAR: force top alignment */
-#nonlinear-overlay .picture-item {
-  justify-content: flex-start;
-}
-#nonlinear-overlay .picture-item img {
-  display: block;
-  margin: 0;
-}
-#nonlinear-overlay .picture-thumb img {
-  height: 180px;          /* pick a value you like */
-  width: 100%;
-  object-fit: cover;
-}
-#nonlinear-overlay .picture-item {
-  align-self: flex-start;
+@keyframes drift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-14px); }
 }
