@@ -380,3 +380,13 @@ html, body {
   opacity: 1;
   transform: scale(1.05);
 }
+.project-link a {
+  font-size: 0.85rem;
+  opacity: 0.6;
+  text-decoration: none;
+}
+
+.project-link a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
