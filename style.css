@@ -399,3 +399,11 @@ html, body {
   display: block;
   margin: 0;
 }
+#nonlinear-overlay .picture-thumb img {
+  height: 180px;          /* pick a value you like */
+  width: 100%;
+  object-fit: cover;
+}
+#nonlinear-overlay .picture-item {
+  align-self: flex-start;
+}
