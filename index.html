@@ -444,6 +444,15 @@
 
   
 <script>
+
+function stopAllVimeo() {
+  document.querySelectorAll('iframe[src*="vimeo.com"]').forEach(frame => {
+    frame.contentWindow?.postMessage(
+      JSON.stringify({ method: "pause" }),
+      "*"
+    );
+  });
+}
 /* =========================
    AUDIO CORE
 ========================= */
@@ -681,7 +690,7 @@ document.querySelector(".picture-node").addEventListener("click", () => {
 document.getElementById("picture-close").addEventListener("click", () => {
   pictureOverlay.classList.add("hidden");
   unmuteSiteAudio();
-  stopVimeo();
+  stopAllVimeo();
   setTimeout(softClick, 120);
 });
 
@@ -706,6 +715,7 @@ nonlinearNode.addEventListener("click", () => {
 
 nonlinearClose.addEventListener("click", () => {
   nonlinearOverlay.classList.add("hidden");
+  stopAllVimeo();
   unmuteSiteAudio();
   setTimeout(softClick, 120);
 });
@@ -723,6 +733,7 @@ redesignsNode.addEventListener("click", () => {
 
 redesignsClose.addEventListener("click", () => {
   redesignsOverlay.classList.add("hidden");
+  stopAllVimeo();
   unmuteSiteAudio();
   setTimeout(softClick, 120);
 });
