@@ -167,7 +167,7 @@ html, body {
 }
 
 .picture-track::-webkit-scrollbar {
-  height: 6px;
+  height: 10px;
 }
 
 .picture-track::-webkit-scrollbar-thumb {
