@@ -453,6 +453,13 @@ function stopAllVimeo() {
     );
   });
 }
+
+function stopSoundCloud() {
+  document.querySelectorAll('iframe[src*="soundcloud.com"]').forEach(frame => {
+    const src = frame.src;
+    frame.src = src; // reload = stop playback
+  });
+}
 /* =========================
    AUDIO CORE
 ========================= */
@@ -751,6 +758,7 @@ musicNode.addEventListener("click", () => {
 
 musicClose.addEventListener("click", () => {
   musicOverlay.classList.add("hidden");
+  stopSoundCloud();
   unmuteSiteAudio();
   setTimeout(softClick, 120);
 });
