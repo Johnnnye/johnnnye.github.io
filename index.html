@@ -674,7 +674,7 @@ titleEl.addEventListener("click", () => {
 document.getElementById("about-close").addEventListener("click", () => {
   overlay.classList.add("hidden");
   unmuteSiteAudio();
-  softClick();
+  setTimeout(softClick, 200);
 });
 
 /* PICTURE OVERLAY */
@@ -698,7 +698,7 @@ document.getElementById("picture-close").addEventListener("click", () => {
   pictureOverlay.classList.add("hidden");
   unmuteSiteAudio();
   stopAllVimeo();
-  setTimeout(softClick, 120);
+  setTimeout(softClick, 200);
 });
 
 document.addEventListener("keydown", e => {
@@ -724,7 +724,7 @@ nonlinearClose.addEventListener("click", () => {
   nonlinearOverlay.classList.add("hidden");
   stopAllVimeo();
   unmuteSiteAudio();
-  setTimeout(softClick, 120);
+  setTimeout(softClick, 200);
 });
 
 /* ===== REDESIGNS OVERLAY ===== */
@@ -742,7 +742,7 @@ redesignsClose.addEventListener("click", () => {
   redesignsOverlay.classList.add("hidden");
   stopAllVimeo();
   unmuteSiteAudio();
-  setTimeout(softClick, 120);
+  setTimeout(softClick, 200);
 });
 
 /* ===== MUSIC & SOUND ART OVERLAY ===== */
@@ -779,7 +779,7 @@ if (logoNode && logoOverlay && logoClose) {
   logoClose.addEventListener("click", () => {
     logoOverlay.classList.add("hidden");
     unmuteSiteAudio();
-    softClick();
+    setTimeout(softClick, 200);
   });
 }
 </script>
