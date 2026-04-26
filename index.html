@@ -749,25 +749,7 @@ musicClose.addEventListener("click", () => {
   setTimeout(softClick, 200);
 });
 
-/* ===== LOGO OVERLAY ===== */
 
-const logoNode = document.querySelector(".logo-node");
-const logoOverlay = document.getElementById("logo-overlay");
-const logoClose = document.getElementById("logo-close");
-
-if (logoNode && logoOverlay && logoClose) {
-  logoNode.addEventListener("click", () => {
-    logoOverlay.classList.remove("hidden");
-    muteSiteAudio();
-    setTimeout(softClick, 200);
-  });
-
-  logoClose.addEventListener("click", () => {
-    logoOverlay.classList.add("hidden");
-    unmuteSiteAudio();
-    setTimeout(softClick, 200);
-  });
-}
 </script>
 
 </body>
