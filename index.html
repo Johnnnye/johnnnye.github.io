@@ -24,12 +24,13 @@
     <div class="node nonlinear-node" data-note="174.61" data-pan="0.35" style="top:50%; left:62%;">
       <span class="dot"></span><span class="label">Interactive</span>
     </div>
-    <div class="node" data-note="196.00" data-pan="-0.15" style="top:68%; left:40%;">
-      <span class="dot"></span><span class="label">Redesigns</span>
-    </div>
-    <div class="node" data-note="220.00" data-pan="0.2" style="top:78%; left:58%;">
-      <span class="dot"></span><span class="label">Music and Sound Art</span>
-    </div>
+   <div class="node redesigns-node" data-note="196.00" data-pan="-0.15" style="top:68%; left:40%;">
+  <span class="dot"></span><span class="label">Redesigns</span>
+</div>
+
+<div class="node music-node" data-note="220.00" data-pan="0.2" style="top:78%; left:58%;">
+  <span class="dot"></span><span class="label">Music and Sound Art</span>
+</div>
    
   <!-- ABOUT OVERLAY -->
   <div class="overlay hidden" id="about-overlay">
@@ -715,8 +716,8 @@ nonlinearClose.addEventListener("click", () => {
 
 /* ===== REDESIGNS OVERLAY ===== */
 
-const redesignsOverlay = document.getElementById("redesigns-overlay");
-const redesignsNode = document.querySelectorAll(".node")[2]; // third node = Redesigns
+const redesignsNode = document.querySelector(".redesigns-node");
+const musicNode = document.querySelector(".music-node");
 const redesignsClose = redesignsOverlay.querySelector(".picture-close");
 
 redesignsNode.addEventListener("click", () => {
