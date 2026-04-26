@@ -260,28 +260,6 @@ html, body {
   height: 450px;
 }
 
-/* ===== LOGO NODE ===== */
-.logo-node {
-  animation: drift 40s ease-in-out infinite alternate;
-}
-
-.logo-node .dot,
-.logo-node .label {
-  display: none;
-}
-
-.logo-img {
-  width: 80px;
-  opacity: 0.7;
-  transition: opacity 1.2s ease, transform 6s ease;
-  pointer-events: none;
-}
-
-.logo-node:hover .logo-img {
-  opacity: 1;
-  transform: scale(1.05);
-}
-
 /* ===== ANIMATIONS ===== */
 @keyframes breathe {
   0% { opacity: 0.75; letter-spacing: 0.02em; }
