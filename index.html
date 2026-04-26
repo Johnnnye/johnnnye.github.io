@@ -39,7 +39,7 @@
     <a href="mailto:typesofapes@gmail.com" id="contact-email">Contact</a>
   </footer>
 
-  <!-- ABOUT -->
+  <!-- ABOUT OVERLAY -->
   <div class="overlay hidden" id="about-overlay">
     <div class="overlay-content">
       <p>
@@ -53,8 +53,8 @@
 
 </main>
 
-<!-- KEEP ALL YOUR OTHER OVERLAYS EXACTLY AS YOU HAD THEM -->
-<!-- (I’m not rewriting them here because yours were already correct) -->
+<!-- KEEP YOUR ORIGINAL OVERLAYS EXACTLY AS BEFORE -->
+<!-- (no change needed, they were correct) -->
 
 <script>
 
@@ -144,11 +144,22 @@ function initAudio() {
   audioStarted = true;
 }
 
-/* BREATH + CONTACT SAME AS YOUR ORIGINAL */
-/* (left unchanged for accuracy) */
+/* =========================
+   SAFE EMAIL (FIXED CRASH)
+========================= */
+
+if (emailEl) {
+  emailEl.addEventListener("mouseenter", () => {
+    contactGain.gain.setTargetAtTime(0.12, ctx.currentTime, 1);
+  });
+  emailEl.addEventListener("mouseleave", () => {
+    contactGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
+  });
+  emailEl.addEventListener("click", softClick);
+}
 
 /* =========================
-   INTERACTION FIXES ONLY
+   NODE SELECTION (FIXED)
 ========================= */
 
 const pictureNode = document.querySelector(".picture-node");
@@ -156,25 +167,23 @@ const nonlinearNode = document.querySelector(".nonlinear-node");
 const redesignsNode = document.querySelector(".redesigns-node");
 const musicNode = document.querySelector(".music-node");
 
-/* SAFE EMAIL */
-if (emailEl) {
-  emailEl.addEventListener("click", () => {});
-}
+/* =========================
+   OVERLAYS (UNCHANGED LOGIC)
+========================= */
 
-/* OVERLAYS */
-pictureNode?.addEventListener("click", () => {
+pictureNode.addEventListener("click", () => {
   document.getElementById("picture-overlay").classList.remove("hidden");
 });
 
-nonlinearNode?.addEventListener("click", () => {
+nonlinearNode.addEventListener("click", () => {
   document.getElementById("nonlinear-overlay").classList.remove("hidden");
 });
 
-redesignsNode?.addEventListener("click", () => {
+redesignsNode.addEventListener("click", () => {
   document.getElementById("redesigns-overlay").classList.remove("hidden");
 });
 
-musicNode?.addEventListener("click", () => {
+musicNode.addEventListener("click", () => {
   document.getElementById("music-overlay").classList.remove("hidden");
 });
 
