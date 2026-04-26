@@ -21,23 +21,38 @@
     <div class="node picture-node" data-note="146.83" data-pan="-0.4" style="top:32%; left:30%;">
       <span class="dot"></span><span class="label">Picture</span>
     </div>
-
     <div class="node nonlinear-node" data-note="174.61" data-pan="0.35" style="top:50%; left:62%;">
       <span class="dot"></span><span class="label">Interactive</span>
     </div>
-
-    <div class="node redesigns-node" data-note="196.00" data-pan="-0.15" style="top:68%; left:40%;">
+    <div class="node" data-note="196.00" data-pan="-0.15" style="top:68%; left:40%;">
       <span class="dot"></span><span class="label">Redesigns</span>
     </div>
-
-    <div class="node music-node" data-note="220.00" data-pan="0.2" style="top:78%; left:58%;">
+    <div class="node" data-note="220.00" data-pan="0.2" style="top:78%; left:58%;">
       <span class="dot"></span><span class="label">Music and Sound Art</span>
+    </div>
+        <!-- LOGO NODE -->
+    <div class="node logo-node"
+         data-note="261.63"
+         data-pan="0"
+         style="top:18%; left:14%; opacity:0.5;">
+      <img src="images/Logo.jpg" alt="JE logo" class="logo-img">
     </div>
   </section>
 
   <footer class="contact">
     <a href="mailto:typesofapes@gmail.com" id="contact-email">Contact</a>
   </footer>
+
+  <!-- LOGO CREDIT OVERLAY -->
+<div class="overlay hidden" id="logo-overlay">
+  <div class="overlay-content">
+    <p>
+      Website designed & built by<br>
+      <strong>John Emslie</strong>
+    </p>
+    <button class="close" id="logo-close">Close</button>
+  </div>
+</div>
 
   <!-- ABOUT OVERLAY -->
   <div class="overlay hidden" id="about-overlay">
@@ -53,13 +68,409 @@
 
 </main>
 
-<!-- KEEP YOUR ORIGINAL OVERLAYS EXACTLY AS BEFORE -->
-<!-- (no change needed, they were correct) -->
+<!-- PICTURE OVERLAY -->
+<div class="picture-overlay hidden" id="picture-overlay">
+  <button class="picture-close" id="picture-close">×</button>
 
+  <div class="picture-track">
+
+   <!-- VIDEO 1 -->
+<div class="picture-item">
+  <div class="project-text">
+    <strong>Slush 2025 Introvideo – Startup Stage</strong><br>
+    Music conceptualisation, composition, mixing and mastering for the
+    Startup Speaker Stage at Slush 2025 (~13,000 attendees).<br>
+    Futuristic EDM inspired by geometric forms, neon aesthetics,
+    and digital precision, reflecting a shifting ground state. (Video Password: je2026)
+    <div class="rights">
+      Work shown for portfolio purposes only.
+      All rights remain with their respective owners.
+    </div>
+  </div>
+
+  <div class="project-video">
+    <iframe
+      id="picture-video-1"
+      src="https://player.vimeo.com/video/1153134132"
+      frameborder="0"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+</div>
+
+    <!-- VIDEO 2 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Slush 2025 Introvideo – Builder Stage</strong><br>
+        Music conceptualisation, composition, mixing and mastering for the
+        Builder Stage at Slush 2025 (~13,000 attendees).<br>
+        Envoking emotions of organic meets industrial, refleting a shifting ground state. (Video Password: je2026)
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-2"
+          src="https://player.vimeo.com/video/1153134107"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- VIDEO 3 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Slush 2025 Introvideo – Impact Stage</strong><br>
+        Music conceptualisation, composition, mixing and mastering for the
+        Builder Stage at Slush 2025 (~13,000 attendees).<br>
+        Embodies the idea of liquid metal and alien alloy, reflecting shifting ground state. (Video Password: je2026)
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-3"
+          src="https://player.vimeo.com/video/1153134085"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- VIDEO 4 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Nano Cortex - Play Anywhere</strong><br>
+        Sound design created to enhance mood, rhythm,
+        and narrative clarity for Neiural DSP social media marketing campain  (Video Password: je2026)
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-4"
+          src="https://player.vimeo.com/video/1153134193"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- VIDEO 5 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Thoughts Out IGDA Trailer</strong><br>
+        Music and sound design for a third person puzzle platformer game trialer at the IGDA event Helsinki 2024.
+        Designed to complement pacing and visual tone.
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-5"
+          src="https://player.vimeo.com/video/1153134161"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- VIDEO 6 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Piru Trailer</strong><br>
+        Sound design and music for a retro first-person horror game trailer, prioritizing clarity, atmosphere, and emotional intent.
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          id="picture-video-6"
+          src="https://player.vimeo.com/video/1153134218"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+    <!-- VIDEO 7 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong>Cleaning Day</strong><br>
+        Sound design and music for short animation.
+        <div class="rights">
+          Work shown for portfolio purposes only.
+          All rights remain with their respective owners.
+        </div>
+      </div>
+    
+      <div class="project-video">
+        <iframe
+          id="picture-video-7"
+          src="https://player.vimeo.com/video/1153134308"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Interactive OVERLAY (NO JS CHANGE) -->
+<div class="picture-overlay hidden" id="nonlinear-overlay">
+  <button class="picture-close">×</button>
+
+  <!-- PROJECT 1 -->
+  <div class="picture-item">
+
+    <a class="picture-thumb" href="https://ssssand.itch.io/thoughts-out" target="_blank">
+      <img src="images/thumb1.jpg" alt="Thoughts Out! thumbnail">
+    </a>
+
+    <div class="project-text">
+      <strong class="project-title">Thoughts Out!</strong>
+
+      <div class="project-role">
+        Creative and technical sound design, interactive music design.
+      </div>
+
+      <div class="project-description">
+        Stylized third person puzzle game set in a dreamlike world. 
+        Sound design focused on subtle emotional feedback and reactive environmental audio, reinforcing the player’s shifting mental state as calm, tension, and disruption dynamically 
+        shape the environment.
+      </div>
+      
+
+      <div class="project-meta">
+        Unreal Engine · Wwise · Interactive Audio
+      </div>
+      <div class="project-link">
+  <a href="https://vimeo.com/1155576750?fl=pl&fe=s" target="_blank">Watch gameplay video</a>
+</div>
+      
+    </div>
+
+  </div>
+
+  <!-- PROJECT 2 -->
+  <div class="picture-item">
+
+    <a class="picture-thumb" href="https://viitahenri.itch.io/piru" target="_blank">
+      <img src="images/thumb2.jpg" alt="Project Two thumbnail">
+    </a>
+
+      <div class="project-text">
+      <strong class="project-title">Piru</strong>
+
+      <div class="project-role">
+       Creative and technical sound design / interactive music design.
+      </div>
+
+      <div class="project-description">
+        Stylized retro first person horror game exploring abstract emotional states,
+        focused on responsive interaction.
+      </div>
+
+      <div class="project-meta">
+        Unity · FMOD · Interactive Audio
+      </div>
+        <div class="project-link">
+  <a href="https://vimeo.com/996813853?fl=pl&fe=sh" target="_blank">Watch gameplay video</a>
+</div>
+    </div>
+
+  </div>
+
+  <!-- PROJECT 3 -->
+  <div class="picture-item">
+
+    <a class="picture-thumb" href="https://rayonez.itch.io/mamapato" target="_blank">
+      <img src="images/thumb3.jpg" alt="Project Three thumbnail">
+    </a>
+
+      <div class="project-text">
+      <strong class="project-title">Mamapato</strong>
+
+      <div class="project-role">
+        Creative and technical sound design / music composition and production.
+      </div>
+
+      <div class="project-description">
+        Quirky mobile game created in a week long game jam at Aalto University.
+        Focused on tactile UI feedback and 
+        
+      </div>
+
+      <div class="project-meta">
+        Unity · FMOD · Interactive Audio
+      </div>
+    </div>
+
+  </div>
+</div> 
+<!-- REDESIGNS OVERLAY -->
+<div class="picture-overlay hidden" id="redesigns-overlay">
+  <button class="picture-close">×</button>
+
+  <div class="picture-track">
+
+    <!-- REDESIGN 1 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong class="project-title">Aeon Drive</strong><br>
+        Sound design and music cyberpunk precision platformer game - Metalized!.<br>
+    
+        <div class="rights">
+          Redesign for portfolio purposes only.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          src="https://player.vimeo.com/video/1153134545"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- REDESIGN 2 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong class="project-title">Corepunk Redesign</strong><br>
+        Sound design and voice-over performance reimagined, emphasizing dynamics and impact for an MMORPG.
+        <div class="rights">
+          Redesign for portfolio purposes only.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          src="https://player.vimeo.com/video/1153134346"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- REDESIGN 3 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong class="project-title">Stalker Alternative Music Score </strong><br>
+        Focus on moment-to-moment emotional timing and cinematic flow.
+        <div class="rights">
+          Redesign for portfolio purposes only.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          src="https://player.vimeo.com/video/1153134576"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- REDESIGN 4 -->
+    <div class="picture-item">
+      <div class="project-text">
+        <strong class="project-title">Need for Speed Shift</strong><br>
+        Excitement and impact — reimagining the classic racing game.
+        <div class="rights">
+          Redesign for portfolio purposes only.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          src="https://player.vimeo.com/video/1153134068"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <!-- MUSIC & SOUND ART OVERLAY -->
+<div class="picture-overlay hidden" id="music-overlay">
+  <button class="picture-close">×</button>
+
+  <div class="picture-track">
+
+    <div class="picture-item">
+      <div class="project-text">
+        <strong class="project-title">Music & Sound Art</strong><br>
+        Selected works across varied projects from video games to abstract sound art. <br>
+        Focused on atmosphere, motion, and emotional clarity.
+        <div class="rights">
+          Works presented for portfolio purposes only.
+        </div>
+      </div>
+
+      <div class="project-video">
+        <iframe
+          width="100%"
+          height="100%"
+          scrolling="no"
+          frameborder="no"
+          allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/johnemslie/sets/compositions&color=%23222222&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false">
+        </iframe>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  
 <script>
 
+function stopAllVimeo() {
+  document.querySelectorAll('iframe[src*="vimeo.com"]').forEach(frame => {
+    frame.contentWindow?.postMessage(
+      JSON.stringify({ method: "pause" }),
+      "*"
+    );
+  });
+}
+
+function stopSoundCloud() {
+  document.querySelectorAll('iframe[src*="soundcloud.com"]').forEach(frame => {
+    const src = frame.src;
+    frame.src = src; // reload = stop playback
+  });
+}
 /* =========================
-   AUDIO CORE (UNCHANGED)
+   AUDIO CORE
 ========================= */
 
 let ctx, master, reverb;
@@ -75,10 +486,12 @@ let contactOsc, contactGain;
 const titleEl = document.getElementById("about-trigger");
 const emailEl = document.getElementById("contact-email");
 
-/* AUDIO UNLOCK */
+/* 🔓 AUDIO UNLOCK (CLICK OR MOVE) */
 function unlockAudioOnce() {
   if (!ctx) initAudio();
   if (ctx.state === "suspended") ctx.resume();
+  document.removeEventListener("click", unlockAudioOnce);
+  document.removeEventListener("mousemove", unlockAudioOnce);
 }
 document.addEventListener("click", unlockAudioOnce, { once: true });
 document.addEventListener("mousemove", unlockAudioOnce, { once: true });
@@ -144,49 +557,240 @@ function initAudio() {
   audioStarted = true;
 }
 
-/* =========================
-   SAFE EMAIL (FIXED CRASH)
-========================= */
+/* ===== BREATH ===== */
 
-if (emailEl) {
-  emailEl.addEventListener("mouseenter", () => {
-    contactGain.gain.setTargetAtTime(0.12, ctx.currentTime, 1);
-  });
-  emailEl.addEventListener("mouseleave", () => {
-    contactGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
-  });
-  emailEl.addEventListener("click", softClick);
+function initBreath() {
+  const buffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+
+  breathNoise = ctx.createBufferSource();
+  breathNoise.buffer = buffer;
+  breathNoise.loop = true;
+
+  breathFilter = ctx.createBiquadFilter();
+  breathFilter.type = "bandpass";
+  breathFilter.frequency.value = 600;
+  breathFilter.Q.value = 0.45;
+
+  breathGain = ctx.createGain();
+  breathGain.gain.value = 0;
+
+  breathNoise.connect(breathFilter);
+  breathFilter.connect(breathGain);
+  breathGain.connect(reverb);
+  breathNoise.start();
+
+  breathStartTime = performance.now();
+  requestAnimationFrame(breathLoop);
 }
 
-/* =========================
-   NODE SELECTION (FIXED)
-========================= */
+function breathLoop(now) {
+  if (!audioStarted) return;
+  const phase = ((now - breathStartTime) % breathDuration) / breathDuration;
+  const amp = Math.sin(phase * Math.PI);
+  breathGain.gain.setTargetAtTime(amp * 0.28, ctx.currentTime, 0.12);
+  requestAnimationFrame(breathLoop);
+}
 
-const pictureNode = document.querySelector(".picture-node");
-const nonlinearNode = document.querySelector(".nonlinear-node");
-const redesignsNode = document.querySelector(".redesigns-node");
-const musicNode = document.querySelector(".music-node");
+function breathIn() {
+  breathGain.gain.setTargetAtTime(0.28, ctx.currentTime, 1);
+}
 
-/* =========================
-   OVERLAYS (UNCHANGED LOGIC)
-========================= */
+function breathOut() {
+  breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
+}
 
-pictureNode.addEventListener("click", () => {
-  document.getElementById("picture-overlay").classList.remove("hidden");
+/* ===== CONTACT NOTE ===== */
+
+function initContactTone() {
+  contactOsc = ctx.createOscillator();
+  contactOsc.type = "sine";
+  contactOsc.frequency.value = 146.83 * 1.5;
+
+  contactGain = ctx.createGain();
+  contactGain.gain.value = 0;
+
+  contactOsc.connect(contactGain);
+  contactGain.connect(reverb);
+  contactGain.connect(master);
+  contactOsc.start();
+}
+
+/* CLICK */
+function softClick() {
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "sine";
+  osc.frequency.value = 140;
+
+  const now = ctx.currentTime;
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.1, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+
+  osc.connect(gain);
+  gain.connect(master);
+  gain.connect(reverb);
+  osc.start(now);
+  osc.stop(now + 0.7);
+}
+
+function muteSiteAudio() {
+  master.gain.setTargetAtTime(0, ctx.currentTime, 0.4);
+}
+
+function unmuteSiteAudio() {
+  master.gain.setTargetAtTime(0.9, ctx.currentTime, 0.8);
+}
+
+/* ===== INTERACTION ===== */
+
+document.querySelectorAll(".node").forEach(el => {
+  el.addEventListener("mouseenter", () => {
+    breathIn();
+    const v = voices.find(x => x.el === el);
+    if (v) v.focusGain.gain.setTargetAtTime(0.14, ctx.currentTime, 0.8);
+  });
+
+  el.addEventListener("mouseleave", () => {
+    breathOut();
+    const v = voices.find(x => x.el === el);
+    if (v) v.focusGain.gain.setTargetAtTime(0, ctx.currentTime, 1.5);
+  });
+
+  el.addEventListener("click", softClick);
 });
+
+titleEl.addEventListener("mouseenter", breathIn);
+titleEl.addEventListener("mouseleave", breathOut);
+
+emailEl.addEventListener("mouseenter", () => {
+  contactGain.gain.setTargetAtTime(0.12, ctx.currentTime, 1);
+});
+emailEl.addEventListener("mouseleave", () => {
+  contactGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
+});
+emailEl.addEventListener("click", softClick);
+
+/* ABOUT */
+const overlay = document.getElementById("about-overlay");
+titleEl.addEventListener("click", () => {
+  overlay.classList.remove("hidden");
+  muteSiteAudio();
+  setTimeout(softClick, 200);
+});
+document.getElementById("about-close").addEventListener("click", () => {
+  overlay.classList.add("hidden");
+  unmuteSiteAudio();
+  setTimeout(softClick, 200);
+});
+
+/* PICTURE OVERLAY */
+const pictureOverlay = document.getElementById("picture-overlay");
+const vimeoFrame = document.getElementById("picture-video-1");
+
+function stopVimeo() {
+  if (!vimeoFrame || !vimeoFrame.contentWindow) return;
+  vimeoFrame.contentWindow.postMessage(
+    JSON.stringify({ method: "pause" }),
+    "*"
+  );
+}
+
+document.querySelector(".picture-node").addEventListener("click", () => {
+  pictureOverlay.classList.remove("hidden");
+  muteSiteAudio();
+});
+
+document.getElementById("picture-close").addEventListener("click", () => {
+  pictureOverlay.classList.add("hidden");
+  unmuteSiteAudio();
+  stopAllVimeo();
+  setTimeout(softClick, 200);
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    pictureOverlay.classList.add("hidden");
+    unmuteSiteAudio();
+    stopVimeo();
+  }
+});
+
+/* ===== NON-LINEAR OVERLAY ===== */
+
+const nonlinearOverlay = document.getElementById("nonlinear-overlay");
+const nonlinearNode = document.querySelector(".nonlinear-node");
+const nonlinearClose = nonlinearOverlay.querySelector(".picture-close");
 
 nonlinearNode.addEventListener("click", () => {
-  document.getElementById("nonlinear-overlay").classList.remove("hidden");
+  nonlinearOverlay.classList.remove("hidden");
+  muteSiteAudio();
 });
+
+nonlinearClose.addEventListener("click", () => {
+  nonlinearOverlay.classList.add("hidden");
+  stopAllVimeo();
+  unmuteSiteAudio();
+  setTimeout(softClick, 200);
+});
+
+/* ===== REDESIGNS OVERLAY ===== */
+
+const redesignsOverlay = document.getElementById("redesigns-overlay");
+const redesignsNode = document.querySelectorAll(".node")[2]; // third node = Redesigns
+const redesignsClose = redesignsOverlay.querySelector(".picture-close");
 
 redesignsNode.addEventListener("click", () => {
-  document.getElementById("redesigns-overlay").classList.remove("hidden");
+  redesignsOverlay.classList.remove("hidden");
+  muteSiteAudio();
 });
+
+redesignsClose.addEventListener("click", () => {
+  redesignsOverlay.classList.add("hidden");
+  stopAllVimeo();
+  unmuteSiteAudio();
+  setTimeout(softClick, 200);
+});
+
+/* ===== MUSIC & SOUND ART OVERLAY ===== */
+
+const musicOverlay = document.getElementById("music-overlay");
+const musicNode = document.querySelectorAll(".node")[3]; // fourth node
+const musicClose = musicOverlay.querySelector(".picture-close");
 
 musicNode.addEventListener("click", () => {
-  document.getElementById("music-overlay").classList.remove("hidden");
+  musicOverlay.classList.remove("hidden");
+  muteSiteAudio();
 });
 
+musicClose.addEventListener("click", () => {
+  musicOverlay.classList.add("hidden");
+  stopSoundCloud();
+  unmuteSiteAudio();
+  setTimeout(softClick, 200);
+});
+
+/* ===== LOGO OVERLAY ===== */
+
+const logoNode = document.querySelector(".logo-node");
+const logoOverlay = document.getElementById("logo-overlay");
+const logoClose = document.getElementById("logo-close");
+
+if (logoNode && logoOverlay && logoClose) {
+  logoNode.addEventListener("click", () => {
+    logoOverlay.classList.remove("hidden");
+    muteSiteAudio();
+    setTimeout(softClick, 200);
+  });
+
+  logoClose.addEventListener("click", () => {
+    logoOverlay.classList.add("hidden");
+    unmuteSiteAudio();
+    setTimeout(softClick, 200);
+  });
+}
 </script>
 
 </body>
