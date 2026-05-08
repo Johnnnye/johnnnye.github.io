@@ -30,29 +30,14 @@
     <div class="node" data-note="220.00" data-pan="0.2" style="top:78%; left:58%;">
       <span class="dot"></span><span class="label">Music and Sound Art</span>
     </div>
-        <!-- LOGO NODE -->
-    <div class="node logo-node"
-         data-note="261.63"
-         data-pan="0"
-         style="top:18%; left:14%; opacity:0.5;">
-      <img src="images/Logo.jpg" alt="JE logo" class="logo-img">
-    </div>
+   
   </section>
 
   <footer class="contact">
     <a href="mailto:typesofapes@gmail.com" id="contact-email">Contact</a>
   </footer>
 
-  <!-- LOGO CREDIT OVERLAY -->
-<div class="overlay hidden" id="logo-overlay">
-  <div class="overlay-content">
-    <p>
-      Website designed & built by<br>
-      <strong>John Emslie</strong>
-    </p>
-    <button class="close" id="logo-close">Close</button>
-  </div>
-</div>
+
 
   <!-- ABOUT OVERLAY -->
   <div class="overlay hidden" id="about-overlay">
@@ -739,7 +724,8 @@ nonlinearClose.addEventListener("click", () => {
 /* ===== REDESIGNS OVERLAY ===== */
 
 const redesignsOverlay = document.getElementById("redesigns-overlay");
-const redesignsNode = document.querySelectorAll(".node")[2]; // third node = Redesigns
+const redesignsNode = [...document.querySelectorAll(".node")]
+  .find(el => el.textContent.includes("Redesigns"));
 const redesignsClose = redesignsOverlay.querySelector(".picture-close");
 
 redesignsNode.addEventListener("click", () => {
@@ -757,7 +743,8 @@ redesignsClose.addEventListener("click", () => {
 /* ===== MUSIC & SOUND ART OVERLAY ===== */
 
 const musicOverlay = document.getElementById("music-overlay");
-const musicNode = document.querySelectorAll(".node")[3]; // fourth node
+const musicNode = [...document.querySelectorAll(".node")]
+  .find(el => el.textContent.includes("Music and Sound Art"));
 const musicClose = musicOverlay.querySelector(".picture-close");
 
 musicNode.addEventListener("click", () => {
@@ -772,25 +759,7 @@ musicClose.addEventListener("click", () => {
   setTimeout(softClick, 200);
 });
 
-/* ===== LOGO OVERLAY ===== */
 
-const logoNode = document.querySelector(".logo-node");
-const logoOverlay = document.getElementById("logo-overlay");
-const logoClose = document.getElementById("logo-close");
-
-if (logoNode && logoOverlay && logoClose) {
-  logoNode.addEventListener("click", () => {
-    logoOverlay.classList.remove("hidden");
-    muteSiteAudio();
-    setTimeout(softClick, 200);
-  });
-
-  logoClose.addEventListener("click", () => {
-    logoOverlay.classList.add("hidden");
-    unmuteSiteAudio();
-    setTimeout(softClick, 200);
-  });
-}
 </script>
 
 </body>
