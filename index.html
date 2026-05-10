@@ -440,12 +440,20 @@
   
 <script>
 
-function stopAllVimeo() {
+function stopAllVideos() {
+
+  // Stop Vimeo
   document.querySelectorAll('iframe[src*="vimeo.com"]').forEach(frame => {
     frame.contentWindow?.postMessage(
       JSON.stringify({ method: "pause" }),
       "*"
     );
+  });
+
+  // Stop YouTube
+  document.querySelectorAll('iframe[src*="youtube.com"]').forEach(frame => {
+    const src = frame.src;
+    frame.src = src;
   });
 }
 
@@ -692,7 +700,7 @@ document.querySelector(".picture-node").addEventListener("click", () => {
 document.getElementById("picture-close").addEventListener("click", () => {
   pictureOverlay.classList.add("hidden");
   unmuteSiteAudio();
-  stopAllVimeo();
+  stopAllVideos();
   setTimeout(softClick, 200);
 });
 
@@ -717,7 +725,7 @@ nonlinearNode.addEventListener("click", () => {
 
 nonlinearClose.addEventListener("click", () => {
   nonlinearOverlay.classList.add("hidden");
-  stopAllVimeo();
+  stopAllVideos();
   unmuteSiteAudio();
   setTimeout(softClick, 200);
 });
@@ -736,7 +744,7 @@ redesignsNode.addEventListener("click", () => {
 
 redesignsClose.addEventListener("click", () => {
   redesignsOverlay.classList.add("hidden");
-  stopAllVimeo();
+  stopAllVideos();
   unmuteSiteAudio();
   setTimeout(softClick, 200);
 });
