@@ -523,3 +523,8 @@ html, body {
   .role { font-size: 0.54rem; letter-spacing: 0.13em; }
   .ryder-mark { width: 52px !important; }
 }
+/* Match overlay sliders to the node signal lights */
+.picture-track::-webkit-scrollbar-thumb {
+  background: var(--tail-light);
+  box-shadow: 0 0 12px rgba(189, 57, 47, 0.65);
+}
