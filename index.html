@@ -499,8 +499,8 @@ function initAudio() {
   ctx = new (window.AudioContext || window.webkitAudioContext)();
 
   master = ctx.createGain();
-  master.gain.value = 0.9;
-  master.connect(ctx.destination);
+  master.gain.value = 1;
+  const compressor = ctx.createDynamicsCompressor(); compressor.threshold.value = -18; compressor.knee.value = 20; compressor.ratio.value = 3; compressor.attack.value = 0.01; compressor.release.value = 0.25; master.connect(compressor); compressor.connect(ctx.destination);
 
   reverb = ctx.createConvolver();
   const ir = ctx.createBuffer(2, ctx.sampleRate * 2, ctx.sampleRate);
@@ -638,7 +638,7 @@ function muteSiteAudio() {
 }
 
 function unmuteSiteAudio() {
-  master.gain.setTargetAtTime(0.9, ctx.currentTime, 0.8);
+  master.gain.setTargetAtTime(1, ctx.currentTime, 0.8);
 }
 
 /* ===== INTERACTION ===== */
@@ -784,7 +784,7 @@ function initRitualArp() {
   ritualStarted = true;
 
   ritualArpGain = ctx.createGain();
-  ritualArpGain.gain.value = 0.10;
+  ritualArpGain.gain.value = 0.14;
   ritualArpGain.connect(master);
   ritualArpGain.connect(reverb);
 
@@ -835,10 +835,10 @@ function initRitualArp() {
   document.querySelectorAll(".node").forEach(node => {
     node.addEventListener("mouseenter", () => {
       ritualStep = (ritualStep + 2) % notes.length;
-      ritualArpGain.gain.setTargetAtTime(0.075, ctx.currentTime, 0.25);
+      ritualArpGain.gain.setTargetAtTime(0.16, ctx.currentTime, 0.25);
     });
     node.addEventListener("mouseleave", () => {
-      ritualArpGain.gain.setTargetAtTime(0.055, ctx.currentTime, 0.8);
+      ritualArpGain.gain.setTargetAtTime(0.14, ctx.currentTime, 0.8);
     });
   });
 }
