@@ -784,7 +784,7 @@ function initRitualArp() {
   ritualStarted = true;
 
   ritualArpGain = ctx.createGain();
-  ritualArpGain.gain.value = 0.14;
+  ritualArpGain.gain.value = 0.12;
   ritualArpGain.connect(master);
   ritualArpGain.connect(reverb);
 
@@ -814,7 +814,7 @@ function initRitualArp() {
     osc.type = "triangle"; shadowOsc.type = "sawtooth"; shadowOsc.detune.value = ritualPulseCount % 2 ? -8 : 8;
     osc.frequency.setValueAtTime(freq, now); shadowOsc.frequency.setValueAtTime(freq, now);
     filter.type = "lowpass";
-    filter.frequency.setValueAtTime(900 + (ritualStep % 3) * 350, now);
+    filter.frequency.setValueAtTime(780 + (ritualStep % 5) * 250 + (ritualPulseCount % 16 === 0 ? 600 : 0), now);
     filter.Q.value = 1.2;
     gain.gain.setValueAtTime(0.0001, now);
     gain.gain.exponentialRampToValueAtTime(0.22, now + 0.02);
@@ -835,10 +835,10 @@ function initRitualArp() {
   document.querySelectorAll(".node").forEach(node => {
     node.addEventListener("mouseenter", () => {
       ritualStep = (ritualStep + 2) % notes.length;
-      ritualArpGain.gain.setTargetAtTime(0.16, ctx.currentTime, 0.25);
+      ritualArpGain.gain.setTargetAtTime(0.14, ctx.currentTime, 0.25);
     });
     node.addEventListener("mouseleave", () => {
-      ritualArpGain.gain.setTargetAtTime(0.14, ctx.currentTime, 0.8);
+      ritualArpGain.gain.setTargetAtTime(0.12, ctx.currentTime, 0.8);
     });
   });
 }
