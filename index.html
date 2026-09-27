@@ -567,8 +567,8 @@ function initBreath() {
 
   breathFilter = ctx.createBiquadFilter();
   breathFilter.type = "bandpass";
-  breathFilter.frequency.value = 600;
-  breathFilter.Q.value = 0.45;
+  breathFilter.frequency.value = 1250;
+  breathFilter.Q.value = 0.9;
 
   breathGain = ctx.createGain();
   breathGain.gain.value = 0;
@@ -585,13 +585,13 @@ function initBreath() {
 function breathLoop(now) {
   if (!audioStarted) return;
   const phase = ((now - breathStartTime) % breathDuration) / breathDuration;
-  const amp = Math.sin(phase * Math.PI);
-  breathGain.gain.setTargetAtTime(amp * 0.28, ctx.currentTime, 0.12);
+  const amp = phase < 0.32 ? Math.sin((phase / 0.32) * Math.PI / 2) : phase < 0.76 ? Math.cos(((phase - 0.32) / 0.44) * Math.PI / 2) : 0;
+  breathGain.gain.setTargetAtTime(amp * 0.16, ctx.currentTime, 0.12);
   requestAnimationFrame(breathLoop);
 }
 
 function breathIn() {
-  breathGain.gain.setTargetAtTime(0.28, ctx.currentTime, 1);
+  breathGain.gain.setTargetAtTime(0.18, ctx.currentTime, 1);
 }
 
 function breathOut() {
