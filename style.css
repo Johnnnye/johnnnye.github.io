@@ -431,3 +431,95 @@ html, body {
     transform: scaleX(1);
   }
 }
+
+/* ===== JOHN RYDER PRODUCTIONS — NIGHT HIGHWAY IDENT ===== */
+:root {
+  --road: #090b0e;
+  --road-deep: #11161c;
+  --headlight: #edf3f2;
+  --steel: #aebac0;
+  --signal-blue: #74aeca;
+  --tail-light: #bd392f;
+}
+
+html, body {
+  background:
+    radial-gradient(ellipse at 50% 11%, rgba(116, 174, 202, 0.12), transparent 33%),
+    linear-gradient(135deg, var(--road) 0%, var(--road-deep) 52%, #080a0c 100%);
+  color: var(--headlight);
+  font-family: "Share Tech Mono", "Space Mono", monospace;
+}
+
+.container::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(174, 186, 192, 0.04) 4px);
+  z-index: 0;
+}
+
+.hero h1 {
+  font-family: "Barlow Condensed", "Syne", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--headlight);
+  text-shadow: 0 0 20px rgba(116, 174, 202, 0.22);
+}
+
+.wordmark-main, .wordmark-sub { display: block; }
+.wordmark-main { font-size: clamp(2.7rem, 7vw, 7rem); line-height: 0.78; }
+.wordmark-sub {
+  margin-top: 0.68rem;
+  font-family: "Share Tech Mono", monospace;
+  font-size: clamp(0.56rem, 1.1vw, 0.92rem);
+  font-weight: 400;
+  letter-spacing: 0.55em;
+  color: var(--signal-blue);
+  line-height: 1;
+}
+
+.role {
+  margin-top: 1.15rem;
+  color: var(--steel);
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-shadow: 0 0 12px rgba(116, 174, 202, 0.16);
+}
+
+.node {
+  color: var(--steel);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(116, 174, 202, 0.14);
+}
+.node:hover { color: var(--headlight); text-shadow: 0 0 18px rgba(116, 174, 202, 0.55); }
+.dot { background: var(--tail-light); box-shadow: 0 0 11px rgba(189, 57, 47, 0.7); }
+
+.contact, .contact a { color: var(--signal-blue); letter-spacing: 0.14em; }
+.overlay, .picture-overlay { background: rgba(7, 9, 12, 0.96); backdrop-filter: blur(9px); }
+.overlay-content, .picture-item { border-color: rgba(116, 174, 202, 0.3); }
+.picture-item { background: linear-gradient(145deg, rgba(20, 26, 32, 0.88), rgba(8, 10, 13, 0.9)); }
+.project-title, .project-text strong, .overlay-content { color: var(--headlight); }
+.rights, .project-meta, .project-role { color: var(--steel); }
+.close, .picture-close { color: var(--signal-blue); }
+
+.ryder-mark {
+  width: 74px !important;
+  opacity: 0.92 !important;
+  filter: drop-shadow(0 0 12px rgba(116, 174, 202, 0.52));
+}
+.site-credit {
+  color: var(--steel);
+  font-family: "Share Tech Mono", monospace !important;
+  letter-spacing: 0.12em !important;
+}
+
+@media (max-width: 600px) {
+  .wordmark-main { font-size: clamp(2.25rem, 12vw, 4.25rem); }
+  .wordmark-sub { letter-spacing: 0.34em; }
+  .role { font-size: 0.54rem; letter-spacing: 0.13em; }
+  .ryder-mark { width: 52px !important; }
+}
