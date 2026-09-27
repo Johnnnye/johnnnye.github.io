@@ -807,12 +807,12 @@ function initRitualArp() {
   function pulseRitual() {
     const now = ctx.currentTime;
     const osc = ctx.createOscillator();
-    const filter = ctx.createBiquadFilter();
+    const shadowOsc = ctx.createOscillator(); const filter = ctx.createBiquadFilter();
     const gain = ctx.createGain();
     const freq = ritualPulseCount % 11 === 8 ? 103.83 : notes[pattern[ritualPulseCount % pattern.length]];
 
-    osc.type = ritualPulseCount % 5 === 0 ? "sine" : "triangle";
-    osc.frequency.setValueAtTime(freq, now);
+    osc.type = "triangle"; shadowOsc.type = "sawtooth"; shadowOsc.detune.value = ritualPulseCount % 2 ? -8 : 8;
+    osc.frequency.setValueAtTime(freq, now); shadowOsc.frequency.setValueAtTime(freq, now);
     filter.type = "lowpass";
     filter.frequency.setValueAtTime(900 + (ritualStep % 3) * 350, now);
     filter.Q.value = 1.2;
@@ -820,11 +820,11 @@ function initRitualArp() {
     gain.gain.exponentialRampToValueAtTime(0.22, now + 0.02);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.13);
 
-    osc.connect(filter);
+    osc.connect(filter); shadowOsc.connect(filter);
     filter.connect(gain);
     gain.connect(ritualArpGain);
-    osc.start(now);
-    osc.stop(now + 0.17);
+    osc.start(now); shadowOsc.start(now);
+    osc.stop(now + 0.17); shadowOsc.stop(now + 0.17);
 
     ritualStep += 1; ritualPulseCount += 1; if (ritualPulseCount % 32 === 0) playRitualShimmer(freq);
     window.setTimeout(pulseRitual, [144, 162, 181][ritualPulseCount % 3]);
