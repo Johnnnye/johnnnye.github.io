@@ -531,3 +531,20 @@ html, body {
 /* Larger John Ryder Productions wordmark */
 .ryder-mark { width: 148px !important; }
 @media (max-width: 600px) { .ryder-mark { width: 104px !important; } }
+/* Contact uses the same signal response as the portfolio nodes. */
+#contact-email {
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.35s ease, text-shadow 0.35s ease;
+}
+#contact-email .dot {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+#contact-email:hover {
+  color: var(--headlight);
+  text-shadow: 0 0 18px rgba(116, 174, 202, 0.55);
+}
+#contact-email:hover .dot {
+  transform: scale(1.55);
+  box-shadow: 0 0 18px rgba(189, 57, 47, 1);
+}
