@@ -303,3 +303,7 @@ html, body {
 .picture-thumb:hover img {
   opacity: 1;
 }
+/* ===== FEATURED PICTURE WORK ===== */
+#picture-overlay .picture-item:nth-child(6) {
+  order: -1;
+}
