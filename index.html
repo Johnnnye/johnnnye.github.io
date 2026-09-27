@@ -484,7 +484,7 @@ const emailEl = document.getElementById("contact-email");
 
 /* 🔓 AUDIO UNLOCK (CLICK OR MOVE) */
 function unlockAudioOnce() {
-  if (!ctx) initAudio();
+  if (!ctx) { initAudio(); initRitualArp(); }
   if (ctx.state === "suspended") ctx.resume();
   document.removeEventListener("click", unlockAudioOnce);
   document.removeEventListener("mousemove", unlockAudioOnce);
@@ -770,6 +770,77 @@ musicClose.addEventListener("click", () => {
   setTimeout(softClick, 200);
 });
 
+
+
+
+/* ===== RITUAL ARPEGGIATOR ===== */
+let ritualStarted = false;
+let ritualStep = 0;
+let ritualArpGain;
+
+function initRitualArp() {
+  if (ritualStarted || !ctx) return;
+  ritualStarted = true;
+
+  ritualArpGain = ctx.createGain();
+  ritualArpGain.gain.value = 0.055;
+  ritualArpGain.connect(master);
+  ritualArpGain.connect(reverb);
+
+  const drone = ctx.createOscillator();
+  const droneFilter = ctx.createBiquadFilter();
+  const droneGain = ctx.createGain();
+  drone.type = "sine";
+  drone.frequency.value = 36.71;
+  droneFilter.type = "lowpass";
+  droneFilter.frequency.value = 160;
+  droneGain.gain.value = 0.025;
+  drone.connect(droneFilter);
+  droneFilter.connect(droneGain);
+  droneGain.connect(master);
+  droneGain.connect(reverb);
+  drone.start();
+
+  const notes = [73.42, 110.00, 146.83, 174.61, 196.00, 220.00];
+
+  function pulseRitual() {
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const filter = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+    const freq = notes[ritualStep % notes.length];
+
+    osc.type = ritualStep % 4 === 0 ? "sine" : "triangle";
+    osc.frequency.setValueAtTime(freq, now);
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(900 + (ritualStep % 3) * 350, now);
+    filter.Q.value = 1.2;
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.48, now + 0.08);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.15);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(ritualArpGain);
+    osc.start(now);
+    osc.stop(now + 1.25);
+
+    ritualStep += 1;
+    window.setTimeout(pulseRitual, 1250);
+  }
+
+  window.setTimeout(pulseRitual, 850);
+
+  document.querySelectorAll(".node").forEach(node => {
+    node.addEventListener("mouseenter", () => {
+      ritualStep = (ritualStep + 2) % notes.length;
+      ritualArpGain.gain.setTargetAtTime(0.075, ctx.currentTime, 0.25);
+    });
+    node.addEventListener("mouseleave", () => {
+      ritualArpGain.gain.setTargetAtTime(0.055, ctx.currentTime, 0.8);
+    });
+  });
+}
 
 </script>
 
