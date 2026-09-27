@@ -528,3 +528,6 @@ html, body {
   background: var(--tail-light);
   box-shadow: 0 0 12px rgba(189, 57, 47, 0.65);
 }
+/* Larger John Ryder Productions wordmark */
+.ryder-mark { width: 148px !important; }
+@media (max-width: 600px) { .ryder-mark { width: 104px !important; } }
