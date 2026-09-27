@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap');
+
 /* ===== RESET ===== */
 * {
   margin: 0;
@@ -306,4 +308,103 @@ html, body {
 /* ===== FEATURED PICTURE WORK ===== */
 #picture-overlay .picture-item:nth-child(6) {
   order: -1;
+}
+/* ===== RITUAL SCI-FI VISUAL SYSTEM ===== */
+:root {
+  --void: #0b0d10;
+  --smoke: #171a20;
+  --bone: #e7e0d5;
+  --acid: #c7ff3d;
+  --blood: #b61f36;
+  --violet: #8b7cff;
+}
+html, body {
+  background: radial-gradient(circle at 50% 12%, #202636 0%, var(--void) 46%, #07080a 100%);
+  color: var(--bone);
+  font-family: "Space Mono", monospace;
+}
+.hero h1 {
+  color: var(--bone);
+  font-family: "Syne", sans-serif;
+  font-size: clamp(2.6rem, 6vw, 5.25rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-shadow: 0 0 28px rgba(139, 124, 255, 0.32);
+}
+.role {
+  color: var(--acid);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  line-height: 1.6;
+  opacity: 0.95;
+  text-transform: uppercase;
+}
+.node {
+  color: var(--bone);
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  opacity: 0.62;
+  text-transform: uppercase;
+}
+.node:hover {
+  color: var(--acid);
+  text-shadow: 0 0 18px rgba(199, 255, 61, 0.55);
+}
+.dot {
+  background: var(--acid);
+  box-shadow: 0 0 12px rgba(199, 255, 61, 0.9);
+  opacity: 1;
+}
+.contact {
+  color: var(--violet);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  opacity: 0.9;
+  text-transform: uppercase;
+}
+.overlay,
+.picture-overlay {
+  background: rgba(11, 13, 16, 0.96);
+  backdrop-filter: blur(16px);
+}
+.overlay-content {
+  color: var(--bone);
+  font-family: "Syne", sans-serif;
+  font-size: 1.25rem;
+}
+.close,
+.picture-close {
+  color: var(--acid);
+}
+.picture-track::-webkit-scrollbar-thumb {
+  background: var(--acid);
+  box-shadow: 0 0 12px rgba(199, 255, 61, 0.65);
+}
+.picture-item {
+  background: linear-gradient(135deg, rgba(31, 35, 45, 0.96), rgba(12, 14, 18, 0.96));
+  border: 1px solid rgba(231, 224, 213, 0.14);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(199, 255, 61, 0.08);
+}
+.project-text {
+  color: var(--bone);
+  font-family: "Space Mono", monospace;
+}
+.project-title,
+.project-text strong {
+  color: var(--acid);
+  font-family: "Syne", sans-serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+}
+.project-text .rights {
+  color: var(--violet);
+  opacity: 0.85;
+}
+.project-text a {
+  color: var(--acid);
+}
+#nonlinear-overlay .picture-item {
+  border: 0;
+  box-shadow: none;
 }
