@@ -817,20 +817,20 @@ function initRitualArp() {
     filter.frequency.setValueAtTime(900 + (ritualStep % 3) * 350, now);
     filter.Q.value = 1.2;
     gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.48, now + 0.08);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.15);
+    gain.gain.exponentialRampToValueAtTime(0.32, now + 0.035);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
 
     osc.connect(filter);
     filter.connect(gain);
     gain.connect(ritualArpGain);
     osc.start(now);
-    osc.stop(now + 1.25);
+    osc.stop(now + 0.34);
 
-    ritualStep += 1; ritualPulseCount += 1; if (ritualPulseCount % 8 === 0) playRitualShimmer(freq);
-    window.setTimeout(pulseRitual, [1150, 1300, 1450][ritualPulseCount % 3]);
+    ritualStep += 1; ritualPulseCount += 1; if (ritualPulseCount % 32 === 0) playRitualShimmer(freq);
+    window.setTimeout(pulseRitual, [288, 325, 362][ritualPulseCount % 3]);
   }
 
-  window.setTimeout(pulseRitual, 850);
+  window.setTimeout(pulseRitual, 220);
 
   document.querySelectorAll(".node").forEach(node => {
     node.addEventListener("mouseenter", () => {
