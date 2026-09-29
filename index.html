@@ -830,35 +830,57 @@ function initRitualArp() {
   driftDepth.connect(droneFilter.frequency);
   drift.start();
 
-  const notes = [73.42, 110.00, 116.54, 146.83, 174.61, 196.00, 220.00]; const pattern = [0, 3, 5, 1, 4, 6, 2, 5, 3, 6, 4, 1, 5, 2, 6, 3];
+  // Original D-minor ostinato: steady eighth notes at 96 BPM.
+  const notes = [73.42, 110, 146.83, 174.61, 196, 220, 261.63];
+  const patterns = [
+    [0, 1, 2, 3, 0, 1, 2, 1, 0, 1, 2, 6, 3, 2, 1, -1],
+    [0, 1, 2, 3, 0, 1, 4, 3, 0, 1, 2, 6, 5, 3, 2, -1]
+  ];
+  const eighth = 60 / 96 / 2;
+  let nextPulse = ctx.currentTime + .08;
 
-  function pulseRitual() {
-    const now = ctx.currentTime;
+  function synthNote(freq, time, accent, bass = false) {
     const osc = ctx.createOscillator();
-    const shadowOsc = ctx.createOscillator(); const filter = ctx.createBiquadFilter();
+    const shadow = ctx.createOscillator();
+    const filter = ctx.createBiquadFilter();
     const gain = ctx.createGain();
-    const freq = notes[pattern[ritualPulseCount % pattern.length]];
-
-    osc.type = "triangle"; shadowOsc.type = "sawtooth"; shadowOsc.detune.value = ritualPulseCount % 2 ? -8 : 8;
-    osc.frequency.setValueAtTime(freq, now); shadowOsc.frequency.setValueAtTime(freq, now);
+    const shadowLevel = ctx.createGain();
+    osc.type = bass ? "triangle" : "sawtooth";
+    shadow.type = "sawtooth";
+    osc.frequency.value = shadow.frequency.value = freq;
+    shadow.detune.value = -6;
+    shadowLevel.gain.value = .18;
+    const openness = .5 + .5 * Math.sin(ritualPulseCount * Math.PI / 64);
     filter.type = "lowpass";
-    filter.frequency.setValueAtTime(430 + (ritualStep % 5) * 110, now);
-    filter.Q.value = 1.2;
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.22, now + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.13);
-
-    osc.connect(filter); shadowOsc.connect(filter);
-    filter.connect(gain);
-    gain.connect(ritualArpGain);
-    osc.start(now); shadowOsc.start(now);
-    osc.stop(now + 0.17); shadowOsc.stop(now + 0.17);
-
-    ritualStep += 1; ritualPulseCount += 1; if (ritualPulseCount % 32 === 0) playRitualShimmer(freq);
-    window.setTimeout(pulseRitual, [420, 560, 700][ritualPulseCount % 3]);
+    filter.Q.value = bass ? .7 : 1.1;
+    filter.frequency.setValueAtTime(bass ? 180 : 500 + openness * 650 + accent * 180, time);
+    filter.frequency.exponentialRampToValueAtTime(bass ? 85 : 220, time + .24);
+    gain.gain.setValueAtTime(.0001, time);
+    gain.gain.exponentialRampToValueAtTime(bass ? .15 : .12 + accent * .035, time + .012);
+    gain.gain.exponentialRampToValueAtTime(.0001, time + (bass ? .5 : .27));
+    osc.connect(filter);
+    shadow.connect(shadowLevel); shadowLevel.connect(filter);
+    filter.connect(gain); gain.connect(ritualArpGain);
+    osc.start(time); shadow.start(time);
+    osc.stop(time + .55); shadow.stop(time + .55);
+    shadow.onended = () => { osc.disconnect(); shadow.disconnect(); shadowLevel.disconnect(); filter.disconnect(); gain.disconnect(); };
   }
 
-  window.setTimeout(pulseRitual, 220);
+  function pulseRitual() {
+    // Audio-clock scheduling keeps the repeating motif tight despite UI activity.
+    if (nextPulse < ctx.currentTime) nextPulse = ctx.currentTime + .03;
+    while (nextPulse < ctx.currentTime + .12) {
+      const step = ritualPulseCount % 16;
+      const phrase = Math.floor(ritualPulseCount / 32) % 2;
+      const note = patterns[phrase][step];
+      if (note >= 0) synthNote(notes[note], nextPulse, step % 4 === 0 ? 1 : 0);
+      if (step % 4 === 0) synthNote(36.71, nextPulse, 0, true);
+      ritualPulseCount++;
+      nextPulse += eighth;
+    }
+    window.setTimeout(pulseRitual, 25);
+  }
+  pulseRitual();
 
   document.querySelectorAll(".node").forEach(node => {
     node.addEventListener("mouseenter", () => {
