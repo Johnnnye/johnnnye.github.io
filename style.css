@@ -566,9 +566,9 @@ html, body {
   display: block;
   width: 100%;
   height: auto;
-  transform: scale(calc(.985 + var(--breath, 0) * .015));
-  opacity: calc(.85 + var(--breath, 0) * .15);
-  filter: brightness(calc(.95 + var(--breath, 0) * .12));
+  transform: scale(calc(.94 + var(--breath, 0) * .12));
+  opacity: calc(.76 + var(--breath, 0) * .24);
+  filter: brightness(calc(.9 + var(--breath, 0) * .3));
 }
 #about-trigger:focus-visible { outline: 2px solid var(--signal-blue); outline-offset: 8px; }
 #about-trigger .wordmark-sub { margin-top: .35rem; }
