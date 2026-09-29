@@ -758,3 +758,14 @@ body { background: radial-gradient(ellipse at 50% 15%, #1c242d 0, transparent 44
   .node .label { font-size: 30px; margin-top: 18px; }
   .node-description { max-width: none; }
 }
+
+/* Portrait and biography in the title's About panel. */
+#about-overlay { overflow-y: auto; padding: 24px; box-sizing: border-box; }
+#about-overlay .about-card { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 32px; max-width: 960px; width: 100%; margin: auto; padding: 28px; box-sizing: border-box; text-align: left; background: #10151c; border: 1px solid #798e9e40; border-top: 2px solid #bd392f; }
+.about-portrait { display: block; width: 100%; height: auto; align-self: start; border-radius: 3px; }
+.about-copy h2 { margin: 0; font: 600 clamp(24px, 3vw, 34px)/1.2 "Barlow Condensed", sans-serif; }
+.about-copy h2 span { display: block; margin-top: 6px; font: 400 14px/1.4 Inter, sans-serif; color: #aebac0; }
+.about-copy p { margin: 16px 0 0; font: 400 14px/1.75 Inter, sans-serif; color: #c4c9d0; }
+.about-copy .about-role { color: #e2b4ad; font-size: 12px; line-height: 1.6; }
+.about-copy .close { margin-top: 22px; padding: 10px 18px; border: 1px solid #798e9e60; opacity: 1; }
+@media (max-width: 640px) { #about-overlay { padding: 16px; } #about-overlay .about-card { grid-template-columns: 1fr; gap: 22px; padding: 20px; } .about-portrait { max-width: 300px; margin: 0 auto; } }
