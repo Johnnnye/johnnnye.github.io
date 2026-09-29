@@ -649,3 +649,21 @@ html, body {
   .node .label { font-size: 1.1rem; letter-spacing: .1em; }
   .sound-toggle { bottom: 7%; left: 50%; transform: translateX(-50%); white-space: nowrap; }
 }
+
+/* Keep the production credit quietly anchored to the bottom right. */
+.site-credit {
+  position: fixed;
+  right: 1.5rem;
+  bottom: max(.6rem, env(safe-area-inset-bottom));
+  z-index: 2;
+  max-width: calc(100vw - 3rem);
+  font-size: 9px;
+  line-height: 1.5;
+  text-align: right;
+  text-transform: uppercase;
+  opacity: .62;
+  pointer-events: none;
+}
+@media (max-width: 600px) {
+  .site-credit { right: .75rem; font-size: 7px; }
+}
