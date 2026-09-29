@@ -539,7 +539,8 @@ function initAudio() {
     osc.type = "sine";
     focusOsc.type = "sine";
     osc.frequency.value = freq;
-    focusOsc.frequency.value = freq * 2.76;
+    // Use the written D-minor notes directly, without an inharmonic multiplier.
+    focusOsc.frequency.value = freq;
 
     osc.connect(baseGain);
     focusOsc.connect(focusGain);
@@ -591,13 +592,13 @@ function breathLoop(now) {
   if (!audioStarted) return;
   const phase = ((now - breathStartTime) % breathDuration) / breathDuration;
   const amp = phase < 0.32 ? Math.sin((phase / 0.32) * Math.PI / 2) : phase < 0.76 ? Math.cos(((phase - 0.32) / 0.44) * Math.PI / 2) : 0;
-  breathGain.gain.setTargetAtTime(amp * 0.16, ctx.currentTime, 0.12);
+  breathGain.gain.setTargetAtTime(amp * 0.11, ctx.currentTime, 0.12);
   titleEl.style.setProperty("--breath", amp.toFixed(4));
   requestAnimationFrame(breathLoop);
 }
 
 function breathIn() {
-  if (breathGain) breathGain.gain.setTargetAtTime(0.18, ctx.currentTime, 1);
+  if (breathGain) breathGain.gain.setTargetAtTime(0.12, ctx.currentTime, 1);
 }
 
 function breathOut() {
@@ -609,7 +610,7 @@ function breathOut() {
 function initContactTone() {
   contactOsc = ctx.createOscillator();
   contactOsc.type = "sine";
-  contactOsc.frequency.value = 146.83 * 1.5;
+  contactOsc.frequency.value = 220;
 
   contactGain = ctx.createGain();
   contactGain.gain.value = 0;
@@ -625,11 +626,11 @@ function softClick() {
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.type = "sine";
-  osc.frequency.value = 140;
+  osc.frequency.value = 146.83;
 
   const now = ctx.currentTime;
   gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(0.1, now + 0.02);
+  gain.gain.linearRampToValueAtTime(0.045, now + 0.06);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
 
   osc.connect(gain);
@@ -660,7 +661,7 @@ document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("mouseenter", () => {
     breathIn();
     const v = voices.find(x => x.el === el);
-    if (v) v.focusGain.gain.setTargetAtTime(0.055, ctx.currentTime, 0.8);
+    if (v) v.focusGain.gain.setTargetAtTime(0.035, ctx.currentTime, 0.9);
   });
 
   el.addEventListener("mouseleave", () => {
@@ -676,7 +677,7 @@ titleEl.addEventListener("mouseenter", breathIn);
 titleEl.addEventListener("mouseleave", breathOut);
 
 emailEl.addEventListener("mouseenter", () => {
-  contactGain.gain.setTargetAtTime(0.12, ctx.currentTime, 1);
+  contactGain.gain.setTargetAtTime(0.04, ctx.currentTime, 1);
 });
 emailEl.addEventListener("mouseleave", () => {
   contactGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
