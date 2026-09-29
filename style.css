@@ -586,3 +586,66 @@ html, body {
   .title-logo { transform: none; opacity: 1; filter: none; }
   .node { animation: none; }
 }
+
+/* Chrome and signal red: carry the title's palette through the portfolio. */
+:root {
+  --headlight: #f0f2f4;
+  --steel: #c1c5cc;
+  --signal-blue: #c2cad1;
+  --tail-light: #f13a2e;
+}
+html, body {
+  background: radial-gradient(ellipse at 50% 12%, rgba(133, 153, 171, .10), transparent 36%),
+    radial-gradient(ellipse at 85% 90%, rgba(150, 20, 17, .065), transparent 48%),
+    linear-gradient(135deg, #080a0d, #111419 55%, #08090b);
+}
+.node {
+  opacity: .72;
+  min-height: 44px;
+  transition: color .2s ease, opacity .2s ease, text-shadow .25s ease;
+  text-shadow: none;
+}
+.node .label {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  letter-spacing: .14em;
+}
+.node:hover, .node:focus-visible {
+  opacity: 1;
+  color: #fff;
+  text-shadow: 0 0 16px rgba(239, 56, 43, .4);
+}
+.node .dot { width: 6px; height: 6px; box-shadow: 0 0 10px rgba(241, 58, 46, .65); }
+.node:hover .dot { box-shadow: 0 0 16px rgba(241, 58, 46, .95); }
+.role { color: #b8bcc3; text-shadow: none; }
+.contact { opacity: .85; }
+.picture-item {
+  border: 1px solid rgba(192, 198, 206, .2);
+  border-top: 1px solid rgba(241, 58, 46, .65);
+  background: linear-gradient(145deg, #171a20, #0b0d10);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .4);
+}
+.project-title, .project-text strong {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+  letter-spacing: .06em;
+  color: #f0f2f4;
+}
+.project-text .rights { color: #a6aab1; }
+.project-text a { color: #efb1aa; }
+.close, .picture-close { color: #e6e9ed; }
+.sound-toggle {
+  position: absolute; z-index: 10; bottom: 2%; left: 4%;
+  min-height: 44px; padding: .5rem;
+  color: #afb4bc; background: transparent; border: 0;
+  font: .65rem "Share Tech Mono", monospace;
+  text-transform: uppercase; letter-spacing: .09em; cursor: pointer;
+}
+.sound-toggle:hover { color: #fff; }
+.sound-toggle:focus-visible, .node:focus-visible { outline: 2px solid #f13a2e; outline-offset: 5px; }
+@media (max-width: 600px) {
+  .node .label { font-size: 1.1rem; letter-spacing: .1em; }
+  .sound-toggle { bottom: 7%; left: 50%; transform: translateX(-50%); white-space: nowrap; }
+}
