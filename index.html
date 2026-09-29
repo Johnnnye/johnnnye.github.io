@@ -7,31 +7,27 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=credit-20260929">
+  <link rel="stylesheet" href="style.css?v=cinematic-preview">
 </head>
 <body>
 
 <main class="container" id="app">
 
+  <div class="portfolio-top"><span>Independent music &amp; sound</span><a href="mailto:john.ryder.production@gmail.com">Let’s talk <span aria-hidden="true">↗</span></a></div>
   <section class="hero">
     <h1 class="image-title"><button id="about-trigger" type="button" aria-label="About John Ryder Productions"><img class="title-logo" src="images/john-ryder-title.png" alt="John Ryder" width="2078" height="757" fetchpriority="high"></button></h1>
     <p class="role">Music and sound for the space in between</p>
+
   </section>
 
-  <section class="categories">
-    <div class="node picture-node" data-note="146.83" data-pan="-0.4" style="top:32%; left:30%;">
-      <span class="dot"></span><span class="label">Picture</span>
+  <section class="work-section" aria-labelledby="work-heading">
+    <div class="work-heading"><h2 id="work-heading">Explore the work</h2><span>Four ways into the world</span></div>
+    <div class="categories">
+      <button type="button" class="node picture-node" data-note="146.83" data-pan="-0.4"><span class="node-number">01 / Moving image</span><span class="label">Picture</span><span class="node-description">Music and sound for film, animation and brands.</span><span class="node-bottom"><span class="dot"></span>View projects <span aria-hidden="true">↗</span></span></button>
+      <button type="button" class="node nonlinear-node" data-note="174.61" data-pan="0.35"><span class="node-number">02 / Playable worlds</span><span class="label">Interactive</span><span class="node-description">Responsive sound and music for games.</span><span class="node-bottom"><span class="dot"></span>View projects <span aria-hidden="true">↗</span></span></button>
+      <button type="button" class="node" data-note="196" data-pan="-0.15"><span class="node-number">03 / Another perspective</span><span class="label">Redesigns</span><span class="node-description">Familiar scenes. An entirely different feeling.</span><span class="node-bottom"><span class="dot"></span>View projects <span aria-hidden="true">↗</span></span></button>
+      <button type="button" class="node" data-note="220" data-pan="0.2"><span class="node-number">04 / Original music</span><span class="label">Compositions</span><span class="node-description">Atmosphere, movement and musical storytelling.</span><span class="node-bottom"><span class="dot"></span>Listen <span aria-hidden="true">↗</span></span></button>
     </div>
-    <div class="node nonlinear-node" data-note="174.61" data-pan="0.35" style="top:50%; left:62%;">
-      <span class="dot"></span><span class="label">Interactive</span>
-    </div>
-    <div class="node" data-note="196.00" data-pan="-0.15" style="top:68%; left:40%;">
-      <span class="dot"></span><span class="label">Redesigns</span>
-    </div>
-    <div class="node" data-note="220.00" data-pan="0.2" style="top:78%; left:58%;">
-      <span class="dot"></span><span class="label">Compositions</span>
-    </div>
-   
   </section>
 
   <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="false">Mute ambience</button>
@@ -48,7 +44,7 @@
   <div class="overlay hidden" id="about-overlay">
     <div class="overlay-content">
       <p>
-        “Music composition, audio production and creative / technical sound design for the strangest imaginings.”
+        Composition, production and sound design.<br>For worlds that stay with you.
       </p>
       <button class="close" id="about-close">Close</button>
     </div>
@@ -816,6 +812,24 @@ function initRitualArp() {
   droneGain.connect(reverb);
   drone.start();
 
+  // Slow, quiet beating within the D/A drone creates unease without harshness.
+  const ghost = ctx.createOscillator();
+  const ghostGain = ctx.createGain();
+  ghost.type = "sine";
+  ghost.frequency.value = 55;
+  ghost.detune.value = -5;
+  ghostGain.gain.value = .012;
+  ghost.connect(ghostGain);
+  ghostGain.connect(reverb);
+  ghost.start();
+  const drift = ctx.createOscillator();
+  const driftDepth = ctx.createGain();
+  drift.frequency.value = .045;
+  driftDepth.gain.value = 24;
+  drift.connect(driftDepth);
+  driftDepth.connect(droneFilter.frequency);
+  drift.start();
+
   const notes = [73.42, 110.00, 116.54, 146.83, 174.61, 196.00, 220.00]; const pattern = [0, 3, 5, 1, 4, 6, 2, 5, 3, 6, 4, 1, 5, 2, 6, 3];
 
   function pulseRitual() {
@@ -823,12 +837,12 @@ function initRitualArp() {
     const osc = ctx.createOscillator();
     const shadowOsc = ctx.createOscillator(); const filter = ctx.createBiquadFilter();
     const gain = ctx.createGain();
-    const freq = ritualPulseCount % 11 === 8 ? 103.83 : notes[pattern[ritualPulseCount % pattern.length]];
+    const freq = notes[pattern[ritualPulseCount % pattern.length]];
 
     osc.type = "triangle"; shadowOsc.type = "sawtooth"; shadowOsc.detune.value = ritualPulseCount % 2 ? -8 : 8;
     osc.frequency.setValueAtTime(freq, now); shadowOsc.frequency.setValueAtTime(freq, now);
     filter.type = "lowpass";
-    filter.frequency.setValueAtTime(780 + (ritualStep % 5) * 250 + (ritualPulseCount % 16 === 0 ? 600 : 0), now);
+    filter.frequency.setValueAtTime(430 + (ritualStep % 5) * 110, now);
     filter.Q.value = 1.2;
     gain.gain.setValueAtTime(0.0001, now);
     gain.gain.exponentialRampToValueAtTime(0.22, now + 0.02);
@@ -841,7 +855,7 @@ function initRitualArp() {
     osc.stop(now + 0.17); shadowOsc.stop(now + 0.17);
 
     ritualStep += 1; ritualPulseCount += 1; if (ritualPulseCount % 32 === 0) playRitualShimmer(freq);
-    window.setTimeout(pulseRitual, [240, 270, 300][ritualPulseCount % 3]);
+    window.setTimeout(pulseRitual, [420, 560, 700][ritualPulseCount % 3]);
   }
 
   window.setTimeout(pulseRitual, 220);
@@ -866,17 +880,47 @@ function playRitualShimmer(freq) {
   shimmer.type = "sine";
   shimmer.frequency.setValueAtTime(freq * 2, now);
   shimmerFilter.type = "highpass";
-  shimmerFilter.frequency.value = 900;
+  shimmerFilter.frequency.value = 180;
   shimmerGain.gain.setValueAtTime(0.0001, now);
-  shimmerGain.gain.exponentialRampToValueAtTime(0.12, now + 0.18);
-  shimmerGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.8);
+  shimmerGain.gain.exponentialRampToValueAtTime(0.055, now + 1.4);
+  shimmerGain.gain.exponentialRampToValueAtTime(0.0001, now + 5.5);
 
   shimmer.connect(shimmerFilter);
   shimmerFilter.connect(shimmerGain);
   shimmerGain.connect(ritualArpGain);
   shimmer.start(now);
-  shimmer.stop(now + 1.9);
+  shimmer.stop(now + 5.6);
 }
+
+// Keep project panels keyboard-accessible, including returning focus on close.
+document.querySelectorAll('.overlay, .picture-overlay').forEach(panel => {
+  panel.setAttribute('role', 'dialog');
+  panel.setAttribute('aria-modal', 'true');
+  const names = {'about-overlay':'About John Ryder', 'picture-overlay':'Picture projects', 'nonlinear-overlay':'Interactive projects', 'redesigns-overlay':'Redesign projects', 'music-overlay':'Compositions'};
+  panel.setAttribute('aria-label', names[panel.id]);
+  let returnFocus;
+  const sync = () => {
+    const hidden = panel.classList.contains('hidden');
+    panel.inert = hidden;
+    if (!hidden) {
+      returnFocus = document.activeElement;
+      panel.querySelector('button')?.focus();
+    } else if (returnFocus) {
+      returnFocus.focus();
+      returnFocus = null;
+    }
+  };
+  sync();
+  new MutationObserver(sync).observe(panel, {attributes:true, attributeFilter:['class']});
+  panel.addEventListener('keydown', e => {
+    if (e.key === 'Escape') panel.querySelector('button')?.click();
+    if (e.key !== 'Tab') return;
+    const controls = [...panel.querySelectorAll('button, a[href], iframe, [tabindex="0"]')];
+    const first = controls[0], last = controls[controls.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+});
 </script>
 
 <!-- Pages rebuild refresh -->

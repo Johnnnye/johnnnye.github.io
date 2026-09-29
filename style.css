@@ -667,3 +667,75 @@ html, body {
 @media (max-width: 600px) {
   .site-credit { right: .75rem; font-size: 7px; }
 }
+
+/* Cinematic portfolio preview. */
+html, body { min-height: 100%; height: auto; }
+body { background: radial-gradient(ellipse at 50% 15%, #1c242d 0, transparent 44%), radial-gradient(ellipse at 100% 70%, #24100f 0, transparent 48%), #080a0d; }
+.container { height: auto; min-height: 100svh; overflow: visible; padding: 0 clamp(20px, 6vw, 88px) 100px; }
+.portfolio-top { display: flex; justify-content: space-between; gap: 20px; padding: 24px 0; border-bottom: 1px solid #ffffff16; text-transform: uppercase; letter-spacing: .12em; font-size: 10px; color: #989fa9; }
+.portfolio-top a { color: #e8ebef; text-decoration: none; }
+.hero { position: relative; top: auto; left: auto; transform: none; padding: 64px 0 52px; width: 100%; }
+#about-trigger { width: min(620px, 82vw); }
+.hero .role { margin-top: 18px; font-size: 10px; letter-spacing: .22em; color: #e2b4ad; }
+.hero-intro { font: 400 clamp(18px, 2.2vw, 25px)/1.55 Inter, sans-serif; color: #c4c9d0; margin: 24px auto 0; }
+.work-section { position: relative; max-width: 1280px; margin: auto; }
+.work-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 20px; }
+.work-heading h2 { font: 500 13px Inter, sans-serif; color: #e2e5e9; }
+.work-heading > span { font-size: 10px; color: #8c939e; }
+.categories { position: relative; inset: auto; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; }
+.node { position: relative; display: flex; align-items: flex-start; flex-direction: column; gap: 0; padding: 25px 22px 20px; border: 1px solid #ffffff1c; border-radius: 2px; background: linear-gradient(145deg, #20273088, #0e1015cc); color: #e4e7ec; text-align: left; animation: none; opacity: 1; text-transform: none; letter-spacing: normal; min-width: 0; min-height: 240px; overflow: hidden; transition: border-color .3s, background .3s, transform .3s; }
+.node::before { content: ''; position: absolute; top: 0; left: 22px; width: 28px; height: 2px; background: #dc3b30; transition: width .4s; }
+.node:hover, .node:focus-visible { transform: translateY(-4px); border-color: #a4484166; text-shadow: none; background: linear-gradient(145deg, #28272c, #151217); }
+.node:hover::before { width: 80px; }
+.node-number { font: 9px 'Share Tech Mono', monospace; color: #989ea8; text-transform: uppercase; letter-spacing: .06em; }
+.node .label { margin: 24px 0 12px; font: 600 clamp(24px, 2.5vw, 36px)/1 'Barlow Condensed', sans-serif; letter-spacing: .035em; text-transform: uppercase; }
+.node-description { font: 12px/1.65 Inter, sans-serif; color: #a7aeb9; max-width: 230px; }
+.node-bottom { display: flex; align-items: center; gap: 9px; width: 100%; margin-top: auto; padding-top: 26px; font: 10px 'Share Tech Mono', monospace; color: #e1b1aa; }
+.node-bottom > span:last-child { margin-left: auto; font-size: 16px; }
+.contact { position: relative; bottom: auto; left: auto; transform: none; text-align: center; margin-top: 42px; font-size: 11px; }
+.sound-toggle { position: fixed; left: 20px; bottom: 8px; background: #080a0dd9; border-radius: 3px; }
+.site-credit { background: #080a0dcc; padding: 4px; }
+.overlay.hidden, .picture-overlay.hidden { visibility: hidden; }
+.picture-overlay { overflow-y: auto; padding: 76px 5vw 45px; align-items: flex-start; }
+.picture-track { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); width: 100%; max-width: 1400px; margin: auto; gap: 24px; padding: 0; overflow: visible; }
+.picture-item, #nonlinear-overlay .picture-item { height: auto; min-width: 0; padding: 24px; display: flex; flex-direction: column; align-items: stretch; gap: 22px; }
+.project-text { flex: auto; max-height: none; overflow: visible; font: 13px/1.7 Inter, sans-serif; pointer-events: auto; }
+.project-video { flex: none; width: 100%; }
+#music-overlay .picture-track { grid-template-columns: 1fr; max-width: 1000px; }
+#nonlinear-overlay { padding-top: 76px; }
+.picture-close { position: fixed; z-index: 25; top: 16px; right: 24px; background: #11151a; width: 44px; height: 44px; border: 1px solid #ffffff33; border-radius: 50%; opacity: 1; }
+.overlay-content { padding: 24px; }
+@media (max-width: 950px) { .categories { grid-template-columns: repeat(2,minmax(0,1fr)); } .picture-track { grid-template-columns: 1fr; } }
+@media (max-width: 600px) {
+ .portfolio-top { font-size: 8px; letter-spacing: .04em; }
+ .hero { top: auto; padding: 48px 0 36px; }
+ #about-trigger { width: 100%; }
+ .hero .role { font-size: 8px; letter-spacing: .1em; }
+ .hero-intro { font-size: 17px; }
+ .work-heading > span { display: none; }
+ .categories { gap: 10px; }
+ .node { padding: 20px 14px; min-height: 220px; }
+ .node-number { font-size: 8px; }
+ .node .label { font-size: 24px; letter-spacing: .015em; }
+ .node-description { font-size: 11px; }
+ .sound-toggle { left: 10px; bottom: 24px; transform: none; font-size: 9px; }
+ .site-credit { bottom: 5px; }
+ .picture-item { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) { .node, .node::before { transition: none; } .node:hover { transform: none; } }
+/* Keep the work visible early and place utility controls after the content. */
+.hero { padding-top: 38px; padding-bottom: 36px; }
+#about-trigger { width: min(510px, 82vw); }
+.hero-intro { margin-top: 18px; font-size: clamp(17px, 2vw, 22px); }
+.sound-toggle, .site-credit { position: absolute; }
+.project-video { min-height: 0; }
+.project-video iframe { display: block; aspect-ratio: 16 / 9; height: auto; }
+#music-overlay iframe { aspect-ratio: auto; height: 450px; }
+@media (max-width: 600px) {
+  .hero { padding: 36px 0; }
+  #about-trigger { width: 100%; }
+  .categories { grid-template-columns: 1fr; }
+  .node { min-height: 190px; }
+  .node .label { font-size: 30px; margin-top: 18px; }
+  .node-description { max-width: none; }
+}
