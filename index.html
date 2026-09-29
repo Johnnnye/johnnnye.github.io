@@ -441,29 +441,61 @@
 </div>
 
   
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script src="https://w.soundcloud.com/player/api.js"></script>
 <script>
+// A gentler starting level; visitors retain each player's volume controls.
+const mediaStartVolume = 35;
+const youtubePlayers = new Map();
+const vimeoPlayers = new Map();
+const soundcloudPlayers = new Map();
+
+document.querySelectorAll('iframe[src*="youtube.com/embed/"]').forEach(frame => {
+  const url = new URL(frame.src);
+  url.searchParams.set('enablejsapi', '1');
+  url.searchParams.set('origin', location.origin);
+  frame.src = url.href;
+});
+window.onYouTubeIframeAPIReady = () => {
+  document.querySelectorAll('iframe[src*="youtube.com/embed/"]').forEach(frame => {
+    const player = new YT.Player(frame, {
+      events: { onReady: event => event.target.setVolume(mediaStartVolume) }
+    });
+    youtubePlayers.set(frame, player);
+  });
+};
+const youtubeAPI = document.createElement('script');
+youtubeAPI.src = 'https://www.youtube.com/iframe_api';
+document.head.appendChild(youtubeAPI);
+
+if (window.Vimeo) document.querySelectorAll('iframe[src*="vimeo.com"]').forEach(frame => {
+  const player = new Vimeo.Player(frame);
+  vimeoPlayers.set(frame, player);
+  player.ready().then(() => player.setVolume(mediaStartVolume / 100)).catch(() => {});
+});
+if (window.SC) document.querySelectorAll('iframe[src*="soundcloud.com"]').forEach(frame => {
+  const player = SC.Widget(frame);
+  soundcloudPlayers.set(frame, player);
+  player.bind(SC.Widget.Events.READY, () => player.setVolume(mediaStartVolume));
+});
 
 function stopAllVideos() {
-
-  // Stop Vimeo
   document.querySelectorAll('iframe[src*="vimeo.com"]').forEach(frame => {
-    frame.contentWindow?.postMessage(
-      JSON.stringify({ method: "pause" }),
-      "*"
-    );
+    const player = vimeoPlayers.get(frame);
+    if (player) player.pause().catch(() => {});
+    else frame.contentWindow?.postMessage(JSON.stringify({method: 'pause'}), 'https://player.vimeo.com');
   });
-
-  // Stop YouTube
   document.querySelectorAll('iframe[src*="youtube.com"]').forEach(frame => {
-    const src = frame.src;
-    frame.src = src;
+    const player = youtubePlayers.get(frame);
+    if (player && typeof player.pauseVideo === 'function') player.pauseVideo();
+    else frame.src = frame.src;
   });
 }
-
 function stopSoundCloud() {
   document.querySelectorAll('iframe[src*="soundcloud.com"]').forEach(frame => {
-    const src = frame.src;
-    frame.src = src; // reload = stop playback
+    const player = soundcloudPlayers.get(frame);
+    if (player) player.pause();
+    else frame.src = frame.src;
   });
 }
 /* =========================
@@ -697,13 +729,7 @@ document.getElementById("about-close").addEventListener("click", () => {
 const pictureOverlay = document.getElementById("picture-overlay");
 const vimeoFrame = document.getElementById("picture-video-1");
 
-function stopVimeo() {
-  if (!vimeoFrame || !vimeoFrame.contentWindow) return;
-  vimeoFrame.contentWindow.postMessage(
-    JSON.stringify({ method: "pause" }),
-    "*"
-  );
-}
+function stopVimeo() { stopAllVideos(); }
 
 document.querySelector(".picture-node").addEventListener("click", () => {
   pictureOverlay.classList.remove("hidden");
