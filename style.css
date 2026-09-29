@@ -548,3 +548,41 @@ html, body {
   transform: scale(1.55);
   box-shadow: 0 0 18px rgba(189, 57, 47, 1);
 }
+
+/* Image title; its envelope is driven by the existing eight-second noise cycle. */
+.hero { top: 3%; }
+.hero h1.image-title { animation: none; letter-spacing: normal; line-height: 1; }
+#about-trigger {
+  display: block;
+  width: min(420px, 76vw);
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.title-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: scale(calc(.985 + var(--breath, 0) * .015));
+  opacity: calc(.85 + var(--breath, 0) * .15);
+  filter: brightness(calc(.95 + var(--breath, 0) * .12));
+}
+#about-trigger:focus-visible { outline: 2px solid var(--signal-blue); outline-offset: 8px; }
+#about-trigger .wordmark-sub { margin-top: .35rem; }
+.hero .role { margin-top: .8rem; }
+@media (max-width: 600px) {
+  .hero { top: 6%; }
+  #about-trigger { width: min(460px, 92vw); }
+  .hero .ryder-mark, .hero .site-credit { display: none; }
+}
+@media (max-height: 650px) and (min-width: 601px) {
+  #about-trigger { width: min(400px, 60vw); }
+  .hero { top: 3%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .title-logo { transform: none; opacity: 1; filter: none; }
+  .node { animation: none; }
+}

@@ -14,7 +14,7 @@
 <main class="container" id="app">
 
   <section class="hero">
-    <img class="ryder-mark" src="john-ryder-productions-mark.png" alt="" aria-hidden="true" style="position:fixed; top:13%; right:7%; width:111px!important; height:auto; opacity:.8; pointer-events:none; z-index:2;"> <span class="site-credit" style="position:fixed; top:calc(13% + 80px); right:4%; z-index:2; font-family:Space Mono, monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; opacity:.62; pointer-events:none; white-space:nowrap;">Site and sound by John Ryder Productions</span> <h1 id="about-trigger"><span class="wordmark-main">John Ryder</span><span class="wordmark-sub">Productions</span></h1>
+    <img class="ryder-mark" src="john-ryder-productions-mark.png" alt="" aria-hidden="true" style="position:fixed; top:13%; right:7%; width:111px!important; height:auto; opacity:.8; pointer-events:none; z-index:2;"> <span class="site-credit" style="position:fixed; top:calc(13% + 80px); right:4%; z-index:2; font-family:Space Mono, monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; opacity:.62; pointer-events:none; white-space:nowrap;">Site and sound by John Ryder Productions</span> <h1 class="image-title"><button id="about-trigger" type="button" aria-label="About John Ryder Productions"><img class="title-logo" src="images/john-ryder-title.png" alt="John Ryder" width="2078" height="757" fetchpriority="high"><span class="wordmark-sub">Productions</span></button></h1>
     <p class="role">Music and sound for the space in between</p>
   </section>
 
@@ -487,10 +487,10 @@ const emailEl = document.getElementById("contact-email");
 function unlockAudioOnce() {
   if (!ctx) { initAudio(); initRitualArp(); }
   if (ctx.state === "suspended") ctx.resume();
-  document.removeEventListener("click", unlockAudioOnce);
+  document.removeEventListener("click", unlockAudioOnce, true);
   document.removeEventListener("mousemove", unlockAudioOnce);
 }
-document.addEventListener("click", unlockAudioOnce, { once: true });
+document.addEventListener("click", unlockAudioOnce, { once: true, capture: true });
 document.addEventListener("mousemove", unlockAudioOnce, { once: true });
 
 function initAudio() {
@@ -587,15 +587,16 @@ function breathLoop(now) {
   const phase = ((now - breathStartTime) % breathDuration) / breathDuration;
   const amp = phase < 0.32 ? Math.sin((phase / 0.32) * Math.PI / 2) : phase < 0.76 ? Math.cos(((phase - 0.32) / 0.44) * Math.PI / 2) : 0;
   breathGain.gain.setTargetAtTime(amp * 0.16, ctx.currentTime, 0.12);
+  titleEl.style.setProperty("--breath", amp.toFixed(4));
   requestAnimationFrame(breathLoop);
 }
 
 function breathIn() {
-  breathGain.gain.setTargetAtTime(0.18, ctx.currentTime, 1);
+  if (breathGain) breathGain.gain.setTargetAtTime(0.18, ctx.currentTime, 1);
 }
 
 function breathOut() {
-  breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
+  if (breathGain) breathGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
 }
 
 /* ===== CONTACT NOTE ===== */
