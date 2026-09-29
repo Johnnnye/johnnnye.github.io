@@ -22,7 +22,7 @@
 
   <section class="work-section" aria-label="Portfolio work">
     <div class="categories">
-      <button type="button" class="node picture-node" data-note="164.81" data-pan="-0.4"><span class="node-number">01 / Moving image</span><span class="label">Picture</span><span class="node-description">Music and sound for film, animation and brands.</span><span class="node-bottom"><span class="dot"></span>View projects <span aria-hidden="true">↗</span></span></button>
+      <button type="button" class="node picture-node" data-note="146.83" data-pan="-0.4"><span class="node-number">01 / Moving image</span><span class="label">Picture</span><span class="node-description">Music and sound for film, animation and brands.</span><span class="node-bottom"><span class="dot"></span>View projects <span aria-hidden="true">↗</span></span></button>
       <button type="button" class="node nonlinear-node" data-note="174.61" data-pan="0.35"><span class="node-number">02 / Playable worlds</span><span class="label">Interactive</span><span class="node-description">Responsive sound and music for games.</span><span class="node-bottom"><span class="dot"></span>View projects <span aria-hidden="true">↗</span></span></button>
       <button type="button" class="node redesign-node" data-note="196" data-pan="-0.15"><span class="node-number">03 / Another perspective</span><span class="label">Redesigns</span><span class="node-description">Familiar scenes. An entirely different feeling.</span><span class="node-bottom"><span class="dot"></span>View projects <span aria-hidden="true">↗</span></span></button>
       <button type="button" class="node composition-node" data-note="220" data-pan="0.2"><span class="node-number">04 / Original music</span><span class="label">Compositions</span><span class="node-description">Atmosphere, movement and musical storytelling.</span><span class="node-bottom"><span class="dot"></span>Listen <span aria-hidden="true">↗</span></span></button>
@@ -511,8 +511,6 @@ let breathStartTime;
 let breathDuration = 8000;
 
 let contactOsc, contactGain;
-let grooveStarted = false;
-let grooveTimer;
 
 const titleEl = document.getElementById("about-trigger");
 const emailEl = document.getElementById("contact-email");
@@ -689,11 +687,8 @@ document.getElementById("sound-toggle").addEventListener("click", e => {
 document.querySelectorAll(".node").forEach(el => {
   el.addEventListener("mouseenter", () => {
     breathIn();
-    if (el.classList.contains("picture-node")) startGroove();
-    if (el.classList.contains("nonlinear-node")) playHat();
-    if (el.classList.contains("redesign-node") || el.classList.contains("composition-node")) playShortMelody(el.classList.contains("composition-node"));
     const v = voices.find(x => x.el === el);
-    if (v) v.focusGain.gain.setTargetAtTime(0, ctx.currentTime, 0.2);
+    if (v) v.focusGain.gain.setTargetAtTime(0.035, ctx.currentTime, 0.9);
   });
 
   el.addEventListener("mouseleave", () => {
@@ -709,12 +704,10 @@ titleEl.addEventListener("mouseenter", breathIn);
 titleEl.addEventListener("mouseleave", breathOut);
 
 emailEl.addEventListener("mouseenter", () => {
-  playFaller();
-  emailEl.classList.add("riser-hit");
-  window.setTimeout(() => emailEl.classList.remove("riser-hit"), 900);
+  contactGain.gain.setTargetAtTime(0.04, ctx.currentTime, 1);
 });
 emailEl.addEventListener("mouseleave", () => {
-  emailEl.classList.remove("riser-hit");
+  contactGain.gain.setTargetAtTime(0, ctx.currentTime, 2);
 });
 emailEl.addEventListener("click", softClick);
 
@@ -974,13 +967,13 @@ function playHat() {
 function playShortMelody(brighter = false) {
   if (!ctx) return;
   // Use the same D-minor colour as the original node notes, at half-time.
-  const notes = brighter ? [220, 196, 174.61, 146.83, 130.81] : [146.83, 174.61, 220, 196, 174.61];
+  const notes = brighter ? [220, 261.63, 293.66, 349.23, 293.66, 261.63, 220, 196] : [146.83, 174.61, 220, 196, 174.61];
   const now = ctx.currentTime + 0.015;
   notes.forEach((freq, index) => {
     const osc = ctx.createOscillator();
     const filter = ctx.createBiquadFilter();
     const gain = ctx.createGain();
-    const time = now + index * 1.25;
+    const time = now + index * (brighter ? 0.92 : 1.25);
     osc.type = "sine";
     const bow = ctx.createOscillator();
     const bowGain = ctx.createGain();
@@ -989,47 +982,63 @@ function playShortMelody(brighter = false) {
     osc.frequency.value = freq;
     osc.detune.value = index % 2 ? -4 : 3;
     bow.type = "triangle"; bow.frequency.value = freq; bow.detune.value = index % 2 ? 5 : -3;
-    bowGain.gain.value = 0.18;
+    bowGain.gain.value = brighter ? 0.25 : 0.18;
     vibrato.type = "sine"; vibrato.frequency.value = 5.2; vibratoDepth.gain.value = 5.5;
     vibrato.connect(vibratoDepth); vibratoDepth.connect(osc.detune); vibratoDepth.connect(bow.detune);
     filter.type = "lowpass"; filter.frequency.value = 720;
     gain.gain.setValueAtTime(0.0001, time);
-    gain.gain.exponentialRampToValueAtTime(brighter ? 0.022 : 0.018, time + 0.38);
-    gain.gain.exponentialRampToValueAtTime(0.0001, time + 3.05);
+    gain.gain.exponentialRampToValueAtTime(brighter ? 0.026 : 0.018, time + (brighter ? 0.26 : 0.38));
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + (brighter ? 2.7 : 3.05));
     osc.connect(filter); bow.connect(bowGain); bowGain.connect(filter); filter.connect(gain); gain.connect(master); gain.connect(reverb);
     osc.start(time); bow.start(time); vibrato.start(time); osc.stop(time + 3.2); bow.stop(time + 3.2); vibrato.stop(time + 3.2);
+  });
+}
+
+function playLeadMelody() {
+  if (!ctx) return;
+  const phrase = [293.66, 349.23, 440, 523.25, 440, 349.23, 329.63, 293.66, 261.63, 293.66, 349.23, 440];
+  const starts = [0, 0.24, 0.48, 0.72, 1.2, 1.44, 1.68, 1.92, 2.4, 2.64, 2.88, 3.36];
+  const now = ctx.currentTime + 0.02;
+  phrase.forEach((freq, index) => {
+    const osc = ctx.createOscillator();
+    const double = ctx.createOscillator();
+    const filter = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+    const time = now + starts[index];
+    osc.type = "sawtooth"; double.type = "square";
+    osc.frequency.value = freq; double.frequency.value = freq;
+    osc.detune.value = -4; double.detune.value = 7;
+    filter.type = "lowpass"; filter.frequency.setValueAtTime(760, time); filter.frequency.exponentialRampToValueAtTime(1900, time + 0.12); filter.frequency.exponentialRampToValueAtTime(520, time + 0.7);
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.exponentialRampToValueAtTime(index === 3 ? 0.032 : 0.024, time + 0.035);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.72);
+    osc.connect(filter); double.connect(filter); filter.connect(gain); gain.connect(master); gain.connect(reverb);
+    osc.start(time); double.start(time); osc.stop(time + 0.8); double.stop(time + 0.8);
   });
 }
 
 function playFaller() {
   if (!ctx) return;
   const now = ctx.currentTime;
-  const osc = ctx.createOscillator();
-  const metallic = ctx.createOscillator();
   const noise = ctx.createBufferSource();
-  const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 1.7, ctx.sampleRate);
+  const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 4.8, ctx.sampleRate);
   const noiseData = noiseBuffer.getChannelData(0);
-  for (let i = 0; i < noiseData.length; i++) noiseData[i] = (Math.random() * 2 - 1) * Math.pow(i / noiseData.length, 1.8);
-  const filter = ctx.createBiquadFilter();
+  for (let i = 0; i < noiseData.length; i++) noiseData[i] = (Math.random() * 2 - 1) * Math.pow(i / noiseData.length, 1.35);
   const noiseFilter = ctx.createBiquadFilter();
   const gain = ctx.createGain();
-  osc.type = "square"; metallic.type = "triangle";
-  osc.frequency.setValueAtTime(740, now);
-  osc.frequency.exponentialRampToValueAtTime(55, now + 4.6);
-  metallic.frequency.setValueAtTime(1110, now);
-  metallic.frequency.exponentialRampToValueAtTime(82, now + 4.6);
-  filter.type = "bandpass"; filter.Q.value = 3.2;
-  filter.frequency.setValueAtTime(2200, now);
-  filter.frequency.exponentialRampToValueAtTime(120, now + 4.6);
   noise.buffer = noiseBuffer;
-  noiseFilter.type = "bandpass"; noiseFilter.frequency.setValueAtTime(1800, now); noiseFilter.frequency.exponentialRampToValueAtTime(260, now + 4.2); noiseFilter.Q.value = 0.6;
+  noiseFilter.type = "highpass"; noiseFilter.frequency.setValueAtTime(6800, now); noiseFilter.frequency.exponentialRampToValueAtTime(900, now + 4.4); noiseFilter.Q.value = 0.5;
   gain.gain.setValueAtTime(0.0001, now);
-  gain.gain.exponentialRampToValueAtTime(0.026, now + 0.22);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 5.4);
-  osc.connect(filter); metallic.connect(filter); filter.connect(gain);
+  for (let pulse = 0; pulse < 13; pulse++) {
+    const time = now + pulse * 0.34;
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.exponentialRampToValueAtTime(0.022, time + 0.035);
+    gain.gain.exponentialRampToValueAtTime(0.003, time + 0.18);
+  }
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 4.8);
   noise.connect(noiseFilter); noiseFilter.connect(gain);
-  gain.connect(master); gain.connect(reverb);
-  osc.start(now); metallic.start(now); noise.start(now); osc.stop(now + 5.6); metallic.stop(now + 5.6); noise.stop(now + 5.6);
+  gain.connect(master);
+  noise.start(now); noise.stop(now + 5.4);
 }
 
 let snareBuffer;

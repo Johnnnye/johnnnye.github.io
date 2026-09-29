@@ -527,9 +527,7 @@ html, body {
 /* Interactive rhythm cues. */
 .contact { position: relative; z-index: 1; }
 .contact a { display: inline-flex; align-items: center; padding: 14px 22px; border: 1px solid #ffffff22; border-radius: 999px; background: #11151acc; transition: border-color .3s, background .3s, transform .3s; }
-.contact a:hover, .contact a:focus-visible, .contact a.riser-hit { border-color: #c34b4366; background: #2a1718dd; transform: translateY(-2px); }
-.groove-awake .picture-node { border-color: #c34b4388; box-shadow: 0 0 32px #8b29251f; }
-.groove-awake .picture-node::before { width: 92px; animation: pulse-line .38s ease-in-out 4 alternate; }
+.contact a:hover, .contact a:focus-visible { border-color: #c34b4366; background: #2a1718dd; transform: translateY(-2px); }
 .work-section::before { content: ''; position: absolute; inset: -42px -8%; z-index: -1; pointer-events: none; background: radial-gradient(ellipse at 12% 45%, #a4312712, transparent 32%), radial-gradient(ellipse at 88% 55%, #45627410, transparent 34%); filter: blur(12px); }
 .node { isolation: isolate; }
 .node::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0; background: linear-gradient(115deg, transparent 25%, #ffffff08 42%, transparent 58%); transform: translateX(-70%); transition: opacity .35s, transform .8s ease; }
@@ -543,7 +541,7 @@ html, body {
 .work-heading h2 { letter-spacing: .12em; text-shadow: 2px 2px 0 #090b0f; }
 @keyframes pulse-line { from { opacity: .45; } to { opacity: 1; } }
 @media (max-width: 600px) { .categories .node:nth-child(n) { transform: none; } .categories .node:hover, .categories .node:focus-visible { transform: translateY(-4px) scale(1.01); } }
-@media (prefers-reduced-motion: reduce) { .contact a { transition: none; } .groove-awake .picture-node::before { animation: none; } .categories .node:nth-child(n) { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .contact a { transition: none; } .categories .node:nth-child(n) { transform: none; } }
 /* Match overlay sliders to the node signal lights */
 .picture-track::-webkit-scrollbar-thumb {
   background: var(--tail-light);
